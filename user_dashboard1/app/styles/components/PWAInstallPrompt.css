@@ -1,0 +1,241 @@
+.pwa-floating-card {
+  position: fixed;
+  bottom: 100px;
+  right: 24px;
+  width: 380px;
+  background: rgba(18, 18, 18, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  padding: 24px;
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.6),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  z-index: 99999;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Red/Gold Premium Glow Effect */
+.pwa-card-glow {
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 150px;
+  height: 150px;
+  background: radial-gradient(circle, rgba(214, 80, 80, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.pwa-card-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.pwa-app-logo {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #D65050 0%, #a83232 100%);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(214, 80, 80, 0.3);
+}
+
+.pwa-app-logo svg {
+  width: 24px;
+  height: 24px;
+  color: #fff;
+}
+
+.pwa-text-block h4 {
+  margin: 0 0 6px 0;
+  font-family: var(--font-display, inherit);
+  font-size: 18px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.pwa-text-block p {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.5;
+}
+
+.pwa-action-buttons {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.pwa-btn-dismiss {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 12px;
+  font-size: 13.5px;
+  color: #ccc;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pwa-btn-dismiss:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.pwa-btn-install {
+  flex: 1.5;
+  background: linear-gradient(135deg, #D65050 0%, #b83a3a 100%);
+  border: none;
+  border-radius: 14px;
+  padding: 12px;
+  font-size: 13.5px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 15px rgba(214, 80, 80, 0.25);
+  text-align: center;
+}
+
+.pwa-btn-install:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(214, 80, 80, 0.35);
+  background: linear-gradient(135deg, #e35d5d 0%, #c44040 100%);
+}
+
+/* iOS Drawer Dialog Styling */
+.pwa-ios-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 100000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.pwa-ios-modal-card {
+  width: 100%;
+  max-width: 480px;
+  background: #121212;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 32px 32px 0 0;
+  padding: 32px 24px;
+  box-shadow: 0 -10px 40px rgba(0,0,0,0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.ios-modal-indicator {
+  width: 40px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  align-self: center;
+}
+
+.ios-modal-header h3 {
+  margin: 0 0 8px 0;
+  font-size: 22px;
+  color: #fff;
+  font-weight: 700;
+  text-align: center;
+}
+
+.ios-modal-header p {
+  margin: 0;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+}
+
+.ios-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ios-step-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.ios-step-badge {
+  width: 24px;
+  height: 24px;
+  background: #D65050;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.ios-step-row p {
+  margin: 0;
+  font-size: 13.5px;
+  color: #eee;
+  line-height: 1.5;
+}
+
+.ios-modal-btn-close {
+  width: 100%;
+  background: linear-gradient(135deg, #D65050 0%, #a83232 100%);
+  border: none;
+  border-radius: 16px;
+  padding: 14px;
+  font-size: 14.5px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 20px rgba(214, 80, 80, 0.2);
+}
+
+.ios-modal-btn-close:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(214, 80, 80, 0.3);
+}
+
+/* Responsive Rules for Floating Prompt */
+@media (max-width: 768px) {
+  .pwa-floating-card {
+    left: 16px;
+    right: 16px;
+    bottom: 84px; /* Perfectly sits above the Bottom Nav bar! */
+    width: auto;
+    border-radius: 24px;
+    padding: 18px;
+    gap: 16px;
+  }
+
+  .pwa-text-block h4 {
+    font-size: 16px;
+  }
+
+  .pwa-text-block p {
+    font-size: 12px;
+  }
+}

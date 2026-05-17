@@ -10,6 +10,7 @@ import '@fontsource/inter/700.css';
 import ContactModal from '@/app/components/common/ContactModal'
 import RegisterModal from '@/app/components/common/RegisterModal'
 import FloatingWhatsApp from '@/app/components/common/FloatingWhatsApp'
+import PWAInstallPrompt from '@/app/components/common/PWAInstallPrompt'
 import { Providers } from '@/app/layouts/Providers';
 import { AppShellWrapper } from '@/app/layouts/AppShellWrapper';
 
@@ -30,6 +31,7 @@ export default function RootLayout({ children }) {
           <ContactModal />
           <RegisterModal />
           <FloatingWhatsApp />
+          <PWAInstallPrompt />
         </Providers>
       </body>
     </html>
