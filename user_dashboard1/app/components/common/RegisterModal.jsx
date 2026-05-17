@@ -27,6 +27,17 @@ export default function RegisterModal() {
     return () => window.removeEventListener('open-register-modal', handleOpen)
   }, [])
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isOpen])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsSubmitting(true)

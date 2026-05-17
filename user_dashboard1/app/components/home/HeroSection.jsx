@@ -118,3 +118,6 @@ export default function HeroSection() {
     </section>
   )
 }
+
+// Force-trigger stylesheet HMR refresh and invalidate Next.js CSS cache
+

@@ -23,6 +23,18 @@ export default function ServiceVideos() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Lock background scroll when modal is open
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isModalOpen]);
   
   // Tab within Upload Modal: 'file' or 'youtube'
   const [uploadTab, setUploadTab] = useState<'file' | 'youtube'>('file');
@@ -260,7 +272,7 @@ export default function ServiceVideos() {
 
         <div className="flex items-center gap-3 z-10">
           <button 
-            onClick={fetchVideos}
+            onClick={() => fetchVideos()}
             className="p-3 rounded-xl bg-slate-50 border border-slate-100 hover:bg-slate-100 text-slate-600 hover:text-slate-900 transition-all active:scale-95"
             title="Refresh database"
           >
@@ -413,14 +425,15 @@ export default function ServiceVideos() {
 
       {/* Upload/Configure Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
           {/* High-end cinematic dark glassmorphic backdrop */}
           <div 
-            className="absolute inset-0 bg-slate-950/85 backdrop-blur-xl transition-opacity duration-300"
+            className="fixed inset-0 bg-black/60 backdrop-blur-xl transition-opacity duration-300"
             onClick={() => !uploading && setIsModalOpen(false)}
           />
           
-          <div className="bg-[#0b0f19]/95 rounded-[32px] border border-white/[0.08] w-full max-w-lg overflow-hidden shadow-[0_25px_70px_-15px_rgba(0,0,0,0.9)] relative z-10 animate-in zoom-in-95 duration-200">
+          <div className="relative w-full max-w-lg p-4 z-10 my-8">
+            <div className="bg-[#0b0f19]/95 rounded-[32px] border border-white/[0.08] w-full overflow-hidden shadow-[0_25px_70px_-15px_rgba(0,0,0,0.9)] relative z-10 animate-in zoom-in-95 duration-200">
             {/* Ambient luxury radial glow spheres inside modal backdrop */}
             <div className="absolute top-0 left-1/4 w-44 h-44 bg-amber-500/5 rounded-full filter blur-3xl pointer-events-none" />
             <div className="absolute bottom-0 right-1/4 w-44 h-44 bg-indigo-500/5 rounded-full filter blur-3xl pointer-events-none" />
@@ -489,14 +502,14 @@ export default function ServiceVideos() {
                     }
                   }}
                 >
-                  <SelectTrigger className="h-12 bg-slate-950/60 border-white/[0.08] text-white rounded-2xl focus:ring-amber-500/20 focus:border-amber-500/30 transition-all">
-                    <SelectValue placeholder="Select a predefined category..." className="placeholder-slate-500" />
+                  <SelectTrigger className="h-12 bg-[#050811] border-white/[0.08] text-white data-[placeholder]:text-slate-500 rounded-2xl focus:ring-amber-500/20 focus:border-amber-500/30 transition-all">
+                    <SelectValue placeholder="Select a predefined category..." />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#0b0f19] border border-white/[0.08] text-white rounded-2xl p-1">
+                  <SelectContent className="bg-[#0b0f19] border border-white/[0.08] text-white rounded-2xl p-1 relative z-50">
                     {predefinedTopics.map((t) => (
-                      <SelectItem key={t} value={t} className="focus:bg-white/[0.08] focus:text-white rounded-xl py-2 px-3 transition-colors cursor-pointer text-xs">{t}</SelectItem>
+                      <SelectItem key={t} value={t} className="!focus:bg-white/[0.08] !focus:text-white !data-[highlighted]:bg-white/[0.08] !data-[highlighted]:text-white !hover:bg-white/[0.08] !hover:text-white rounded-xl py-2 px-3 transition-colors cursor-pointer text-xs">{t}</SelectItem>
                     ))}
-                    <SelectItem value="custom" className="font-bold text-amber-400 focus:bg-amber-500/10 focus:text-amber-300 rounded-xl py-2 px-3 transition-colors cursor-pointer text-xs">
+                    <SelectItem value="custom" className="font-bold text-amber-400 !focus:bg-amber-500/10 !focus:text-amber-300 !data-[highlighted]:bg-amber-500/10 !data-[highlighted]:text-amber-300 rounded-xl py-2 px-3 transition-colors cursor-pointer text-xs">
                       + Add Custom Category Group
                     </SelectItem>
                   </SelectContent>
@@ -633,6 +646,7 @@ export default function ServiceVideos() {
             </form>
           </div>
         </div>
+      </div>
       )}
     </div>
   );

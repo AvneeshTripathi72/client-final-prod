@@ -20,8 +20,16 @@ export default function BlogPostPage() {
           .eq('is_active', true)
           .order('created_at', { ascending: false });
 
-        if (error) throw error;
-        setBlogs(data || []);
+        if (error) {
+          if (error.code === '42P01' || error.message?.includes('find the table') || error.code?.startsWith('PGRST')) {
+            console.warn('Table hero_slides does not exist yet.');
+            setBlogs([]);
+          } else {
+            throw error;
+          }
+        } else {
+          setBlogs(data || []);
+        }
       } catch (error) {
         console.error("Error fetching blogs:", error);
       } finally {
