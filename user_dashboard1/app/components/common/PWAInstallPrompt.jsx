@@ -15,6 +15,13 @@ export default function PWAInstallPrompt() {
     // Safety check for server rendering environment
     if (typeof window === 'undefined') return;
 
+    // Detect if we are on a desktop device (only show on mobile/tablet user agents)
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    const isMobileOrTablet = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
+    if (!isMobileOrTablet) {
+      return;
+    }
+
     // 1. Detect if the app is already running in standalone/installed mode
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
     if (isStandalone) {
@@ -28,14 +35,12 @@ export default function PWAInstallPrompt() {
     }
 
     // 3. Identify iOS users
-    const userAgent = window.navigator.userAgent.toLowerCase();
     const isAppleDevice = /iphone|ipad|ipod/.test(userAgent);
-    
     if (isAppleDevice) {
       setIsIOS(true);
     }
 
-    // 4. Always show the gorgeous banner automatically 2 seconds after the user visits the page!
+    // 4. Always show the gorgeous banner automatically 2 seconds after the mobile user visits the page!
     const timer = setTimeout(() => {
       setShowPrompt(true);
     }, 2000);
