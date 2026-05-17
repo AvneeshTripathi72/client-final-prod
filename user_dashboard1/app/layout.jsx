@@ -26,6 +26,10 @@ export const metadata = {
   title: 'Magnevents — Premium Live Artist Booking',
   description: 'Artist-first booking for weddings, corporate nights, and concerts.',
   manifest: '/manifest.json',
+  icons: {
+    icon: '/icon-192.png',
+    apple: '/icon-192.png',
+  },
   appleWebApp: {
     capable: true,
     title: 'Magnevents',
