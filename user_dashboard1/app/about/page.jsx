@@ -1,5 +1,14 @@
-import { redirect } from 'next/navigation';
+"use client";
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function AboutRedirect() {
-  redirect('/blog-post');
+  const router = useRouter();
+  
+  useEffect(() => {
+    router.replace('/blog-post');
+  }, [router]);
+
+  return null;
 }

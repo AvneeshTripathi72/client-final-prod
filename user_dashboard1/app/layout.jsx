@@ -14,10 +14,23 @@ import PWAInstallPrompt from '@/app/components/common/PWAInstallPrompt'
 import { Providers } from '@/app/layouts/Providers';
 import { AppShellWrapper } from '@/app/layouts/AppShellWrapper';
 
+export const viewport = {
+  themeColor: '#D65050',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
+
 export const metadata = {
   title: 'Magnevents — Premium Live Artist Booking',
   description: 'Artist-first booking for weddings, corporate nights, and concerts.',
   manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    title: 'Magnevents',
+    statusBarStyle: 'default',
+  },
 };
 
 export default function RootLayout({ children }) {
