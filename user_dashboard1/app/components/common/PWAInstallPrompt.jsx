@@ -2,40 +2,45 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import '@/app/styles/components/PWAInstallPrompt.css';
 
 export default function PWAInstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [showIOSGuide, setShowIOSGuide] = useState(false);
+  const [showAndroidGuide, setShowAndroidGuide] = useState(false);
 
   useEffect(() => {
-    // 1. Check if user already dismissed or installed the prompt in this session
-    const isDismissed = sessionStorage.getItem('pwa-prompt-dismissed');
-    
     // Safety check for server rendering environment
     if (typeof window === 'undefined') return;
-    
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
-    if (isDismissed || isStandalone) {
+    // 1. Detect if the app is already running in standalone/installed mode
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    if (isStandalone) {
       return;
     }
 
-    // 2. Identify iOS users specifically
+    // 2. Check if the user has previously dismissed or accepted the install prompt
+    const isDismissed = localStorage.getItem('magnevents-pwa-dismissed');
+    if (isDismissed === 'true') {
+      return;
+    }
+
+    // 3. Identify iOS users specifically
     const userAgent = window.navigator.userAgent.toLowerCase();
     const isAppleDevice = /iphone|ipad|ipod/.test(userAgent);
 
     if (isAppleDevice) {
       setIsIOS(true);
-      // Wait 5 seconds to show the premium iOS install hint elegantly on load
+      // Wait 3 seconds to show the premium iOS install hint elegantly on load
       const timer = setTimeout(() => {
         setShowPrompt(true);
-      }, 5000);
+      }, 3000);
       return () => clearTimeout(timer);
     }
 
-    // 3. For Android/Desktop: Wait for 'beforeinstallprompt'
+    // 4. For Android/Desktop: Listen for native beforeinstallprompt
     const handleInstallable = () => {
       setShowPrompt(true);
     };
@@ -43,43 +48,58 @@ export default function PWAInstallPrompt() {
     // If deferredPrompt is already populated globally
     if (window.deferredPrompt) {
       setShowPrompt(true);
+    } else {
+      // Automatic fallback: show the banner anyway after 4 seconds to encourage first-time visitors!
+      const fallbackTimer = setTimeout(() => {
+        setShowPrompt(true);
+      }, 4000);
+      
+      window.addEventListener('pwa-installable', handleInstallable);
+      return () => {
+        clearTimeout(fallbackTimer);
+        window.removeEventListener('pwa-installable', handleInstallable);
+      };
     }
-
-    window.addEventListener('pwa-installable', handleInstallable);
-    return () => {
-      window.removeEventListener('pwa-installable', handleInstallable);
-    };
   }, []);
 
   const handleInstallClick = async () => {
     if (isIOS) {
-      // Toggle iOS instruction drawer
       setShowIOSGuide(true);
       return;
     }
 
     const promptEvent = window.deferredPrompt;
-    if (!promptEvent) return;
+    if (!promptEvent) {
+      // If the browser hasn't fired the native event yet, show our premium instructions popup!
+      setShowAndroidGuide(true);
+      return;
+    }
 
-    // Show native installer popup
-    promptEvent.prompt();
-    const { outcome } = await promptEvent.userChoice;
-    
-    if (outcome === 'accepted') {
-      window.deferredPrompt = null;
-      setShowPrompt(false);
+    try {
+      // Show native installer popup
+      promptEvent.prompt();
+      const { outcome } = await promptEvent.userChoice;
+      
+      if (outcome === 'accepted') {
+        localStorage.setItem('magnevents-pwa-dismissed', 'true');
+        window.deferredPrompt = null;
+        setShowPrompt(false);
+      }
+    } catch (err) {
+      console.warn("PWA Prompt error, showing manual fallback guide:", err);
+      setShowAndroidGuide(true);
     }
   };
 
   const handleDismiss = () => {
-    sessionStorage.setItem('pwa-prompt-dismissed', 'true');
+    localStorage.setItem('magnevents-pwa-dismissed', 'true');
     setShowPrompt(false);
   };
 
   return (
     <>
       <AnimatePresence>
-        {showPrompt && !showIOSGuide && (
+        {showPrompt && !showIOSGuide && !showAndroidGuide && (
           <motion.div 
             className="pwa-floating-card"
             initial={{ opacity: 0, y: 100, scale: 0.9 }}
@@ -89,10 +109,14 @@ export default function PWAInstallPrompt() {
           >
             <div className="pwa-card-glow" />
             <div className="pwa-card-content">
-              <div className="pwa-app-logo">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                </svg>
+              <div className="pwa-app-logo" style={{ overflow: 'hidden', position: 'relative' }}>
+                <Image 
+                  src="/assets/magnevents-logo.jpg" 
+                  alt="Magnevents Logo" 
+                  fill
+                  sizes="48px"
+                  style={{ objectFit: 'cover' }}
+                />
               </div>
               <div className="pwa-text-block">
                 <h4>Install Magnevents App</h4>
@@ -102,7 +126,7 @@ export default function PWAInstallPrompt() {
             
             <div className="pwa-action-buttons">
               <button className="pwa-btn-dismiss" onClick={handleDismiss}>
-                Not Now
+                Maybe Later
               </button>
               <button className="pwa-btn-install" onClick={handleInstallClick}>
                 Install App
@@ -139,11 +163,11 @@ export default function PWAInstallPrompt() {
               <div className="ios-steps-list">
                 <div className="ios-step-row">
                   <span className="ios-step-badge">1</span>
-                  <p>Tap the **Share** icon `📤` at the bottom of Safari.</p>
+                  <p>Tap the **Share** icon <code>📤</code> at the bottom of Safari.</p>
                 </div>
                 <div className="ios-step-row">
                   <span className="ios-step-badge">2</span>
-                  <p>Scroll down the share list and select **"Add to Home Screen"** `➕`.</p>
+                  <p>Scroll down the share list and select **"Add to Home Screen"** <code>➕</code>.</p>
                 </div>
                 <div className="ios-step-row">
                   <span className="ios-step-badge">3</span>
@@ -151,8 +175,55 @@ export default function PWAInstallPrompt() {
                 </div>
               </div>
 
-              <button className="ios-modal-btn-close" onClick={() => { setShowIOSGuide(false); setShowPrompt(false); }}>
+              <button className="ios-modal-btn-close" onClick={() => { setShowIOSGuide(false); setShowPrompt(false); localStorage.setItem('magnevents-pwa-dismissed', 'true'); }}>
                 Got It, Thanks!
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Android/Desktop Manual Installation Guide */}
+      <AnimatePresence>
+        {showAndroidGuide && (
+          <motion.div 
+            className="pwa-ios-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowAndroidGuide(false)}
+          >
+            <motion.div 
+              className="pwa-ios-modal-card"
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 30, stiffness: 250 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="ios-modal-indicator" />
+              <div className="ios-modal-header">
+                <h3>💻 Quick Install Guide</h3>
+                <p>Add Magnevents to your home screen instantly:</p>
+              </div>
+
+              <div className="ios-steps-list">
+                <div className="ios-step-row">
+                  <span className="ios-step-badge">1</span>
+                  <p>Tap the browser menu icon <code>⋮</code> or look at the address bar.</p>
+                </div>
+                <div className="ios-step-row">
+                  <span className="ios-step-badge">2</span>
+                  <p>Select **"Install app"** or **"Add to Home screen"**.</p>
+                </div>
+                <div className="ios-step-row">
+                  <span className="ios-step-badge">3</span>
+                  <p>Launch the standalone application from your home screen!</p>
+                </div>
+              </div>
+
+              <button className="ios-modal-btn-close" onClick={() => { setShowAndroidGuide(false); setShowPrompt(false); localStorage.setItem('magnevents-pwa-dismissed', 'true'); }}>
+                Got It, Let's Do It!
               </button>
             </motion.div>
           </motion.div>
