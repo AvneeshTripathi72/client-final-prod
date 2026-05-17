@@ -381,3 +381,81 @@
 .how-card-inner:hover .how-card-hover-glow {
   opacity: 0.15;
 }
+
+/* ============================================================
+   COMPACT & PREMIUM TIMELINE FLOW OVERRIDES
+   ============================================================ */
+.how-to-book-page {
+  padding: 80px 0 60px !important; /* Shrink top and bottom empty zones */
+}
+
+.how-header {
+  margin-bottom: 40px !important; /* Decrease margin below header */
+}
+
+.hp-orthogonal-flow {
+  gap: 50px !important; /* Drastically reduce card gaps from 120px to 50px */
+  margin: 40px auto 20px !important; /* Compress top/bottom margin */
+}
+
+.hp-step-card {
+  padding: 24px 28px !important; /* Shrink card padding by 50% for high density and modern look */
+  border-radius: 24px !important; /* Sleek premium rounding */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+}
+
+.hp-step-header {
+  margin-bottom: 12px !important; /* Shrink inner element spacing */
+  gap: 12px !important;
+}
+
+.hp-step-num {
+  width: 32px !important;
+  height: 32px !important;
+  font-size: 13px !important;
+  box-shadow: 0 0 10px var(--glow-gold) !important;
+}
+
+.hp-step-icon {
+  font-size: 26px !important;
+}
+
+.hp-step-card h3 {
+  font-size: 20px !important; /* Optimize card title size */
+  margin-bottom: 10px !important;
+}
+
+.hp-step-card p {
+  font-size: 14px !important; /* Balanced body text */
+  line-height: 1.6 !important;
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Adjust elbow connector coordinates to match the new 50px gap height */
+.hp-flow-step:nth-child(1)::before {
+  height: calc(50% + 54px) !important;
+  border-radius: 0 24px 0 0 !important;
+  border-width: 3px !important;
+}
+
+.hp-flow-step:nth-child(2)::before {
+  height: calc(50% + 54px) !important;
+  border-radius: 24px 0 0 0 !important;
+  border-width: 3px !important;
+}
+
+.hp-flow-step:nth-child(3)::before {
+  height: calc(50% + 54px) !important;
+  border-radius: 0 24px 0 0 !important;
+  border-width: 3px !important;
+}
+
+@media (max-width: 900px) {
+  .hp-orthogonal-flow {
+    gap: 24px !important; /* Keep mobile cards close together */
+  }
+  .hp-step-card {
+    padding: 20px !important;
+    border-radius: 18px !important;
+  }
+}

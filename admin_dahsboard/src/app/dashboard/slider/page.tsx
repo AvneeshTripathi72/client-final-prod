@@ -19,8 +19,16 @@ export default function BlogManagement() {
         .select('*')
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
-      setSlides(data || []);
+      if (error) {
+        if (error.code === '42P01' || error.message?.includes('find the table') || error.code?.startsWith('PGRST')) {
+          console.warn('Table hero_slides does not exist yet.');
+          setSlides([]);
+        } else {
+          throw error;
+        }
+      } else {
+        setSlides(data || []);
+      }
     } catch (error) {
       console.error('Error fetching blogs:', error);
     } finally {

@@ -359,7 +359,7 @@
   backdrop-filter: blur(40px);
   border: 1px solid rgba(214, 80, 80, 0.2);
   border-radius: 20px;
-  padding: 30px 24px; /* Slightly tighter padding for shorter height */
+  padding: 26px 24px; /* Decreased vertical padding by 10% */
   flex: 1;
   position: relative;
   text-align: center;
@@ -370,7 +370,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: 252px; /* Another 5% reduction (from 266px) */
+  min-height: 220px; /* Decreasedight by 10% (from 252px to 227px) */
   transition: all 0.4s ease;
 }
 
@@ -438,8 +438,8 @@
     padding: 0 24px;
   }
   .hp-stat-card {
-    min-height: 220px;
-    padding: 40px 20px;
+    min-height: 198px; /* Decreased height by 10% (from 220px to 198px) */
+    padding: 36px 20px; /* Adjusted padding accordingly */
   }
   .hp-stat-card strong {
     font-size: 3.5rem;
@@ -3834,4 +3834,54 @@
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.05em;
+}
+
+/* ==========================================
+   PREMIUM MOBILE RESPONSIVE DESIGN OVERRIDES
+   ========================================== */
+@media (max-width: 768px) {
+  /* 1. Featured Artists Carousel Mobile Peek Experience */
+  .hp-feat-carousel {
+    padding: 10px 16px 24px !important; /* Reclaim 128px of width by reducing desktop 80px padding */
+    grid-auto-columns: 85% !important; /* Premium card peek layout */
+    gap: 16px !important;
+  }
+
+  /* 2. Touch-Friendly Vertical Button Stack to Prevent cramped labels */
+  .hp-feat-btn-grid {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    margin-top: 16px !important;
+  }
+
+  .hp-btn-book-v2, .hp-btn-view-v2 {
+    font-size: 12.5px !important;
+    padding: 14px !important; /* Optimized touch targets */
+    border-radius: 14px !important;
+    letter-spacing: 0.05em !important;
+    text-align: center !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    height: 48px !important;
+  }
+
+  /* 3. Sleek Mobile Adjustments for Top Performers Section */
+  .hp-feat-head-v2 {
+    padding: 0 16px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .hp-feat-actions-row {
+    width: 100% !important;
+    justify-content: space-between !important;
+  }
+
+  /* 4. Elegant Mobile Cards Shadows & Spacing */
+  .hp-feat-card-v2 {
+    border-radius: 24px !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4) !important;
+  }
 }

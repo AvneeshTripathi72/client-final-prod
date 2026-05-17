@@ -5,6 +5,13 @@ import { motion } from 'framer-motion'
 import { supabase } from '@/app/lib/supabase'
 import '@/app/styles/components/VideoGallery.css'
 
+const getYoutubeId = (url) => {
+  if (!url) return null;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : null;
+};
+
 export default function VideoGallery() {
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,7 +21,7 @@ export default function VideoGallery() {
       try {
         const { data, error } = await supabase
           .from('service_videos')
-          .select('id, topic, video_url')
+          .select('id, topic, video_url, user_name, category')
           .order('created_at', { ascending: false });
 
         if (error) {
@@ -91,34 +98,46 @@ export default function VideoGallery() {
             </div>
             
             <div className="video-grid">
-              {topic.videos.map((video, idx) => (
-                <motion.div 
-                  key={video.id + '-' + idx}
-                  className="video-card"
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.5, delay: (idx % 3) * 0.1 }}
-                >
-                  <div className="video-wrapper">
-                    <video 
-                      src={video.video_url} 
-                      controls 
-                      controlsList="nodownload"
-                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-                    ></video>
-                  </div>
-                  <div className="video-info">
-                    <h4>Featured {topic.name}</h4>
-                    <div className="play-icon-overlay">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
-                      </svg>
-                      <span>Play</span>
+              {topic.videos.map((video, idx) => {
+                const ytId = getYoutubeId(video.video_url);
+                return (
+                  <motion.div 
+                    key={video.id + '-' + idx}
+                    className="video-card"
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ duration: 0.5, delay: (idx % 3) * 0.1 }}
+                  >
+                    <div className="video-wrapper">
+                      {ytId ? (
+                        <iframe
+                          src={`https://www.youtube.com/embed/${ytId}?rel=0&modestbranding=1`}
+                          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      ) : (
+                        <video 
+                          src={video.video_url} 
+                          controls 
+                          controlsList="nodownload"
+                          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                        ></video>
+                      )}
                     </div>
-                  </div>
-                </motion.div>
-              ))}
+                    <div className="video-info">
+                      <h4>{video.user_name || `Featured ${topic.name}`}</h4>
+                      <div className="play-icon-overlay">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M8 5V19L19 12L8 5Z" fill="currentColor"/>
+                        </svg>
+                        <span>Play</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         ))}
@@ -126,3 +145,4 @@ export default function VideoGallery() {
     </section>
   )
 }
+

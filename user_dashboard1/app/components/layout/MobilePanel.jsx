@@ -14,7 +14,17 @@ export default function MobilePanel({ isOpen, onClose, isLight, pathname, onOpen
       <aside className={`lux-mobile-panel ${isOpen ? 'open' : ''} ${isLight ? 'is-light' : 'is-dark'}`}>
         <div className="lux-mobile-panel-head">
           <BrandMark size="sm" light={false} />
-          <span>Menu</span>
+          <button 
+            type="button" 
+            className="lux-mobile-close" 
+            onClick={onClose}
+            aria-label="Close menu"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
         </div>
 
         {NAV_LINKS.map(link => (
