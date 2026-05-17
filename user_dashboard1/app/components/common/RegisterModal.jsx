@@ -127,12 +127,14 @@ export default function RegisterModal() {
                       onChange={e => setFormData({...formData, category: e.target.value})}
                     >
                       <option value="">Select Type</option>
-                      <option value="singer">Solo Singer</option>
+                      <option value="singer">Singer</option>
                       <option value="band">Music Band</option>
-                      <option value="dj">DJ / Percussionist</option>
-                      <option value="instrumental">Instrumentalist</option>
-                      <option value="comedian">Standup Comedian</option>
-                      <option value="emcee">Anchor / Emcee</option>
+                      <option value="dj">DJ</option>
+                      <option value="musician">Musician</option>
+                      <option value="comedian">Comedian</option>
+                      <option value="anchor">Anchor</option>
+                      <option value="dancer">Dancer</option>
+                      <option value="magician">Magician</option>
                     </select>
                   </div>
                   <div className="lux-form-group">

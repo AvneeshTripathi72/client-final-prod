@@ -185,7 +185,7 @@ export default function ContactModal({ isOpen, onClose, initialType = 'booking',
                 <div className="lux-form-group full-width">
                   <label>Artist Type (Multiple allowed)</label>
                   <div className="artist-type-grid">
-                    {['Solo Singer', 'Full Band', 'DJ', 'Sufi Artist', 'Magician', 'Instrumental', 'Dancer', 'Comedian'].map(type => (
+                    {['Singer', 'Music Band', 'DJ', 'Musician', 'Comedian', 'Anchor', 'Dancer', 'Magician'].map(type => (
                       <button
                         key={type}
                         type="button"
