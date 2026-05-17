@@ -13,47 +13,24 @@ export default function BrandMark({ size = 'md', showTag = false, light = false,
         style={{
           width: `${markSize}px`,
           height: `${markSize}px`,
-          borderRadius: '10px',
-          background: 'linear-gradient(140deg, #FFA852 0%, #F97316 38%, #B44706 100%)',
-          boxShadow: '0 0 0 1px rgba(255,255,255,0.15), 0 12px 26px rgba(238,206,59,0.32)',
-          position: 'relative',
+          borderRadius: '6px',
+          overflow: 'hidden',
           display: 'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
-          transform: 'rotate(2deg)',
-          overflow: 'hidden',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.5)',
+          position: 'relative',
         }}
       >
-        <span
+        <img 
+          src="/assets/magnevents-logo.jpg" 
+          alt="Magnevents" 
           style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(180deg, rgba(255,255,255,0.35) 0%, rgba(255,255,255,0.0) 58%)',
-            pointerEvents: 'none',
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover'
           }}
         />
-        <span
-          style={{
-            position: 'absolute',
-            inset: '5px',
-            borderRadius: '7px',
-            border: '1px solid rgba(255,255,255,0.32)',
-          }}
-        />
-        <svg
-          width={size === 'sm' ? 10 : 12}
-          height={size === 'sm' ? 10 : 12}
-          viewBox="0 0 24 24"
-          fill="none"
-          aria-hidden="true"
-          style={{
-            zIndex: 2,
-            filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.25))',
-          }}
-        >
-          <path d="M8 7v9.5a2.5 2.5 0 1 1-1.6-2.3" stroke="rgba(255,255,255,0.95)" strokeWidth="2" strokeLinecap="round"/>
-          <path d="M8 8l8-2v8.5a2.5 2.5 0 1 1-1.6-2.3" stroke="rgba(255,255,255,0.9)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
       </span>
 
       {!hideText && (
