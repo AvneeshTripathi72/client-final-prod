@@ -15,6 +15,9 @@ import '@/app/styles/pages/Artists.css'
  * Displays a filterable grid of elite performers.
  * Fetches standard artist profiles from Supabase.
  */
+// Global in-memory cache to load profiles instantly without database fetching delay
+let cachedArtistsData = null;
+
 export default function ArtistsPage() {
   const router = useRouter()
   const [activeCategory, setActiveCategory] = useState('All')
@@ -23,6 +26,11 @@ export default function ArtistsPage() {
 
   useEffect(() => {
     const fetchArtists = async () => {
+      if (cachedArtistsData) {
+        setArtists(cachedArtistsData)
+        setLoading(false)
+        return
+      }
       try {
         const { data, error } = await supabase
           .from('artists')
@@ -48,6 +56,7 @@ export default function ArtistsPage() {
           quote: artist.bio || '',
         }))
         
+        cachedArtistsData = formattedArtists
         setArtists(formattedArtists)
       } catch (err) {
         console.error('Error fetching artists:', err)

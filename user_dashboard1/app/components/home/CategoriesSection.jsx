@@ -32,6 +32,12 @@ export default function CategoriesSection() {
       <div className="hp-cat-section">
         <div className="hp-cat-header">
           <h2 className="hp-cat-title">Artist Categories</h2>
+          <p className="hp-cat-desc" style={{ color: 'rgba(255,255,255,0.5)', fontSize: '15px', maxWidth: '500px', margin: '0 auto' }}>
+            Choose from our handpicked, premium categories of certified top talent.
+          </p>
+          <Link href="/artists" className="hp-cat-all-btn">
+            View All Artists →
+          </Link>
         </div>
 
         <div className="hp-cat-carousel-wrap">
