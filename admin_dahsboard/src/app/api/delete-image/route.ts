@@ -13,12 +13,11 @@ const s3 = new S3Client({
 const BUCKET = process.env.R2_BUCKET_NAME!;
 const PUBLIC_URL = process.env.NEXT_PUBLIC_R2_PUBLIC_URL!;
 
-
 function urlToKey(url: string): string | null {
   try {
     const base = PUBLIC_URL.endsWith('/') ? PUBLIC_URL.slice(0, -1) : PUBLIC_URL;
     if (!url.startsWith(base)) return null;
-    return url.slice(base.length + 1); // +1 to strip leading "/"
+    return url.slice(base.length + 1);
   } catch {
     return null;
   }
@@ -32,13 +31,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: 'No images to delete.' }, { status: 200 });
     }
 
-    // Convert URLs → R2 object keys, filter out anything that isn't our R2 URL
+
     const keys = imageUrls
       .map(urlToKey)
       .filter((k): k is string => k !== null && k.length > 0);
 
     if (keys.length === 0) {
-      // No R2 keys found (e.g. all were external URLs) — nothing to do
+
       return NextResponse.json({ message: 'No R2 objects to delete.', deleted: 0 }, { status: 200 });
     }
 
@@ -58,7 +57,7 @@ export async function POST(request: NextRequest) {
     );
   } catch (error: any) {
     console.error('[delete-image] R2 deletion failed:', error.message);
-    // We don't block the caller — Supabase delete should still proceed.
+
     return NextResponse.json(
       { error: error.message || 'R2 deletion failed' },
       { status: 500 }

@@ -46,12 +46,12 @@ export function ImageUploader({ images, onChange, maxImages = 15 }: ImageUploade
 
     const filesToUpload = Array.from(files).slice(0, remaining);
     setUploading(true);
-    
+
     try {
       const uploadedUrls: string[] = [];
-      
+
       for (const file of filesToUpload) {
-        // Validation
+
         if (!file.type.startsWith('image/')) {
           toast({
             variant: "destructive",
@@ -113,7 +113,7 @@ export function ImageUploader({ images, onChange, maxImages = 15 }: ImageUploade
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
-    
+
     if (!uploading && images.length < maxImages) {
       const files = e.dataTransfer.files;
       processFiles(files);
@@ -140,8 +140,8 @@ export function ImageUploader({ images, onChange, maxImages = 15 }: ImageUploade
         onDrop={handleDrop}
         className={cn(
           "relative border-2 border-dashed rounded-[24px] p-6 text-center cursor-pointer transition-all duration-500 group overflow-hidden",
-          uploading 
-            ? 'border-sky-400 bg-sky-50 cursor-wait' 
+          uploading
+            ? 'border-sky-400 bg-sky-50 cursor-wait'
             : images.length >= maxImages
             ? 'border-slate-100 bg-slate-50 cursor-not-allowed opacity-50'
             : isDragging
@@ -153,7 +153,7 @@ export function ImageUploader({ images, onChange, maxImages = 15 }: ImageUploade
           "absolute inset-0 rounded-xl transition-opacity duration-500 pointer-events-none bg-gradient-to-br from-sky-500/5 to-transparent",
           isDragging ? 'opacity-100' : 'opacity-0'
         )} />
-        
+
         <input
           ref={fileInputRef}
           type="file"
@@ -163,7 +163,7 @@ export function ImageUploader({ images, onChange, maxImages = 15 }: ImageUploade
           className="hidden"
           disabled={uploading || images.length >= maxImages}
         />
-        
+
         {uploading ? (
           <div className="flex flex-col items-center gap-3 py-2 animate-in fade-in zoom-in-95">
             <div className="relative">
@@ -179,8 +179,8 @@ export function ImageUploader({ images, onChange, maxImages = 15 }: ImageUploade
           <div className="flex flex-col items-center gap-3">
             <div className={cn(
               "w-14 h-14 rounded-[20px] flex items-center justify-center transition-all duration-500 shadow-sm border",
-              isDragging 
-                ? 'bg-sky-100 text-sky-600 border-sky-300 scale-110 shadow-sky-100' 
+              isDragging
+                ? 'bg-sky-100 text-sky-600 border-sky-300 scale-110 shadow-sky-100'
                 : 'bg-sky-50 text-sky-500 border-sky-100 group-hover:scale-110 group-hover:bg-sky-100 group-hover:text-sky-600 shadow-slate-100'
             )}>
               <Upload size={20} strokeWidth={2.5} className={isDragging ? 'animate-bounce' : 'transition-transform duration-500'} />
@@ -215,7 +215,7 @@ export function ImageUploader({ images, onChange, maxImages = 15 }: ImageUploade
                 }}
               />
               <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              
+
               <button
                 type="button"
                 onClick={(e) => { e.stopPropagation(); removeImage(i); }}
@@ -224,7 +224,7 @@ export function ImageUploader({ images, onChange, maxImages = 15 }: ImageUploade
                 <X size={12} strokeWidth={3} />
                 <span className="text-[10px] font-bold uppercase tracking-wider">Remove</span>
               </button>
-              
+
               <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-4 translate-y-[10px] group-hover:translate-y-0 transition-transform duration-500">
                 <div className="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-sky-400"></div>

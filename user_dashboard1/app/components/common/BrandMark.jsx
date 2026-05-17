@@ -23,7 +23,7 @@ export default function BrandMark({ size = 'md', showTag = false, light = false,
         }}
       >
         <img
-          src="/assets/magnevents-logo.jpg"
+          src="/assets/magnevents-logo.webp"
           alt="Magnevents"
           style={{
             width: '100%',

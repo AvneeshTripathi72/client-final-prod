@@ -31,9 +31,9 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {images.map((url, index) => (
           <div key={index} className="relative group aspect-square rounded-xl overflow-hidden border border-slate-200 bg-slate-50">
-            <img 
-              src={url} 
-              alt={`Artist band ${index + 1}`} 
+            <img
+              src={url}
+              alt={`Artist band ${index + 1}`}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               onError={(e) => {
                 (e.target as any).src = 'https://via.placeholder.com/400?text=Invalid+Image';
@@ -47,7 +47,7 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
             </button>
           </div>
         ))}
-        
+
         {images.length < maxImages && (
           <div className="aspect-square rounded-xl border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-2 bg-slate-50/50 text-slate-400 group hover:border-[#5B5AF7] hover:bg-slate-50 transition-all">
             <ImageIcon size={24} className="group-hover:text-[#5B5AF7] transition-colors" />
@@ -60,7 +60,7 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
         <div className="flex gap-3">
           <div className="relative flex-1">
             <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-            <Input 
+            <Input
               value={newImageUrl}
               onChange={(e) => setNewImageUrl(e.target.value)}
               placeholder="Paste artist band image URL..."
@@ -73,7 +73,7 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
               }}
             />
           </div>
-          <Button 
+          <Button
             type="button"
             onClick={addImage}
             disabled={!newImageUrl}
@@ -83,7 +83,7 @@ export function ImageManager({ images, onChange, maxImages = 5 }: ImageManagerPr
           </Button>
         </div>
       )}
-      
+
       <p className="text-[10px] text-slate-400 font-medium">
         Images are optional. You can add up to {maxImages} portfolio or band images for this artist.
       </p>

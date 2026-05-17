@@ -75,7 +75,6 @@ export default function LoginPage() {
         return;
       }
 
-
       const normalizedEmail = email.toLowerCase().trim();
       const superAdminEmail = process.env.NEXT_PUBLIC_SUPER_ADMIN_EMAIL;
       const superAdminPass = process.env.NEXT_PUBLIC_SUPER_ADMIN_PASSWORD;
@@ -89,7 +88,7 @@ export default function LoginPage() {
         localStorage.setItem('sb-lgtmmvztmelrmlzjppzx-auth-token', JSON.stringify({
           access_token: 'fallback-token',
           refresh_token: 'fallback-refresh',
-          user: { 
+          user: {
             id: superAdminId,
             email: superAdminEmail,
             aud: 'authenticated',
@@ -102,7 +101,6 @@ export default function LoginPage() {
         window.location.href = '/dashboard';
         return;
       }
-
 
       if (error) {
         toast({
@@ -128,7 +126,7 @@ export default function LoginPage() {
       <div className="absolute top-[-15%] left-[-10%] w-[50%] h-[50%] bg-indigo-200/20 rounded-full animate-pulse" />
       <div className="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] bg-purple-200/20 rounded-full animate-pulse delay-700" />
       <div className="absolute top-[20%] right-[10%] w-[25%] h-[25%] bg-cyan-100/20 rounded-full animate-pulse delay-1000" />
-      
+
       <div className="w-full max-w-[500px] relative z-10 animate-fadeInUp">
         <div className="flex flex-col items-center mb-12">
           <div className="w-24 h-24 flex items-center justify-center p-2 group hover:scale-110 transition-all duration-500">
@@ -145,40 +143,40 @@ export default function LoginPage() {
               <Label htmlFor="email" className="text-[11px] font-bold uppercase tracking-widest text-slate-400 ml-2">Email Address</Label>
               <div className="relative group/input">
                 <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within/input:text-[#7578F2] transition-colors" size={20} />
-                <Input 
-                  id="email" 
-                  type="email" 
+                <Input
+                  id="email"
+                  type="email"
                   autoCapitalize="none"
                   autoCorrect="off"
                   spellCheck="false"
-                  placeholder="admin@magnevents.com" 
+                  placeholder="admin@magnevents.com"
                   className="h-14 bg-slate-50/50 border border-slate-200 rounded-2xl pl-14 pr-6 font-bold text-[14px] focus-visible:ring-[#7578F2]/10 focus-visible:border-[#7578F2] transition-all text-slate-900 placeholder:text-slate-300"
-                  required 
+                  required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
             </div>
-            
+
             <div className="space-y-3">
               <Label htmlFor="password" className="text-[11px] font-bold uppercase tracking-widest text-slate-400 ml-2">Password</Label>
               <div className="relative group/input">
                 <Lock className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within/input:text-[#7578F2] transition-colors" size={20} />
-                <Input 
-                  id="password" 
-                  type="password" 
+                <Input
+                  id="password"
+                  type="password"
                   placeholder="••••••••••••••••"
                   className="h-14 bg-slate-50/50 border border-slate-200 rounded-2xl pl-14 pr-6 font-bold text-[14px] focus-visible:ring-[#7578F2]/10 focus-visible:border-[#7578F2] transition-all text-slate-900 placeholder:text-slate-300"
-                  required 
+                  required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
             </div>
 
-            <button 
-              type="submit" 
-              className="btn-primary w-full h-14 rounded-2xl text-[12px] font-bold uppercase tracking-widest gap-3 shadow-md transition-all active:brightness-95" 
+            <button
+              type="submit"
+              className="btn-primary w-full h-14 rounded-2xl text-[12px] font-bold uppercase tracking-widest gap-3 shadow-md transition-all active:brightness-95"
               disabled={loading}
             >
               {loading ? (

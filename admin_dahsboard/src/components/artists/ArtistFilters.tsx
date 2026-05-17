@@ -69,20 +69,20 @@ export function ArtistFilters({ onFilterChange }: ArtistFiltersProps) {
           <div className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-white flex items-center justify-center text-slate-400 group-focus-within:text-sky-600 group-focus-within:bg-sky-50 transition-all duration-300 shadow-sm border border-slate-100">
             <Search size={18} strokeWidth={2.5} />
           </div>
-          <Input 
+          <Input
             id="artist-search"
             value={filters.search}
             onChange={(e) => handleUpdate({ search: e.target.value })}
-            placeholder="Search artists by name, alias or category..." 
+            placeholder="Search artists by name, alias or category..."
             className="pl-16 h-12 rounded-2xl text-[14px] font-bold border-slate-100 bg-slate-50/50 focus-visible:ring-sky-500/10 focus-visible:border-sky-500 transition-all shadow-inner placeholder:text-slate-400 placeholder:font-medium w-full"
           />
         </div>
         <div className="flex items-center gap-3 w-full lg:w-auto">
-          {/* Top-level Location Filters */}
+
           <div className="hidden sm:flex items-center gap-2">
             <div className="w-[200px]">
-              <Select 
-                value={filters.state} 
+              <Select
+                value={filters.state}
                 onValueChange={(val) => handleUpdate({ state: val, city: 'all' })}
               >
                 <SelectTrigger className="h-11 rounded-2xl font-bold text-[10px] uppercase tracking-wider border-slate-100 bg-white hover:border-sky-400 transition-colors shadow-sm overflow-hidden px-3">
@@ -102,8 +102,8 @@ export function ArtistFilters({ onFilterChange }: ArtistFiltersProps) {
               </Select>
             </div>
             <div className="w-[200px]">
-              <Select 
-                value={filters.city} 
+              <Select
+                value={filters.city}
                 onValueChange={(val) => handleUpdate({ city: val })}
                 disabled={filters.state === 'all'}
               >
@@ -128,11 +128,11 @@ export function ArtistFilters({ onFilterChange }: ArtistFiltersProps) {
               </Select>
             </div>
           </div>
-          <button 
+          <button
             className={cn(
               "h-12 px-6 gap-2.5 rounded-2xl transition-all font-bold text-[12px] uppercase tracking-wider flex items-center shadow-sm flex-1 lg:flex-none justify-center",
-              expanded 
-                ? "bg-slate-900 text-white border-slate-900" 
+              expanded
+                ? "bg-slate-900 text-white border-slate-900"
                 : "bg-white border-slate-100 text-slate-600 hover:border-sky-400 hover:text-sky-600 hover:bg-sky-50"
             )}
             onClick={() => setExpanded(!expanded)}
@@ -251,15 +251,15 @@ export function ArtistFilters({ onFilterChange }: ArtistFiltersProps) {
             </div>
           </div>
 
-          {/* Primary Requirements Row (Location, Budget & Members Combined) - Ultra Compact Design */}
+
           <div className="col-span-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 p-3 rounded-[20px] bg-sky-50/40 border border-sky-100/50 shadow-sm group/reqs hover:bg-sky-50/60 transition-all duration-300">
-            {/* State Filter */}
+
             <div className="space-y-1.5">
               <Label className="text-[9px] font-bold uppercase tracking-wider text-[#64748B] ml-1 flex items-center gap-1.5">
                 <Globe size={11} className="text-sky-500" /> State
               </Label>
-              <Select 
-                value={filters.state} 
+              <Select
+                value={filters.state}
                 onValueChange={(val) => handleUpdate({ state: val, city: 'all' })}
               >
                 <SelectTrigger className="h-11 rounded-xl font-bold text-[12px] border-white bg-white hover:border-sky-400 transition-all shadow-sm focus:ring-sky-500/10">
@@ -274,13 +274,13 @@ export function ArtistFilters({ onFilterChange }: ArtistFiltersProps) {
               </Select>
             </div>
 
-            {/* City Filter */}
+
             <div className="space-y-1.5">
               <Label className="text-[9px] font-bold uppercase tracking-wider text-[#64748B] ml-1 flex items-center gap-1.5">
                 <MapPin size={11} className="text-sky-500" /> City
               </Label>
-              <Select 
-                value={filters.city} 
+              <Select
+                value={filters.city}
                 onValueChange={(val) => handleUpdate({ city: val })}
                 disabled={filters.state === 'all'}
               >
@@ -300,36 +300,36 @@ export function ArtistFilters({ onFilterChange }: ArtistFiltersProps) {
               </Select>
             </div>
 
-            {/* Budget Filter */}
+
             <div className="space-y-1.5">
               <Label className="text-[9px] font-bold uppercase tracking-wider text-sky-600 flex items-center gap-1.5 ml-1">
                 <DollarSign size={11} className="text-emerald-500" /> Budget (₹)
               </Label>
               <div className="relative group/in">
                 <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-emerald-600 font-bold text-xs transition-all">₹</div>
-                <Input 
+                <Input
                   type="number"
-                  placeholder="e.g. 75000" 
+                  placeholder="e.g. 75000"
                   value={filters.budget}
                   onChange={(e) => handleUpdate({ budget: e.target.value })}
-                  className="h-11 pl-9 rounded-xl font-bold text-[12px] border-white bg-white focus-visible:ring-sky-500/10 shadow-sm transition-all placeholder:text-slate-300 placeholder:font-medium" 
+                  className="h-11 pl-9 rounded-xl font-bold text-[12px] border-white bg-white focus-visible:ring-sky-500/10 shadow-sm transition-all placeholder:text-slate-300 placeholder:font-medium"
                 />
               </div>
             </div>
 
-            {/* Member Count Filter */}
+
             <div className="space-y-1.5">
               <Label className="text-[9px] font-bold uppercase tracking-wider text-sky-600 flex items-center gap-1.5 ml-1">
                 <Users size={11} className="text-sky-500" /> Members
               </Label>
               <div className="relative group/in">
                 <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sky-600 font-bold text-xs transition-all"><Users size={12} /></div>
-                <Input 
+                <Input
                   type="number"
-                  placeholder="e.g. 3" 
+                  placeholder="e.g. 3"
                   value={filters.memberCount}
                   onChange={(e) => handleUpdate({ memberCount: e.target.value })}
-                  className="h-11 pl-11 rounded-xl font-bold text-[12px] border-white bg-white focus-visible:ring-sky-500/10 shadow-sm transition-all placeholder:text-slate-300 placeholder:font-medium" 
+                  className="h-11 pl-11 rounded-xl font-bold text-[12px] border-white bg-white focus-visible:ring-sky-500/10 shadow-sm transition-all placeholder:text-slate-300 placeholder:font-medium"
                 />
               </div>
             </div>
@@ -352,7 +352,7 @@ export function ArtistFilters({ onFilterChange }: ArtistFiltersProps) {
                     All Talent
                   </button>
                   <button
-                    onClick={() => handleUpdate({ 
+                    onClick={() => handleUpdate({
                       isStandard: !filters.isStandard,
                       isPopular: false
                     })}
@@ -367,7 +367,7 @@ export function ArtistFilters({ onFilterChange }: ArtistFiltersProps) {
                     Standard Only
                   </button>
                   <button
-                    onClick={() => handleUpdate({ 
+                    onClick={() => handleUpdate({
                       isPopular: !filters.isPopular,
                       isStandard: false
                     })}
@@ -388,7 +388,7 @@ export function ArtistFilters({ onFilterChange }: ArtistFiltersProps) {
                 <Label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 ml-1">Spotlight Feature</Label>
                 <div className="flex flex-wrap gap-2">
                   <button
-                    onClick={() => handleUpdate({ 
+                    onClick={() => handleUpdate({
                       isArtistOfMonth: !filters.isArtistOfMonth
                     })}
                     className={cn(
@@ -405,15 +405,15 @@ export function ArtistFilters({ onFilterChange }: ArtistFiltersProps) {
               </div>
             </div>
           </div>
-          
+
           <div className="col-span-1 md:col-span-2 lg:col-span-4 flex justify-end gap-3 pt-4 border-t border-slate-50">
-             <button 
+             <button
                onClick={clearFilters}
                className="px-8 h-12 text-[11px] font-bold uppercase tracking-widest text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-2xl transition-all"
              >
                Clear All Filters
              </button>
-             <button 
+             <button
                onClick={() => { setExpanded(false); onFilterChange(filters); }}
                className="px-10 h-12 rounded-2xl bg-sky-600 text-white text-[11px] font-black uppercase tracking-widest shadow-lg shadow-sky-200 hover:bg-sky-700 hover:translate-y-[-2px] transition-all active:scale-95"
              >

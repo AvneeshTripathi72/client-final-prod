@@ -30,17 +30,17 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { 
-  Loader2, 
-  User, 
-  Phone, 
-  Mail, 
-  Music, 
-  Globe, 
-  MapPin, 
-  DollarSign, 
+import {
+  Loader2,
+  User,
+  Phone,
+  Mail,
+  Music,
+  Globe,
+  MapPin,
+  DollarSign,
   IndianRupee,
-  Star, 
+  Star,
   Calendar,
   Layers,
   Info,
@@ -133,11 +133,11 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
       is_artist_of_month: initialData?.is_artist_of_month ?? false,
       images: initialData?.artist_images?.map((img: any) => img.image_url) || [],
       cover_image_url: initialData?.cover_image_url || initialData?.artist_images?.[0]?.image_url || "",
-      sub_categories: (initialData?.sub_categories && initialData.sub_categories.length > 0) 
-        ? initialData.sub_categories 
+      sub_categories: (initialData?.sub_categories && initialData.sub_categories.length > 0)
+        ? initialData.sub_categories
         : (initialData?.sub_category ? initialData.sub_category.split(',').map((s: string) => s.trim()).filter(Boolean) : []),
-      languages: (initialData?.languages && initialData.languages.length > 0) 
-        ? initialData.languages 
+      languages: (initialData?.languages && initialData.languages.length > 0)
+        ? initialData.languages
         : (initialData?.performing_language ? initialData.performing_language.split(',').map((s: string) => s.trim()).filter(Boolean) : []),
     },
   });
@@ -171,11 +171,11 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
           is_artist_of_month: initialData.is_artist_of_month ?? false,
           images: initialData.artist_images?.map((img: any) => img.image_url) || [],
           cover_image_url: initialData.cover_image_url || initialData.artist_images?.[0]?.image_url || "",
-          sub_categories: (initialData.sub_categories && initialData.sub_categories.length > 0) 
-            ? initialData.sub_categories 
+          sub_categories: (initialData.sub_categories && initialData.sub_categories.length > 0)
+            ? initialData.sub_categories
             : (initialData.sub_category ? initialData.sub_category.split(',').map((s: string) => s.trim()).filter(Boolean) : []),
-          languages: (initialData.languages && initialData.languages.length > 0) 
-            ? initialData.languages 
+          languages: (initialData.languages && initialData.languages.length > 0)
+            ? initialData.languages
             : (initialData.performing_language ? initialData.performing_language.split(',').map((s: string) => s.trim()).filter(Boolean) : []),
         });
       } else {
@@ -263,7 +263,7 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
         artistId = artist.id;
       }
       if (images && images.length > 0) {
-        // Reorder images to put cover_image_url first if it exists
+
         let finalImages = [...images];
         if (values.cover_image_url && finalImages.includes(values.cover_image_url)) {
           finalImages = [
@@ -301,13 +301,13 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
 
   const onError = (errors: any) => {
     console.log('Form Validation Errors:', errors);
-    
-    // Find the first error field and scroll to it
+
+
     const firstErrorKey = Object.keys(errors)[0];
     if (firstErrorKey && scrollAreaRef.current) {
-      const errorElement = document.getElementsByName(firstErrorKey)[0] || 
+      const errorElement = document.getElementsByName(firstErrorKey)[0] ||
                           document.querySelector(`[id*="${firstErrorKey}"]`);
-      
+
       if (errorElement) {
         errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
@@ -316,7 +316,7 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent 
+      <DialogContent
         className="fixed left-[58%] top-[50%] translate-x-[-58%] translate-y-[-50%] max-w-5xl max-h-[95vh] h-[95vh] sm:h-[92vh] overflow-hidden flex flex-col rounded-[24px] sm:rounded-[32px] border-none shadow-2xl p-0 [&>button:last-child]:hidden"
         onPointerDownOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
@@ -339,7 +339,7 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                       {initialData ? 'Refine Artist Profile' : 'Artist Registration'}
                     </DialogTitle>
                     <DialogDescription className="text-slate-400 font-medium text-sm sm:text-base max-w-2xl leading-relaxed">
-                      {initialData 
+                      {initialData
                         ? "Update technical details, media, and contact information for this artist profile."
                         : "Register a new artist into the system by providing their profile details and media."}
                     </DialogDescription>
@@ -391,12 +391,12 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                           <FormItem className="space-y-1.5">
                             <FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Primary Phone (Mandatory)</FormLabel>
                             <FormControl>
-                              <Input 
-                                placeholder="00000 00000" 
+                              <Input
+                                placeholder="00000 00000"
                                 maxLength={10}
-                                className="h-11 rounded-xl border-slate-100 bg-slate-50/30 font-bold focus:bg-white transition-all shadow-inner placeholder:font-normal" 
-                                {...field} 
-                                value={field.value ?? ''} 
+                                className="h-11 rounded-xl border-slate-100 bg-slate-50/30 font-bold focus:bg-white transition-all shadow-inner placeholder:font-normal"
+                                {...field}
+                                value={field.value ?? ''}
                                 onChange={(e) => {
                                   const val = e.target.value.replace(/\D/g, '').slice(0, 10);
                                   field.onChange(val);
@@ -414,12 +414,12 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                           <FormItem className="space-y-1.5">
                             <FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Secondary Phone (Optional)</FormLabel>
                             <FormControl>
-                              <Input 
-                                placeholder="00000 00000" 
+                              <Input
+                                placeholder="00000 00000"
                                 maxLength={10}
-                                className="h-11 rounded-xl border-slate-100 bg-slate-50/30 font-bold focus:bg-white transition-all shadow-inner placeholder:font-normal" 
-                                {...field} 
-                                value={field.value ?? ''} 
+                                className="h-11 rounded-xl border-slate-100 bg-slate-50/30 font-bold focus:bg-white transition-all shadow-inner placeholder:font-normal"
+                                {...field}
+                                value={field.value ?? ''}
                                 onChange={(e) => {
                                   const val = e.target.value.replace(/\D/g, '').slice(0, 10);
                                   field.onChange(val);
@@ -481,8 +481,8 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                             <div className="flex items-center justify-between">
                               <FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Main Category</FormLabel>
                               {isManualCategory && (
-                                <button 
-                                  type="button" 
+                                <button
+                                  type="button"
                                   onClick={() => {
                                     setIsManualCategory(false);
                                     form.setValue('category', '');
@@ -495,17 +495,17 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                               )}
                             </div>
                             {!isManualCategory ? (
-                              <Select 
-                                onValueChange={(val) => { 
+                              <Select
+                                onValueChange={(val) => {
                                   if (val === 'MANUAL_CATEGORY') {
                                     setIsManualCategory(true);
                                     form.setValue('category', '');
                                     form.setValue('sub_categories', []);
                                   } else {
-                                    field.onChange(val); 
-                                    form.setValue('sub_categories', []); 
+                                    field.onChange(val);
+                                    form.setValue('sub_categories', []);
                                   }
-                                }} 
+                                }}
                                 value={field.value || ''}
                               >
                                 <FormControl><SelectTrigger className="h-11 rounded-xl border-slate-100 bg-slate-50/30 font-bold focus:bg-white transition-all shadow-inner"><SelectValue placeholder="Select Category" /></SelectTrigger></FormControl>
@@ -519,10 +519,10 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                               </Select>
                             ) : (
                               <FormControl>
-                                <Input 
-                                  placeholder="Type category (e.g. Magic Show)" 
-                                  {...field} 
-                                  className="h-11 rounded-xl border-sky-100 bg-sky-50/20 font-bold focus:bg-white transition-all shadow-inner" 
+                                <Input
+                                  placeholder="Type category (e.g. Magic Show)"
+                                  {...field}
+                                  className="h-11 rounded-xl border-sky-100 bg-sky-50/20 font-bold focus:bg-white transition-all shadow-inner"
                                   autoFocus
                                 />
                               </FormControl>
@@ -564,7 +564,7 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                                 {genre}
                               </button>
                             ))}
-                            {/* Render custom genres that are selected but not in standard list */}
+
                             {(form.watch('sub_categories') || []).filter(g => !CATEGORIES[form.watch('category') as keyof typeof CATEGORIES]?.includes(g)).map((genre) => (
                                <button
                                  key={genre}
@@ -606,8 +606,8 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
 
                         {form.watch('category') && (
                           <div className="flex items-center gap-2 bg-slate-50 rounded-2xl border border-dashed border-slate-200 px-4 py-2 hover:border-sky-300 transition-all focus-within:bg-white focus-within:border-sky-400 focus-within:shadow-sm">
-                            <Input 
-                              value={customGenre} 
+                            <Input
+                              value={customGenre}
                               onChange={(e) => setCustomGenre(e.target.value)}
                               placeholder="Add Other..."
                               className="w-24 h-6 text-[11px] border-none bg-transparent focus-visible:ring-0 p-0 font-bold uppercase tracking-wider"
@@ -622,7 +622,7 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                                 }
                               }}
                             />
-                            <button 
+                            <button
                               type="button"
                               onClick={() => {
                                 const current = form.getValues('sub_categories') || [];
@@ -670,8 +670,8 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                             {lang}
                           </button>
                         ))}
-                        
-                        {/* Render custom languages */}
+
+
                         {(form.watch('languages') || []).filter(l => !INDIAN_LANGUAGES.includes(l)).map((lang) => (
                            <button
                              key={lang}
@@ -688,8 +688,8 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                         ))}
 
                         <div className="flex items-center gap-2 bg-slate-50 rounded-2xl border border-dashed border-slate-200 px-4 py-2 hover:border-sky-300 transition-all focus-within:bg-white focus-within:border-sky-400 focus-within:shadow-sm">
-                          <Input 
-                            value={customLanguage} 
+                          <Input
+                            value={customLanguage}
                             onChange={(e) => setCustomLanguage(e.target.value)}
                             placeholder="Add Other..."
                             className="w-24 h-6 text-[11px] border-none bg-transparent focus-visible:ring-0 p-0 font-bold uppercase tracking-wider"
@@ -704,7 +704,7 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                               }
                             }}
                           />
-                          <button 
+                          <button
                             type="button"
                             onClick={() => {
                               const current = form.getValues('languages') || [];
@@ -830,14 +830,14 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                             <div className="relative group/star">
                               <Star className="absolute right-4 top-1/2 -translate-y-1/2 text-amber-400 group-focus-within/star:scale-125 transition-all" size={14} fill="currentColor" />
                               <FormControl>
-                                <Input 
-                                  type="number" 
-                                  step="0.1" 
-                                  min="1" 
-                                  max="5" 
-                                  className="h-11 rounded-xl border-slate-100 bg-slate-50/30 font-bold pr-10 focus:bg-white transition-all shadow-inner" 
-                                  {...field} 
-                                  value={field.value ?? ''} 
+                                <Input
+                                  type="number"
+                                  step="0.1"
+                                  min="1"
+                                  max="5"
+                                  className="h-11 rounded-xl border-slate-100 bg-slate-50/30 font-bold pr-10 focus:bg-white transition-all shadow-inner"
+                                  {...field}
+                                  value={field.value ?? ''}
                                 />
                               </FormControl>
                             </div>
@@ -861,12 +861,12 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                           <FormItem className="space-y-1.5">
                             <FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Bookings</FormLabel>
                             <FormControl>
-                              <Input 
-                                type="number" 
-                                min="0" 
-                                className="h-11 rounded-xl border-slate-100 bg-slate-50/30 font-bold focus:bg-white transition-all shadow-inner" 
-                                {...field} 
-                                value={field.value ?? ''} 
+                              <Input
+                                type="number"
+                                min="0"
+                                className="h-11 rounded-xl border-slate-100 bg-slate-50/30 font-bold focus:bg-white transition-all shadow-inner"
+                                {...field}
+                                value={field.value ?? ''}
                               />
                             </FormControl>
                           </FormItem>
@@ -897,8 +897,8 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                             <div className="flex items-center justify-between">
                               <FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">State</FormLabel>
                               {isManualState && (
-                                <button 
-                                  type="button" 
+                                <button
+                                  type="button"
                                   onClick={() => {
                                     setIsManualState(false);
                                     setIsManualCity(false);
@@ -912,19 +912,19 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                               )}
                             </div>
                             {!isManualState ? (
-                              <Select 
-                                onValueChange={(val) => { 
+                              <Select
+                                onValueChange={(val) => {
                                   if (val === 'MANUAL_STATE') {
                                     setIsManualState(true);
                                     setIsManualCity(true);
                                     form.setValue('state', '');
                                     form.setValue('city', '');
                                   } else {
-                                    field.onChange(val); 
-                                    form.setValue('city', ''); 
+                                    field.onChange(val);
+                                    form.setValue('city', '');
                                     setIsManualCity(false);
                                   }
-                                }} 
+                                }}
                                 value={field.value || ''}
                               >
                                 <FormControl><SelectTrigger className="h-11 rounded-xl border-slate-100 bg-slate-50/30 font-bold focus:bg-white transition-all shadow-inner"><SelectValue placeholder="Select State" /></SelectTrigger></FormControl>
@@ -938,10 +938,10 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                               </Select>
                             ) : (
                               <FormControl>
-                                <Input 
-                                  placeholder="Type state (e.g. Goa)" 
-                                  {...field} 
-                                  className="h-11 rounded-xl border-sky-100 bg-sky-50/20 font-bold focus:bg-white transition-all shadow-inner" 
+                                <Input
+                                  placeholder="Type state (e.g. Goa)"
+                                  {...field}
+                                  className="h-11 rounded-xl border-sky-100 bg-sky-50/20 font-bold focus:bg-white transition-all shadow-inner"
                                   autoFocus
                                 />
                               </FormControl>
@@ -958,14 +958,14 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                           const states = State.getStatesOfCountry("IN");
                           const selectedState = states.find(s => s.name === selectedStateName);
                           const cities = selectedState ? City.getCitiesOfState("IN", selectedState.isoCode) : [];
-                          
+
                           return (
                             <FormItem className="space-y-1.5">
                               <div className="flex items-center justify-between">
                                 <FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">City</FormLabel>
                                 {isManualCity && (
-                                  <button 
-                                    type="button" 
+                                  <button
+                                    type="button"
                                     onClick={() => {
                                       setIsManualCity(false);
                                       form.setValue('city', '');
@@ -976,9 +976,9 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                                   </button>
                                 )}
                               </div>
-                              
+
                               {!isManualCity ? (
-                                <Select 
+                                <Select
                                   onValueChange={(val) => {
                                     if (val === 'MANUAL_CITY') {
                                       setIsManualCity(true);
@@ -986,8 +986,8 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                                     } else {
                                       field.onChange(val);
                                     }
-                                  }} 
-                                  value={field.value || ''} 
+                                  }}
+                                  value={field.value || ''}
                                   disabled={!selectedStateName}
                                 >
                                   <FormControl><SelectTrigger className="h-11 rounded-xl border-slate-100 bg-slate-50/30 font-bold focus:bg-white transition-all shadow-inner disabled:opacity-40" disabled={!selectedStateName}><SelectValue placeholder={selectedStateName ? "Select City" : "Select State First"} /></SelectTrigger></FormControl>
@@ -1005,10 +1005,10 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                                 </Select>
                               ) : (
                                 <FormControl>
-                                  <Input 
-                                    placeholder="Enter city..." 
-                                    {...field} 
-                                    className="h-11 rounded-xl border-sky-100 bg-sky-50/20 font-bold focus:bg-white transition-all shadow-inner" 
+                                  <Input
+                                    placeholder="Enter city..."
+                                    {...field}
+                                    className="h-11 rounded-xl border-sky-100 bg-sky-50/20 font-bold focus:bg-white transition-all shadow-inner"
                                     autoFocus
                                   />
                                 </FormControl>
@@ -1084,20 +1084,20 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                             </span>
                           </div>
                           <FormControl>
-                            <ImageUploader 
-                              images={field.value || []} 
-                              onChange={field.onChange} 
-                              maxImages={15} 
+                            <ImageUploader
+                              images={field.value || []}
+                              onChange={field.onChange}
+                              maxImages={15}
                             />
                           </FormControl>
-                          
+
                           {(field.value || []).length > 0 && (
                             <div className="space-y-4 pt-4 border-t border-slate-50">
                               <FormLabel className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Select Profile Cover Image</FormLabel>
                               <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3">
                                 {field.value?.map((url, i) => (
-                                  <div 
-                                    key={i} 
+                                  <div
+                                    key={i}
                                     onClick={() => form.setValue('cover_image_url', url)}
                                     className={cn(
                                       "aspect-square rounded-xl overflow-hidden border-2 cursor-pointer transition-all relative group",
@@ -1151,9 +1151,9 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                                       <PlayCircle size={14} />
                                     </div>
                                     <FormControl>
-                                      <Input 
-                                        placeholder="https://youtube.com/watch?v=..." 
-                                        className="h-11 pl-16 rounded-xl border-slate-100 bg-slate-50/30 font-medium focus:bg-white focus:border-red-500/30 focus:ring-4 focus:ring-red-500/5 transition-all text-[11px] shadow-inner" 
+                                      <Input
+                                        placeholder="https://youtube.com/watch?v=..."
+                                        className="h-11 pl-16 rounded-xl border-slate-100 bg-slate-50/30 font-medium focus:bg-white focus:border-red-500/30 focus:ring-4 focus:ring-red-500/5 transition-all text-[11px] shadow-inner"
                                         {...field} value={field.value ?? ''}
                                       />
                                     </FormControl>
@@ -1230,16 +1230,16 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
           </div>
         </div>
         <div className="px-6 sm:px-10 py-4 bg-slate-50 border-t border-slate-200 flex flex-col-reverse sm:flex-row justify-end gap-3 rounded-none flex-shrink-0 z-40">
-               <button 
-                  type="button" 
-                  onClick={() => onOpenChange(false)} 
+               <button
+                  type="button"
+                  onClick={() => onOpenChange(false)}
                   className="rounded-xl px-8 h-10 font-black text-[10px] uppercase tracking-[0.2em] text-slate-500 bg-white hover:text-slate-900 border border-slate-200 shadow-sm transition-all active:scale-95"
                 >
                 Cancel
               </button>
-              <button 
-                type="submit" 
-                disabled={loading} 
+              <button
+                type="submit"
+                disabled={loading}
                 className="rounded-xl px-10 h-10 font-black text-[10px] uppercase tracking-[0.2em] bg-sky-500 text-white hover:bg-sky-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-sky-500/20 disabled:opacity-70 disabled:cursor-not-allowed active:scale-95"
               >
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}

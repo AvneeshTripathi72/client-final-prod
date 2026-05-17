@@ -87,7 +87,7 @@ export function CreateCategoryModal({ open, onOpenChange, onSuccess, initialData
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500 pl-1">Label</label>
-                <Input 
+                <Input
                   required
                   placeholder="e.g. SINGER"
                   className="rounded-2xl border-slate-100 focus:ring-slate-900 h-12"
@@ -97,7 +97,7 @@ export function CreateCategoryModal({ open, onOpenChange, onSuccess, initialData
               </div>
               <div className="space-y-2">
                 <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500 pl-1">URL Query</label>
-                <Input 
+                <Input
                   required
                   placeholder="e.g. singer"
                   className="rounded-2xl border-slate-100 focus:ring-slate-900 h-12 bg-slate-50"
@@ -110,7 +110,7 @@ export function CreateCategoryModal({ open, onOpenChange, onSuccess, initialData
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500 pl-1">Count Text</label>
-                <Input 
+                <Input
                   placeholder="e.g. 2,500+ Singers"
                   className="rounded-2xl border-slate-100 focus:ring-slate-900 h-12"
                   value={formData.options}
@@ -119,7 +119,7 @@ export function CreateCategoryModal({ open, onOpenChange, onSuccess, initialData
               </div>
               <div className="space-y-2">
                 <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500 pl-1">Starting Price</label>
-                <Input 
+                <Input
                   placeholder="e.g. 4,999/-"
                   className="rounded-2xl border-slate-100 focus:ring-slate-900 h-12"
                   value={formData.starting_price}
@@ -131,7 +131,7 @@ export function CreateCategoryModal({ open, onOpenChange, onSuccess, initialData
             <div className="space-y-2">
               <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500 pl-1">Cover Image URL</label>
               <div className="relative">
-                <Input 
+                <Input
                   required
                   placeholder="https://images.unsplash.com/..."
                   className="rounded-2xl border-slate-100 focus:ring-slate-900 h-12 pl-11"
@@ -144,16 +144,16 @@ export function CreateCategoryModal({ open, onOpenChange, onSuccess, initialData
           </div>
 
           <div className="flex gap-3 pt-4">
-            <Button 
-               type="button" 
-               variant="ghost" 
+            <Button
+               type="button"
+               variant="ghost"
                className="flex-1 rounded-2xl h-12 font-bold uppercase tracking-widest text-xs"
                onClick={() => onOpenChange(false)}
             >
               Cancel
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={loading}
               className="flex-1 rounded-2xl h-12 bg-slate-900 hover:bg-slate-800 font-bold uppercase tracking-widest text-xs shadow-lg shadow-slate-200"
             >

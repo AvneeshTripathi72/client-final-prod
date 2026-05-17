@@ -21,7 +21,7 @@ export default function CategoryManagement() {
       const { data, error } = await (supabase.from('artist_categories') as any)
         .select('*')
         .order('label', { ascending: true });
-      
+
       if (error) throw error;
       setCategories(data || []);
     } catch (error) {
@@ -62,7 +62,7 @@ export default function CategoryManagement() {
           </h1>
           <p className="text-body mt-1 max-w-2xl font-medium">Manage the homepage discovery cards and category tags.</p>
         </div>
-        <button 
+        <button
           className="h-11 px-6 rounded-xl bg-slate-900 text-white shadow-lg shadow-slate-200/50 hover:bg-slate-800 hover:scale-[1.02] active:scale-[0.98] transition-all font-bold text-[12px] uppercase tracking-wider flex items-center justify-center gap-2"
           onClick={() => { setEditingCategory(null); setIsModalOpen(true); }}
         >
@@ -71,8 +71,8 @@ export default function CategoryManagement() {
         </button>
       </div>
 
-      <CreateCategoryModal 
-        open={isModalOpen} 
+      <CreateCategoryModal
+        open={isModalOpen}
         onOpenChange={(open) => {
           setIsModalOpen(open);
           if(!open) setEditingCategory(null);
@@ -143,21 +143,21 @@ export default function CategoryManagement() {
                     </TableCell>
                     <TableCell className="pr-8">
                       <div className="flex items-center justify-center gap-2">
-                        <button 
+                        <button
                           onClick={() => handleEdit(cat)}
                           className="w-9 h-9 rounded-lg flex items-center justify-center bg-white border border-slate-100 hover:border-slate-900 hover:text-slate-900 text-slate-400 transition-colors shadow-sm"
                           title="Edit"
                         >
                           <Pencil size={14} />
                         </button>
-                        <button 
+                        <button
                           onClick={() => window.open(`http://localhost:3002/artists?category=${cat.query}`, '_blank')}
                           className="w-9 h-9 rounded-lg flex items-center justify-center bg-white border border-slate-100 hover:border-indigo-600 hover:text-indigo-600 text-slate-400 transition-colors shadow-sm"
                           title="View on site"
                         >
                           <ExternalLink size={14} />
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleDelete(cat.id, cat.label)}
                           className="w-9 h-9 rounded-lg flex items-center justify-center bg-white border border-slate-100 hover:border-rose-500 hover:text-rose-500 text-slate-400 transition-colors shadow-sm"
                           title="Delete"

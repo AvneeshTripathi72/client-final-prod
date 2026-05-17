@@ -86,16 +86,16 @@ export default function BookingsPage() {
   const fetchBookings = useCallback(async () => {
     setLoading(true);
     try {
-      // Bookings shows:
-      // 1. All manual bookings (any status) — created by admin
-      // 2. Client bookings that have been confirmed/completed/cancelled
-      //    (pending client requests stay in Client Requests section)
+
+
+
+
       let query = (supabase
         .from('bookings') as any)
         .select('*, artists(id, name, alias, category, city, contact_person, phone_no, email, is_popular, is_artist_of_month, artist_images!fk_artist_id(image_url))');
 
-      // Build the source filter
-      // We want: booking_source = 'manual' OR (booking_source = 'client' AND status != 'pending')
+
+
       query = query.or(
         `booking_source.eq.manual,and(booking_source.eq.client,status.neq.pending)`
       );
@@ -109,7 +109,7 @@ export default function BookingsPage() {
       if (statusFilter !== 'all') {
         query = query.eq('status', statusFilter);
       }
-      
+
       const { data, error } = await query.order(sortBy, { ascending: sortOrder === 'asc' });
 
       if (error) throw error;
@@ -143,7 +143,7 @@ export default function BookingsPage() {
         cancelled: cancelled || 0,
       });
     } catch (error) {
-       // Failed to fetch stats
+
     }
   }, []);
 
@@ -366,8 +366,8 @@ export default function BookingsPage() {
             <div className="flex items-center gap-4 bg-white/70 backdrop-blur-md p-1.5 rounded-[22px] border border-white shadow-sm ml-auto">
               <div className="flex items-center gap-3 px-4 py-1.5 bg-slate-50/50 rounded-[18px]">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Sort:</span>
-                <select 
-                  value={sortBy} 
+                <select
+                  value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                   className="text-[12px] font-black text-slate-700 bg-transparent border-none p-0 focus:ring-0 cursor-pointer hover:text-indigo-600 transition-colors uppercase pr-6"
                 >
@@ -378,7 +378,7 @@ export default function BookingsPage() {
                 </select>
               </div>
 
-              <button 
+              <button
                 onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
                 className="w-10 h-10 rounded-[16px] flex items-center justify-center bg-white border border-slate-100 text-slate-400 hover:text-indigo-600 hover:border-indigo-100 transition-all shadow-sm active:scale-90"
               >
@@ -464,7 +464,7 @@ export default function BookingsPage() {
                           </span>
                         )}
                       </div>
-                      
+
                       <div className="grid grid-cols-1 sm:flex sm:items-center gap-x-3 gap-y-1.5 text-[12px] sm:text-[13px] text-slate-500">
                         <span className="flex items-center gap-1.5 font-semibold text-slate-700">
                           <User size={12} className="text-slate-400" strokeWidth={2.5} /> {booking.client_name || 'N/A'}
@@ -731,9 +731,9 @@ export default function BookingsPage() {
           )}
         </DialogContent>
       </Dialog>
-      <ManualBookingModal 
-        open={isBookingModalOpen} 
-        onOpenChange={setIsBookingModalOpen} 
+      <ManualBookingModal
+        open={isBookingModalOpen}
+        onOpenChange={setIsBookingModalOpen}
         onSuccess={() => {
           fetchBookings();
           fetchStats();

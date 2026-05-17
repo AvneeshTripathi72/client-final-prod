@@ -21,7 +21,7 @@ export default function PricingManagement() {
       const { data, error } = await (supabase.from('pricing_plans') as any)
         .select('*')
         .order('created_at', { ascending: true });
-      
+
       if (error) throw error;
       setPlans(data || []);
     } catch (error) {
@@ -57,7 +57,7 @@ export default function PricingManagement() {
           </h1>
           <p className="text-body mt-1 max-w-2xl font-medium">Configure standard booking packages and feature lists.</p>
         </div>
-        <button 
+        <button
           className="h-11 px-6 rounded-xl bg-slate-900 text-white shadow-lg shadow-slate-200/50 hover:bg-slate-800 hover:scale-[1.02] active:scale-[0.98] transition-all font-bold text-[12px] uppercase tracking-wider flex items-center justify-center gap-2"
           onClick={() => { setEditingPlan(null); setIsModalOpen(true); }}
         >
@@ -66,8 +66,8 @@ export default function PricingManagement() {
         </button>
       </div>
 
-      <CreatePricingModal 
-        open={isModalOpen} 
+      <CreatePricingModal
+        open={isModalOpen}
         onOpenChange={(open) => {
           setIsModalOpen(open);
           if(!open) setEditingPlan(null);
@@ -135,13 +135,13 @@ export default function PricingManagement() {
                     </TableCell>
                     <TableCell className="pr-8">
                       <div className="flex items-center justify-center gap-2">
-                        <button 
+                        <button
                           onClick={() => { setEditingPlan(plan); setIsModalOpen(true); }}
                           className="w-9 h-9 rounded-lg flex items-center justify-center bg-white border border-slate-100 hover:border-slate-900 hover:text-slate-900 text-slate-400 transition-colors shadow-sm"
                         >
                           <Pencil size={14} />
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleDelete(plan.id, plan.name)}
                           className="w-9 h-9 rounded-lg flex items-center justify-center bg-white border border-slate-100 hover:border-rose-500 hover:text-rose-500 text-slate-400 transition-colors shadow-sm"
                         >

@@ -46,12 +46,12 @@ export default function ArtistManagement() {
       }
       if (filters.state !== 'all') query = query.eq('state', filters.state);
       if (filters.city !== 'all') query = query.eq('city', filters.city);
-      
+
       if (filters.budget) {
         const budgetVal = parseInt(filters.budget);
         query = query.lte('price_min', budgetVal).gte('price_max', budgetVal);
       }
-      
+
       if (filters.memberCount) {
         const mCount = parseInt(filters.memberCount);
         query = query.lte('members_min', mCount).gte('members_max', mCount);
@@ -72,7 +72,7 @@ export default function ArtistManagement() {
       setArtists(data || []);
       setTotalCount(count || 0);
     } catch (error) {
-      // Failed to fetch artists
+
     } finally {
       setLoading(false);
     }
@@ -152,7 +152,7 @@ export default function ArtistManagement() {
           </h1>
           <p className="text-body mt-1 max-w-2xl font-medium">Manage and view all registered talent profiles.</p>
         </div>
-        <button 
+        <button
           className="h-11 px-6 rounded-xl bg-slate-900 text-white shadow-lg shadow-slate-200/50 hover:bg-slate-800 hover:scale-[1.02] active:scale-[0.98] transition-all font-bold text-[12px] uppercase tracking-wider flex items-center justify-center gap-2"
           onClick={() => { setEditingArtist(null); setIsModalOpen(true); }}
         >
@@ -160,9 +160,9 @@ export default function ArtistManagement() {
           Add Artist
         </button>
       </div>
-      <CreateArtistModal 
+      <CreateArtistModal
         key={editingArtist?.id || 'new'}
-        open={isModalOpen} 
+        open={isModalOpen}
         onOpenChange={handleModalChange}
         onSuccess={fetchArtists}
         initialData={editingArtist}
@@ -217,8 +217,8 @@ export default function ArtistManagement() {
                           <div className="relative flex-shrink-0 group/img">
                             {artist.artist_images?.[0]?.image_url ? (
                               <div className="w-16 h-16 rounded-[20px] overflow-hidden border-2 border-white shadow-md group-hover/img:shadow-lg transition-shadow">
-                                <img 
-                                  src={artist.artist_images[0].image_url} 
+                                <img
+                                  src={artist.artist_images[0].image_url}
                                   alt={artist.name}
                                   className="w-full h-full object-cover group-hover/img:scale-110 transition-transform duration-500"
                                   onError={(e) => {
@@ -325,7 +325,7 @@ export default function ArtistManagement() {
                       </TableCell>
                       <TableCell className="pr-8">
                         <div className="flex items-center justify-center gap-2">
-                          <button 
+                          <button
                             type="button"
                             onClick={(e) => { e.stopPropagation(); handleEditArtist(artist); }}
                             className="w-9 h-9 rounded-lg flex items-center justify-center bg-white border border-slate-100 hover:border-sky-600 hover:text-sky-600 text-slate-400 transition-colors shadow-sm relative z-10"
@@ -333,7 +333,7 @@ export default function ArtistManagement() {
                           >
                             <Pencil size={14} />
                           </button>
-                          <button 
+                          <button
                             type="button"
                             onClick={(e) => { e.stopPropagation(); handleViewDetails(artist.name); }}
                             className="w-9 h-9 rounded-lg flex items-center justify-center bg-white border border-slate-100 hover:border-sky-600 hover:text-sky-600 text-slate-400 transition-colors shadow-sm relative z-10"
@@ -341,7 +341,7 @@ export default function ArtistManagement() {
                           >
                             <Eye size={14} />
                           </button>
-                          <button 
+                          <button
                             type="button"
                             onClick={(e) => { e.stopPropagation(); handleShare(artist.id); }}
                             className="w-9 h-9 rounded-lg flex items-center justify-center bg-white border border-slate-100 hover:border-indigo-600 hover:text-indigo-600 text-slate-400 transition-colors shadow-sm relative z-10"
@@ -349,7 +349,7 @@ export default function ArtistManagement() {
                           >
                             <Share2 size={14} />
                           </button>
-                          <button 
+                          <button
                             type="button"
                             onClick={(e) => { e.stopPropagation(); handleDelete(artist.id, artist.name); }}
                             className="w-9 h-9 rounded-lg flex items-center justify-center bg-white border border-slate-100 hover:border-rose-500 hover:text-rose-500 text-slate-400 transition-colors shadow-sm relative z-10"
@@ -375,7 +375,7 @@ export default function ArtistManagement() {
                </p>
             </div>
             <div className="flex items-center gap-2">
-               <button 
+               <button
                  disabled={currentPage === 1}
                  onClick={() => setCurrentPage(prev => prev - 1)}
                  className="w-10 h-10 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed hover:border-sky-600 hover:text-sky-600 transition-all shadow-sm"
@@ -385,7 +385,7 @@ export default function ArtistManagement() {
                <div className="px-4 py-2 rounded-xl bg-white border border-slate-200 shadow-sm">
                  <p className="text-[13px] font-bold text-slate-900">Page <span className="text-sky-600">{currentPage}</span> of <span className="text-slate-900">{totalPages}</span></p>
                </div>
-               <button 
+               <button
                  disabled={currentPage === totalPages}
                  onClick={() => setCurrentPage(prev => prev + 1)}
                  className="w-10 h-10 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed hover:border-sky-600 hover:text-sky-600 transition-all shadow-sm"

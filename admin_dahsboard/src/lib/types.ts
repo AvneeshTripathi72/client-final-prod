@@ -45,7 +45,7 @@ export interface Artist {
   phone_no_alt?: string;
   email: string;
   video_url?: string;
-  cover_image_url?: string; // Virtual field for UI
+  cover_image_url?: string;
   created_by_admin_id: string;
   created_at: string;
   updated_at: string;

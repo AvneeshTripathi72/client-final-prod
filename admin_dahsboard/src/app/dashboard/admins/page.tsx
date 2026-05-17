@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
-import { 
-  UserPlus, 
-  Trash2, 
-  Loader2, 
-  ShieldCheck, 
-  Mail, 
+import {
+  UserPlus,
+  Trash2,
+  Loader2,
+  ShieldCheck,
+  Mail,
   Info,
   ShieldAlert,
 } from 'lucide-react';
@@ -30,10 +30,10 @@ export default function AdminManagement() {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         const user = session?.user;
-        
+
         if (user) {
           setCurrentUserEmail(user.email || '');
-          
+
 
           const superAdminEmail = process.env.NEXT_PUBLIC_SUPER_ADMIN_EMAIL?.toLowerCase();
           if (user.email && superAdminEmail && user.email.toLowerCase() === superAdminEmail) {
@@ -46,11 +46,11 @@ export default function AdminManagement() {
             .select('role')
             .eq('id', user.id)
             .single();
-          
+
           setCurrentUserRole((profile as any)?.role || user.user_metadata?.role || 'admin');
         }
       } catch (e) {
-        // Auth context failed
+
       }
     };
     getAuthUser();
@@ -74,7 +74,7 @@ export default function AdminManagement() {
         setAdmins(data || []);
       }
     } catch (err) {
-      // Error fetching admins
+
     } finally {
       setLoading(false);
     }
@@ -110,8 +110,8 @@ export default function AdminManagement() {
       toast({
         variant: "destructive",
         title: "Deletion Failed",
-        description: err.message === 'Unexpected token < in JSON at position 0' 
-          ? "Service Role Key is missing in .env file." 
+        description: err.message === 'Unexpected token < in JSON at position 0'
+          ? "Service Role Key is missing in .env file."
           : err.message,
       });
     } finally {
@@ -130,7 +130,7 @@ export default function AdminManagement() {
           <p className="text-body mt-1 max-w-2xl font-medium">Manage team members with administrative access.</p>
         </div>
         {currentUserRole === 'super_admin' && (
-          <button 
+          <button
             onClick={() => setIsModalOpen(true)}
             className="btn-primary h-11 px-6 text-[12px] font-bold uppercase tracking-wider shadow-btn"
           >
@@ -156,8 +156,8 @@ export default function AdminManagement() {
 
       {currentUserRole === 'super_admin' && (
         <>
-          <CreateAdminModal 
-            open={isModalOpen} 
+          <CreateAdminModal
+            open={isModalOpen}
             onOpenChange={setIsModalOpen}
             onSuccess={fetchAdmins}
           />
@@ -217,8 +217,8 @@ export default function AdminManagement() {
                         <TableCell>
                           <span className={cn(
                             "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest",
-                            admin.role === 'super_admin' 
-                              ? "bg-purple-50 text-purple-600 border border-purple-100 shadow-sm" 
+                            admin.role === 'super_admin'
+                              ? "bg-purple-50 text-purple-600 border border-purple-100 shadow-sm"
                               : "bg-indigo-50 text-[#7578F2] border border-indigo-100 shadow-sm"
                           )}>
                             <ShieldAlert size={12} strokeWidth={3} />
@@ -236,7 +236,7 @@ export default function AdminManagement() {
                         </TableCell>
                         <TableCell className="pr-8 text-center">
                           {admin.email !== currentUserEmail && currentUserRole === 'super_admin' && (
-                            <button 
+                            <button
                               onClick={() => handleDelete(admin.id, admin.email)}
                               className="w-9 h-9 rounded-lg flex items-center justify-center bg-white border border-slate-100 hover:border-rose-500 hover:text-rose-500 text-slate-400 transition-colors shadow-sm"
                               title="Revoke Access"

@@ -26,13 +26,13 @@ export async function POST(request: Request) {
       .single();
 
     if (profile) {
-      return NextResponse.json({ 
+      return NextResponse.json({
         message: 'User is active in database. Not a ghost.',
-        isGhost: false 
+        isGhost: false
       });
     }
     const { data: { users }, error: authSearchError } = await supabaseAdmin.auth.admin.listUsers();
-    
+
     if (authSearchError) {
       return NextResponse.json({ error: authSearchError.message }, { status: 500 });
     }
@@ -41,21 +41,21 @@ export async function POST(request: Request) {
 
     if (ghostUser) {
       const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(ghostUser.id);
-      
+
       if (deleteError) {
         return NextResponse.json({ error: deleteError.message }, { status: 500 });
       }
 
-      return NextResponse.json({ 
+      return NextResponse.json({
         message: 'Ghost user detected and removed from Auth.',
         isGhost: true,
-        cleaned: true 
+        cleaned: true
       });
     }
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       message: 'No ghost user found.',
-      isGhost: false 
+      isGhost: false
     });
 
   } catch (error: any) {

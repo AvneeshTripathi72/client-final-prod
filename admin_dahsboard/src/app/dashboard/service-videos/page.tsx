@@ -43,15 +43,17 @@ export default function ServiceVideos() {
   const [isCustomTopic, setIsCustomTopic] = useState(false);
   const [category, setCategory] = useState('');
   const [userName, setUserName] = useState('');
+  const [artistType, setArtistType] = useState('');
+  const [artistBio, setArtistBio] = useState('');
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [isDragging, setIsDragging] = useState(false);
 
   const predefinedTopics = [
-    'Singer for House Parties',
-    'Live Band for Weddings',
-    'Live Band for Corporate Event',
-    'Anchor Emcees and Magician'
+    'Singers',
+    'Live Bands',
+    'Club DJs',
+    'Anchors & Talents'
   ];
   
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -199,12 +201,18 @@ export default function ServiceVideos() {
         finalVideoUrl = youtubeUrl;
       }
 
-      // Save record to Supabase
+      // Save record to Supabase with structured JSON inside user_name for premium features
+      const payloadUserName = JSON.stringify({
+        name: userName || 'Featured Artist',
+        type: artistType || '',
+        bio: artistBio || ''
+      });
+
       const { error } = await (supabase.from('service_videos') as any).insert([
         { 
           topic, 
           category: category || topic, 
-          user_name: userName || 'Featured Artist', 
+          user_name: payloadUserName, 
           video_url: finalVideoUrl 
         }
       ]);
@@ -217,6 +225,8 @@ export default function ServiceVideos() {
       setTopic('');
       setCategory('');
       setUserName('');
+      setArtistType('');
+      setArtistBio('');
       setIsCustomTopic(false);
       setVideoFile(null);
       setYoutubeUrl('');
@@ -392,9 +402,31 @@ export default function ServiceVideos() {
                               </span>
                             )}
                           </div>
-                          <h3 className="font-bold text-slate-800 mt-2 text-md truncate" title={video.user_name}>
-                            {video.user_name || 'Featured Performance'}
-                          </h3>
+                          {(() => {
+                            let displayName = video.user_name || 'Featured Performance';
+                            let displayType = '';
+                            
+                            try {
+                              if (video.user_name && video.user_name.startsWith('{')) {
+                                const parsed = JSON.parse(video.user_name);
+                                displayName = parsed.name || displayName;
+                                displayType = parsed.type || '';
+                              }
+                            } catch (e) {}
+
+                            return (
+                              <>
+                                <h3 className="font-bold text-slate-800 mt-2 text-md truncate" title={displayName}>
+                                  {displayName}
+                                </h3>
+                                {displayType && (
+                                  <span className="text-[10px] text-indigo-600 font-semibold block mt-0.5">
+                                    ✦ {displayType}
+                                  </span>
+                                )}
+                              </>
+                            );
+                          })()}
                           {ytId && (
                             <a 
                               href={video.video_url} 
@@ -428,20 +460,25 @@ export default function ServiceVideos() {
         <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
           {/* High-end cinematic dark glassmorphic backdrop */}
           <div 
-            className="fixed inset-0 bg-black/60 backdrop-blur-xl transition-opacity duration-300"
+            className="fixed inset-0 transition-opacity duration-300"
+            style={{
+              background: 'rgba(3, 3, 5, 0.92)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)'
+            }}
             onClick={() => !uploading && setIsModalOpen(false)}
           />
           
           <div className="relative w-full max-w-lg p-4 z-10 my-8">
             <div className="bg-[#0b0f19]/95 rounded-[32px] border border-white/[0.08] w-full overflow-hidden shadow-[0_25px_70px_-15px_rgba(0,0,0,0.9)] relative z-10 animate-in zoom-in-95 duration-200">
             {/* Ambient luxury radial glow spheres inside modal backdrop */}
-            <div className="absolute top-0 left-1/4 w-44 h-44 bg-amber-500/5 rounded-full filter blur-3xl pointer-events-none" />
+            <div className="absolute top-0 left-1/4 w-44 h-44 bg-rose-500/5 rounded-full filter blur-3xl pointer-events-none" />
             <div className="absolute bottom-0 right-1/4 w-44 h-44 bg-indigo-500/5 rounded-full filter blur-3xl pointer-events-none" />
 
             {/* Modal Header */}
             <div className="p-7 border-b border-white/[0.05] flex justify-between items-center bg-white/[0.01] relative z-10">
               <div>
-                <span className="text-[9px] font-black text-amber-400 tracking-widest uppercase block mb-1">Staging Control</span>
+                <span className="text-[9px] font-black text-rose-400 tracking-widest uppercase block mb-1">Staging Control</span>
                 <h2 className="text-lg font-black text-white uppercase tracking-wider">Configure Showcase</h2>
                 <p className="text-[11px] text-slate-400/90 mt-0.5">Stream direct client performance files or YouTube videos.</p>
               </div>
@@ -488,7 +525,7 @@ export default function ServiceVideos() {
             <form onSubmit={handleUpload} className="p-7 space-y-5 relative z-10">
               {/* Category selector */}
               <div className="space-y-2">
-                <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Category / Topic Group</Label>
+                <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Main Category</Label>
                 
                 <Select
                   value={isCustomTopic ? 'custom' : topic || undefined}
@@ -502,14 +539,14 @@ export default function ServiceVideos() {
                     }
                   }}
                 >
-                  <SelectTrigger className="h-12 bg-[#050811] border-white/[0.08] text-white data-[placeholder]:text-slate-500 rounded-2xl focus:ring-amber-500/20 focus:border-amber-500/30 transition-all">
-                    <SelectValue placeholder="Select a predefined category..." />
+                  <SelectTrigger className="h-12 bg-[#050811] border-white/[0.08] text-white data-[placeholder]:text-slate-500 rounded-2xl focus:ring-rose-500/20 focus:border-rose-500/30 transition-all">
+                    <SelectValue placeholder="Select a main category..." />
                   </SelectTrigger>
                   <SelectContent className="bg-[#0b0f19] border border-white/[0.08] text-white rounded-2xl p-1 relative z-50">
                     {predefinedTopics.map((t) => (
-                      <SelectItem key={t} value={t} className="!focus:bg-white/[0.08] !focus:text-white !data-[highlighted]:bg-white/[0.08] !data-[highlighted]:text-white !hover:bg-white/[0.08] !hover:text-white rounded-xl py-2 px-3 transition-colors cursor-pointer text-xs">{t}</SelectItem>
+                      <SelectItem key={t} value={t} className="!focus:bg-white/[0.08] !focus:text-white !data-[highlighted]:bg-white/[0.08] !data-[highlighted]:text-white !hover:bg-white/[0.08] !hover:text-white rounded-xl py-2 transition-colors cursor-pointer text-xs">{t}</SelectItem>
                     ))}
-                    <SelectItem value="custom" className="font-bold text-amber-400 !focus:bg-amber-500/10 !focus:text-amber-300 !data-[highlighted]:bg-amber-500/10 !data-[highlighted]:text-amber-300 rounded-xl py-2 px-3 transition-colors cursor-pointer text-xs">
+                    <SelectItem value="custom" className="font-bold text-rose-400 !focus:bg-rose-500/10 !focus:text-rose-300 !data-[highlighted]:bg-rose-500/10 !data-[highlighted]:text-rose-300 rounded-xl py-2 transition-colors cursor-pointer text-xs">
                       + Add Custom Category Group
                     </SelectItem>
                   </SelectContent>
@@ -520,7 +557,7 @@ export default function ServiceVideos() {
                     value={topic} 
                     onChange={(e) => setTopic(e.target.value)} 
                     placeholder="e.g. Club DJs for Parties" 
-                    className="h-12 bg-slate-950/40 text-white placeholder-slate-500 rounded-2xl mt-3 border-amber-500/20 focus-visible:ring-amber-500/20 focus-visible:border-amber-500/30 transition-all"
+                    className="h-12 bg-slate-950/40 text-white placeholder-slate-500 rounded-2xl mt-3 border-rose-500/20 focus-visible:ring-rose-500/20 focus-visible:border-rose-500/30 transition-all"
                     required
                   />
                 )}
@@ -533,8 +570,8 @@ export default function ServiceVideos() {
                   <Input 
                     value={category} 
                     onChange={(e) => setCategory(e.target.value)} 
-                    placeholder="e.g. Acoustic, Rock" 
-                    className="h-12 bg-slate-950/60 border-white/[0.08] text-white placeholder-slate-600 rounded-2xl focus-visible:ring-amber-500/20 focus-visible:border-amber-500/30 transition-all"
+                    placeholder="e.g. Singer for House Parties, Live Band for Weddings" 
+                    className="h-12 bg-slate-950/60 border-white/[0.08] text-white placeholder-slate-600 rounded-2xl focus-visible:ring-rose-500/20 focus-visible:border-rose-500/30 transition-all"
                   />
                 </div>
                 <div className="space-y-2">
@@ -543,7 +580,30 @@ export default function ServiceVideos() {
                     value={userName} 
                     onChange={(e) => setUserName(e.target.value)} 
                     placeholder="e.g. Swaresh & Band" 
-                    className="h-12 bg-slate-950/60 border-white/[0.08] text-white placeholder-slate-600 rounded-2xl focus-visible:ring-amber-500/20 focus-visible:border-amber-500/30 transition-all"
+                    className="h-12 bg-slate-950/60 border-white/[0.08] text-white placeholder-slate-600 rounded-2xl focus-visible:ring-rose-500/20 focus-visible:border-rose-500/30 transition-all"
+                  />
+                </div>
+              </div>
+
+              {/* Artist Specialty Type & Bio input fields */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Artist Specialty / Type</Label>
+                  <Input 
+                    value={artistType} 
+                    onChange={(e) => setArtistType(e.target.value)} 
+                    placeholder="e.g. Sufi-Rock Vocalist, Emcee" 
+                    className="h-12 bg-slate-950/60 border-white/[0.08] text-white placeholder-slate-600 rounded-2xl focus-visible:ring-rose-500/20 focus-visible:border-rose-500/30 transition-all"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Artist Biography / Overview</Label>
+                  <textarea 
+                    value={artistBio} 
+                    onChange={(e) => setArtistBio(e.target.value)} 
+                    placeholder="e.g. Staging globally for premium events..." 
+                    rows={1}
+                    className="w-full h-12 py-3 px-4 bg-slate-950/60 border border-white/[0.08] text-white placeholder-slate-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500/30 transition-all text-sm resize-none"
                   />
                 </div>
               </div>
@@ -560,7 +620,7 @@ export default function ServiceVideos() {
                     className={cn(
                       "h-36 border-2 border-dashed rounded-2xl flex flex-col items-center justify-center cursor-pointer transition-all duration-300",
                       isDragging
-                        ? "border-amber-500 bg-amber-500/10 scale-[1.02] shadow-[0_0_20px_rgba(245,158,11,0.15)]"
+                        ? "border-rose-500 bg-rose-500/10 scale-[1.02] shadow-[0_0_20px_rgba(244,63,94,0.15)]"
                         : videoFile 
                           ? "border-indigo-500/40 bg-indigo-950/15" 
                           : "border-white/[0.08] bg-slate-950/30 hover:bg-white/[0.02] hover:border-white/[0.15]"
@@ -575,9 +635,9 @@ export default function ServiceVideos() {
                     />
                     {isDragging ? (
                       <>
-                        <Upload className="w-7 h-7 text-amber-400 mb-2 animate-bounce" />
-                        <span className="text-xs font-black text-amber-300 uppercase tracking-widest">Drop to upload!</span>
-                        <span className="text-[9px] text-amber-500/80 mt-1 uppercase">Accepting MP4 Video file</span>
+                        <Upload className="w-7 h-7 text-rose-400 mb-2 animate-bounce" />
+                        <span className="text-xs font-black text-rose-300 uppercase tracking-widest">Drop to upload!</span>
+                        <span className="text-[9px] text-rose-500/80 mt-1 uppercase">Accepting MP4 Video file</span>
                       </>
                     ) : videoFile ? (
                       <>
@@ -629,7 +689,7 @@ export default function ServiceVideos() {
                   className={cn(
                     "w-full h-12 rounded-2xl font-black uppercase tracking-widest text-xs transition-all duration-300 shadow-lg text-white",
                     uploadTab === 'youtube' 
-                      ? "bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 shadow-rose-600/10 hover:scale-[1.01] active:scale-[0.99]" 
+                      ? "bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 shadow-rose-600/10 hover:scale-[1.01] active:scale-[0.99]" 
                       : "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-indigo-600/10 hover:scale-[1.01] active:scale-[0.99]"
                   )}
                 >

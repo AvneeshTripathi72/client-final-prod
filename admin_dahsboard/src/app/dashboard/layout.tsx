@@ -27,11 +27,11 @@ export default function DashboardLayout({
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user) {
           setIsAuthenticated(true);
-          
+
           const userEmail = session.user.email?.toLowerCase();
           const superAdminEmail = process.env.NEXT_PUBLIC_SUPER_ADMIN_EMAIL?.toLowerCase();
           const isHardcodedSuper = userEmail && superAdminEmail && userEmail === superAdminEmail;
-          
+
           const metaRole = session.user.user_metadata?.role || '';
           const isMetaSuper = metaRole === 'superadmin' || metaRole === 'super_admin';
 
@@ -54,7 +54,7 @@ export default function DashboardLayout({
           router.replace('/login');
         }
       } catch (error: any) {
-  
+
         if (
           error?.message?.includes('refresh_token') ||
           error?.message?.includes('Refresh token') ||
@@ -114,44 +114,43 @@ export default function DashboardLayout({
   return (
     <div className="min-h-screen bg-[#F8FAFC] overflow-x-hidden relative">
       {sidebarOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-slate-950/60 z-40 lg:hidden transition-opacity duration-300"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
-      <aside 
+      <aside
         className={cn(
           "fixed inset-y-0 left-0 z-50 w-[240px] transition-all duration-300 ease-in-out border-r border-slate-200 bg-[#0F172A] flex flex-col shadow-2xl lg:shadow-none",
-          sidebarOpen 
-            ? "translate-x-0 opacity-100 visible pointer-events-auto" 
+          sidebarOpen
+            ? "translate-x-0 opacity-100 visible pointer-events-auto"
             : "-translate-x-full lg:translate-x-0 opacity-0 lg:opacity-100 invisible lg:visible pointer-events-none lg:pointer-events-auto"
         )}
-        style={{ 
+        style={{
           overscrollBehavior: 'none'
         }}
       >
         <Sidebar onClose={() => setSidebarOpen(false)} userRole={userRole} />
       </aside>
 
-
       <div className="flex flex-col min-h-screen lg:pl-[240px] overflow-x-hidden relative">
 
         <header className="lg:hidden h-16 bg-[#BAE6FD] border-b border-sky-300/50 flex items-center justify-between px-4 sticky top-0 z-30">
           <div className="flex items-center gap-2.5">
             <div className="h-8 w-auto flex-shrink-0">
-               <NextImage 
-                src="/logo.png" 
-                alt="Logo" 
-                width={64} 
-                height={40} 
+               <NextImage
+                src="/logo.png"
+                alt="Logo"
+                width={64}
+                height={40}
                 className="h-full w-auto object-contain"
                 priority
               />
             </div>
             <span className="font-black text-[17px] tracking-tighter text-slate-900 leading-none">TalentTrack</span>
           </div>
-          <button 
+          <button
             onClick={() => setSidebarOpen(true)}
             className="p-2.5 rounded-2xl bg-white border border-sky-300 text-[#0284c7] hover:bg-sky-50 transition-all active:scale-90 shadow-sm"
           >
@@ -159,7 +158,7 @@ export default function DashboardLayout({
           </button>
         </header>
 
-        <main 
+        <main
           className={cn(
             "flex-1 p-4 sm:p-6 lg:p-8 xl:p-10 transition-all duration-300",
             sidebarOpen ? "opacity-60" : "opacity-100"

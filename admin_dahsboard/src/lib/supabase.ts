@@ -4,8 +4,8 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-const isConfigured = supabaseUrl && 
-                    supabaseAnonKey && 
+const isConfigured = supabaseUrl &&
+                    supabaseAnonKey &&
                     supabaseUrl.startsWith('http') &&
                     !supabaseUrl.includes('your-supabase-url');
 
@@ -19,7 +19,7 @@ if (typeof window !== 'undefined') {
     }
     originalConsoleError(...args);
   };
-  
+
   window.addEventListener('unhandledrejection', (event) => {
     if (event.reason?.name === 'AuthApiError' && event.reason?.message?.includes('Refresh token is not valid')) {
       event.preventDefault();
@@ -28,7 +28,7 @@ if (typeof window !== 'undefined') {
   });
 }
 
-const realSupabase = isConfigured 
+const realSupabase = isConfigured
   ? createClient(supabaseUrl, supabaseAnonKey, {
       auth: {
         persistSession: true,
@@ -37,7 +37,7 @@ const realSupabase = isConfigured
       },
       global: {
         headers: {
-          ... (typeof window !== 'undefined' && 
+          ... (typeof window !== 'undefined' &&
                localStorage.getItem('sb-lgtmmvztmelrmlzjppzx-auth-token')?.includes('fallback-token')
             ? { Authorization: `Bearer ${supabaseAnonKey}` }
             : {})
@@ -61,14 +61,13 @@ export const mockSupabase = {
       match: () => ({ data: [], error: null }),
     }),
     insert: (data: any) => ({ data: null, error: null }),
-    update: (data: any) => ({ 
-      eq: (col: string, val: any) => ({ error: null }) 
+    update: (data: any) => ({
+      eq: (col: string, val: any) => ({ error: null })
     }),
-    delete: () => ({ 
-      eq: (col: string, val: any) => ({ error: null }) 
+    delete: () => ({
+      eq: (col: string, val: any) => ({ error: null })
     }),
   }),
 };
-
 
 export const supabase = (realSupabase || mockSupabase) as unknown as ReturnType<typeof createClient>;

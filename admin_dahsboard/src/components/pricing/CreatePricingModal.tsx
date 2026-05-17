@@ -93,7 +93,7 @@ export function CreatePricingModal({ open, onOpenChange, onSuccess, initialData 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500 pl-1">Plan Name</label>
-                <Input 
+                <Input
                   required
                   placeholder="e.g. Classic"
                   className="rounded-2xl border-slate-100 focus:ring-slate-900 h-12"
@@ -104,7 +104,7 @@ export function CreatePricingModal({ open, onOpenChange, onSuccess, initialData 
               <div className="space-y-2">
                 <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500 pl-1">Starting Price (INR)</label>
                 <div className="relative">
-                  <Input 
+                  <Input
                     required
                     placeholder="e.g. 49,999"
                     className="rounded-2xl border-slate-100 focus:ring-slate-900 h-12 pl-12"
@@ -118,7 +118,7 @@ export function CreatePricingModal({ open, onOpenChange, onSuccess, initialData 
 
             <div className="space-y-2">
               <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500 pl-1">Marketing Copy</label>
-              <Input 
+              <Input
                 placeholder="Hook sentence for this plan..."
                 className="rounded-2xl border-slate-100 focus:ring-slate-900 h-12"
                 value={formData.copy}
@@ -128,7 +128,7 @@ export function CreatePricingModal({ open, onOpenChange, onSuccess, initialData 
 
             <div className="space-y-2">
               <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500 pl-1">Key Features (comma separated)</label>
-              <Textarea 
+              <Textarea
                 placeholder="Solo singer, Basic sound, 2 blocks..."
                 className="rounded-2xl border-slate-100 focus:ring-slate-900 min-h-[100px] py-3"
                 value={formData.points}
@@ -137,8 +137,8 @@ export function CreatePricingModal({ open, onOpenChange, onSuccess, initialData 
             </div>
 
             <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-2xl border border-slate-100 mt-2">
-               <input 
-                 type="checkbox" 
+               <input
+                 type="checkbox"
                  id="feat-chk"
                  className="w-5 h-5 rounded-lg accent-slate-900"
                  checked={formData.featured}
@@ -149,16 +149,16 @@ export function CreatePricingModal({ open, onOpenChange, onSuccess, initialData 
           </div>
 
           <div className="flex gap-3 pt-4">
-            <Button 
-               type="button" 
-               variant="ghost" 
+            <Button
+               type="button"
+               variant="ghost"
                className="flex-1 rounded-2xl h-12 font-bold uppercase tracking-widest text-xs"
                onClick={() => onOpenChange(false)}
             >
               Cancel
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={loading}
               className="flex-1 rounded-2xl h-12 bg-slate-900 hover:bg-slate-800 font-bold uppercase tracking-widest text-xs shadow-lg shadow-slate-200"
             >

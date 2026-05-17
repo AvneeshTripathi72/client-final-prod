@@ -130,10 +130,10 @@ const SelectItem = React.forwardRef<
     {...props}
   >
     <span className="absolute left-3.5 flex h-4 w-4 items-center justify-center">
-      {/*  */}
+
       <ChevronRight className="h-4 w-4 text-sky-400 opacity-0 group-hover:opacity-100 group-focus:opacity-100 group-data-[highlighted]:opacity-100 transition-all duration-200 absolute scale-75 group-hover:scale-100 group-focus:scale-100 group-data-[highlighted]:scale-100" strokeWidth={2.5} />
-      
-      {/*  */}
+
+
       <SelectPrimitive.ItemIndicator>
         <ChevronRight className="h-4 w-4 text-sky-600 animate-in slide-in-from-left-2 duration-300 relative z-10" strokeWidth={3.5} />
       </SelectPrimitive.ItemIndicator>

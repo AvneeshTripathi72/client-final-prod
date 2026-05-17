@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 html {
   font-size: 100%;
   -webkit-text-size-adjust: 100%;
@@ -289,7 +288,6 @@ h1, h2, h3, h4, h5, h6 {
   background: rgba(255, 255, 255, 0.95);
   box-shadow: var(--shadow-card-hover);
 }
-
 
 .stat-card {
   position: relative;
@@ -624,11 +622,11 @@ h1, h2, h3, h4, h5, h6 {
     padding-left: 1.25rem !important;
     padding-right: 1.25rem !important;
   }
-  
+
   .mobile-hide {
     display: none !important;
   }
-  
+
   .mobile-text-sm {
     font-size: 0.875rem !important;
   }
@@ -642,7 +640,7 @@ h1, h2, h3, h4, h5, h6 {
     gap: 1rem !important;
   }
 
-  /* Improve grid responsiveness */
+
   .grid-cols-2 {
     grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
   }

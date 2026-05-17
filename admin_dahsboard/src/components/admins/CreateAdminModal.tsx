@@ -27,11 +27,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { 
-  Loader2, 
-  User, 
-  Mail, 
-  Shield, 
+import {
+  Loader2,
+  User,
+  Mail,
+  Shield,
   Lock,
   ShieldCheck
 } from 'lucide-react';
@@ -74,7 +74,7 @@ export function CreateAdminModal({ open, onOpenChange, onSuccess }: CreateAdminM
   async function onSubmit(data: AdminFormValues) {
     setLoading(true);
     try {
-      // 1. Call the new robust Registration API
+
       const response = await fetch('/api/admin/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -109,7 +109,7 @@ export function CreateAdminModal({ open, onOpenChange, onSuccess }: CreateAdminM
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent 
+      <DialogContent
         className="sm:max-w-[500px] p-0 border border-slate-200 rounded-2xl shadow-luxe overflow-hidden bg-white"
         onPointerDownOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
@@ -210,16 +210,16 @@ export function CreateAdminModal({ open, onOpenChange, onSuccess }: CreateAdminM
             </div>
 
             <div className="pt-2 flex gap-3">
-              <button 
-                type="button" 
-                onClick={() => onOpenChange(false)} 
+              <button
+                type="button"
+                onClick={() => onOpenChange(false)}
                 className="flex-1 h-11 rounded-xl font-bold text-xs uppercase tracking-widest text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-all"
               >
                 Cancel
               </button>
-              <button 
-                type="submit" 
-                disabled={loading} 
+              <button
+                type="submit"
+                disabled={loading}
                 className="flex-[2] h-12 rounded-xl font-bold text-xs uppercase tracking-widest bg-[#5B5AF7] text-white hover:bg-[#4338CA] transition-all flex items-center justify-center gap-2.5 shadow-sm"
               >
                 {loading && <Loader2 className="animate-spin h-4 w-4" />}

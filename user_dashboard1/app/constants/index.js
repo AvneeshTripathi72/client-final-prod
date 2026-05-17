@@ -6,7 +6,7 @@ export const HERO_STATS = [
 
 export const ARTIST_OF_MONTH = {
   name: 'Vikhyat: The Soothing Voice',
-  image: '/assets/lux-hero-artist.jpg',
+  image: '/assets/lux-hero-artist.webp',
   genres: ['SUFI', 'BOLLYWOOD', 'RETRO'],
   originalPrice: 59999,
   exclusivePrice: 44999,
@@ -15,28 +15,28 @@ export const ARTIST_OF_MONTH = {
 }
 
 export const HERO_SPOTLIGHT_SLIDES = [
-  '/assets/lux-hero-bg.png',
-  '/assets/lux-live-band-concert.jpg',
+  '/assets/lux-hero-bg.webp',
+  '/assets/lux-live-band-concert.webp',
   '/assets/lux-wedding-celebration.jpg',
 ]
 
 export const ARTIST_CATEGORIES = [
   { label: 'Singer',       image: '/assets/lux-singer-session.webp', query: 'Singer' },
-  { label: 'Music Band',   image: '/assets/lux-live-band-concert.jpg', query: 'Band' },
-  { label: 'DJ',           image: '/assets/lux-percussion-dj-thumb.jpg', query: 'Dj' },
+  { label: 'Music Band',   image: '/assets/lux-live-band-concert.webp', query: 'Band' },
+  { label: 'DJ',           image: '/assets/lux-percussion-dj-thumb.webp', query: 'Dj' },
   { label: 'Musician',     image: '/assets/male-singer-acoustic.jpg', query: 'Musician' },
   { label: 'Comedian',     image: '/assets/standup-comedian.jpg', query: 'Comedian' },
-  { label: 'Anchor',       image: '/assets/wedding-anchor-stage.jpg', query: 'Emcee' },
+  { label: 'Anchor',       image: '/assets/wedding-anchor-stage.webp', query: 'Emcee' },
   { label: 'Dancer',       image: '/assets/lux-wedding-celebration.jpg', query: 'Dancer' },
-  { label: 'Magician',     image: '/assets/lux-hero-artist.jpg', query: 'Magician' },
+  { label: 'Magician',     image: '/assets/lux-hero-artist.webp', query: 'Magician' },
 ]
 
 export const FEATURED_ARTISTS = [
   { name: 'Swaresh: The Power House', genre: 'Bollywood Pop', bookings: '132 bookings', rating: '4.9', image: '/assets/lux-singer-session.webp', city: 'Delhi' },
-  { name: 'Sahil Soulful Sufi',        genre: 'Sufi',         bookings: '118 bookings', rating: '4.8', image: '/assets/lux-hero-artist.jpg', city: 'Noida' },
-  { name: 'Sudhir Retro King',         genre: 'Retro',        bookings: '96 bookings',  rating: '4.7', image: '/assets/lux-live-band-concert.jpg', city: 'Gurugram' },
+  { name: 'Sahil Soulful Sufi',        genre: 'Sufi',         bookings: '118 bookings', rating: '4.8', image: '/assets/lux-hero-artist.webp', city: 'Noida' },
+  { name: 'Sudhir Retro King',         genre: 'Retro',        bookings: '96 bookings',  rating: '4.7', image: '/assets/lux-live-band-concert.webp', city: 'Gurugram' },
   { name: 'The Wedding Live Unit',     genre: 'Band',         bookings: '146 bookings', rating: '4.9', image: '/assets/lux-wedding-celebration.jpg', city: 'Jaipur' },
-  { name: 'Arohi Evening Notes',       genre: 'Soul Pop',     bookings: '88 bookings',  rating: '4.8', image: '/assets/lux-hero-artist.jpg', city: 'Mumbai' },
+  { name: 'Arohi Evening Notes',       genre: 'Soul Pop',     bookings: '88 bookings',  rating: '4.8', image: '/assets/lux-hero-artist.webp', city: 'Mumbai' },
   { name: 'The Sangeet Project',       genre: 'Fusion Band',  bookings: '164 bookings', rating: '5.0', image: '/assets/lux-wedding-celebration.jpg', city: 'Bengaluru' },
 ]
 
@@ -213,12 +213,12 @@ export const ALL_ARTISTS = [
 ]
 
 export const GALLERY_ITEMS = [
-  { id: 1, img: '/assets/lux-hero-artist.jpg', title: 'Grand Finale Gurgaon', size: 'large' },
+  { id: 1, img: '/assets/lux-hero-artist.webp', title: 'Grand Finale Gurgaon', size: 'large' },
   { id: 2, img: '/assets/lux-wedding-celebration.jpg', title: 'Palace Wedding Jaipur', size: 'small' },
-  { id: 3, img: '/assets/lux-live-band-concert.jpg', title: 'Corporate Gala Delhi', size: 'small' },
+  { id: 3, img: '/assets/lux-live-band-concert.webp', title: 'Corporate Gala Delhi', size: 'small' },
   { id: 4, img: '/assets/lux-singer-session.webp', title: 'Intimate Soiree Noida', size: 'medium' },
   { id: 5, img: '/assets/male-singer-acoustic.jpg', title: 'Acoustic Night', size: 'medium' },
-  { id: 6, img: '/assets/wedding-anchor-stage.jpg', title: 'Star Anchor Session', size: 'large' }
+  { id: 6, img: '/assets/wedding-anchor-stage.webp', title: 'Star Anchor Session', size: 'large' }
 ]
 
 export const HOW_TO_BOOK_STEPS = [
@@ -405,11 +405,11 @@ export const SERVICES = [
   {
     title: 'Hire a Live Band for Corporate Event',
     desc: 'Professional sets for launches, dinners, and galas.',
-    image: '/assets/lux-live-band-concert.jpg',
+    image: '/assets/lux-live-band-concert.webp',
   },
   {
-    title: 'Book Anchor Emcees and Magician',
-    desc: 'Multi-artist entertainment with smoother show flow.',
-    image: '/assets/lux-hero-artist.jpg',
+    title: 'Book Your Event',
+    desc: 'Contact us for solo singers, bands, and Sufi performances.',
+    image: '/assets/lux-hero-artist.webp',
   },
 ]

@@ -3,10 +3,10 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { 
-  Users, 
-  LayoutDashboard, 
-  LogOut, 
+import {
+  Users,
+  LayoutDashboard,
+  LogOut,
   Mic2,
   ShieldAlert,
   Eye,
@@ -22,8 +22,8 @@ import NextImage from 'next/image';
 
 export const navItems = [
   { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
-  { 
-    name: 'Edit', 
+  {
+    name: 'Edit',
     icon: PencilLine,
     isExpandable: true,
     subItems: [
@@ -52,7 +52,7 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
   const [user, setUser] = useState<any>(null);
   const [isEditOpen, setIsEditOpen] = useState(true);
 
-  // ... (auth useEffect remains same)
+
 
   useEffect(() => {
     const getAuthUser = async () => {
@@ -64,10 +64,10 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
       if (user?.email) {
         const { data: profile } = await (supabase
           .from('profiles') as any)
-          .select('full_name') // only fetch name, role comes from prop
+          .select('full_name')
           .eq('email', user.email.toLowerCase())
           .single();
-          
+
         if (profile) {
           setUser((prev: any) => ({
             ...prev,
@@ -103,11 +103,11 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex-shrink-0 h-9 rounded-lg overflow-hidden">
-               <NextImage 
-                  src="/logo.png" 
-                  alt="Logo" 
-                  width={56} 
-                  height={36} 
+               <NextImage
+                  src="/logo.png"
+                  alt="Logo"
+                  width={56}
+                  height={36}
                   className="h-full w-auto object-contain"
                   priority
                 />
@@ -118,7 +118,7 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
             </div>
           </div>
           {onClose && (
-            <button 
+            <button
               onClick={onClose}
               className="lg:hidden p-2 rounded-xl bg-white/5 text-white/40 hover:text-white hover:bg-white/10 transition-all border border-white/5"
             >
@@ -151,12 +151,12 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
                         {item.name}
                       </span>
                     </div>
-                    <ChevronDown 
-                      size={14} 
-                      className={cn("text-white/20 transition-transform", isEditOpen && "rotate-180")} 
+                    <ChevronDown
+                      size={14}
+                      className={cn("text-white/20 transition-transform", isEditOpen && "rotate-180")}
                     />
                   </button>
-                  
+
                   {isEditOpen && (
                     <div className="pl-4 space-y-1">
                       {item.subItems?.map((sub) => {
@@ -168,8 +168,8 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
                             onClick={onClose}
                             className={cn(
                               "flex items-center gap-3 px-4 py-2.5 rounded-xl text-[13px] font-bold transition-all",
-                              isSubActive 
-                                ? "bg-white/10 text-white shadow-lg" 
+                              isSubActive
+                                ? "bg-white/10 text-white shadow-lg"
                                 : "text-white/30 hover:text-white/60 hover:bg-white/5"
                             )}
                           >
@@ -228,7 +228,7 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
           </div>
         </div>
 
-        <button 
+        <button
           onClick={handleSignOut}
           className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-xs font-bold text-white/40 border border-white/10 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20 transition-all uppercase tracking-widest"
         >

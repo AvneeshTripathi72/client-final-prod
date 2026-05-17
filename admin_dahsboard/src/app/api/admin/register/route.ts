@@ -10,8 +10,8 @@ export async function POST(request: Request) {
     }
 
     if (!email.toLowerCase().endsWith('@gmail.com')) {
-      return NextResponse.json({ 
-        error: 'Registration restricted to @gmail.com email addresses only.' 
+      return NextResponse.json({
+        error: 'Registration restricted to @gmail.com email addresses only.'
       }, { status: 400 });
     }
 
@@ -33,11 +33,10 @@ export async function POST(request: Request) {
       .single();
 
     if (existingProfile) {
-      return NextResponse.json({ 
-        error: 'This email is already registered as an admin.' 
+      return NextResponse.json({
+        error: 'This email is already registered as an admin.'
       }, { status: 400 });
     }
-
 
     const { data: authUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
       email,
@@ -47,10 +46,10 @@ export async function POST(request: Request) {
     });
 
     if (createError) {
-      if (createError.message.toLowerCase().includes('already registered') || 
+      if (createError.message.toLowerCase().includes('already registered') ||
           createError.message.toLowerCase().includes('already exists')) {
-        return NextResponse.json({ 
-          error: 'An account with this email already exists in authentication.' 
+        return NextResponse.json({
+          error: 'An account with this email already exists in authentication.'
         }, { status: 400 });
       }
       throw createError;
@@ -76,16 +75,16 @@ export async function POST(request: Request) {
       throw new Error('User was created in auth but profile creation failed.');
     }
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       message: 'Admin registered successfully',
-      user: authUser.user 
+      user: authUser.user
     });
 
   } catch (error: any) {
     console.error('Registration API Error:', error);
-    return NextResponse.json({ 
-      error: error.message || 'The database rejected this registration request.' 
+    return NextResponse.json({
+      error: error.message || 'The database rejected this registration request.'
     }, { status: 500 });
   }
 }

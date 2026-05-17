@@ -4,30 +4,30 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
   DialogDescription,
   DialogFooter
 } from '@/components/ui/dialog';
-import { 
-  Form, 
-  FormControl, 
-  FormField, 
-  FormItem, 
-  FormLabel, 
-  FormMessage 
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { 
-  Select, 
-  SelectContent, 
-  SelectItem, 
-  SelectTrigger, 
-  SelectValue 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { supabase } from '@/lib/supabase';
@@ -95,7 +95,7 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
         .from('artists')
         .select('id, name, alias, price_min, price_max, members_min, members_max')
         .order('name', { ascending: true });
-      
+
       if (!error && data) {
         setArtists(data);
       }
@@ -147,7 +147,7 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
         title: "Booking Created",
         description: "The manual booking has been successfully recorded.",
       });
-      
+
       onOpenChange(false);
       onSuccess?.();
     } catch (error: any) {
@@ -181,16 +181,16 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
         </div>
 
         <Form {...form}>
-          <form 
-            onSubmit={form.handleSubmit(onSubmit)} 
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
             className="p-8 sm:p-10 space-y-8 bg-white"
             autoComplete="off"
           >
-            {/* Hidden inputs to trick browser autofill */}
+
             <input type="text" name="email" style={{ display: 'none' }} autoComplete="off" />
             <input type="password" name="password" style={{ display: 'none' }} autoComplete="off" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/**/}
+
               <FormField
                 control={form.control}
                 name="artist_id"
@@ -199,8 +199,8 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                     <div className="flex items-center justify-between">
                       <FormLabel className="text-[11px] font-bold uppercase tracking-widest text-slate-400">Select Artist</FormLabel>
                       {isManualArtist && (
-                        <button 
-                          type="button" 
+                        <button
+                          type="button"
                           onClick={() => {
                             setIsManualArtist(false);
                             form.setValue('artist_id', '');
@@ -212,7 +212,7 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                       )}
                     </div>
                     {!isManualArtist ? (
-                      <Select 
+                      <Select
                         onValueChange={(val) => {
                           if (val === 'MANUAL_ARTIST') {
                             setIsManualArtist(true);
@@ -220,7 +220,7 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                           } else {
                             field.onChange(val);
                           }
-                        }} 
+                        }}
                         value={field.value}
                       >
                         <FormControl>
@@ -240,11 +240,11 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                       </Select>
                     ) : (
                       <FormControl>
-                        <Input 
-                          placeholder="Type artist name manually..." 
+                        <Input
+                          placeholder="Type artist name manually..."
                           autoComplete="off"
-                          {...field} 
-                          className="h-12 rounded-xl border-sky-100 bg-sky-50/20 font-bold focus:bg-white transition-all shadow-inner" 
+                          {...field}
+                          className="h-12 rounded-xl border-sky-100 bg-sky-50/20 font-bold focus:bg-white transition-all shadow-inner"
                           autoFocus
                         />
                       </FormControl>
@@ -254,14 +254,14 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                 )}
               />
 
-              {/*  */}
+
               <div className="col-span-full grid grid-cols-1 md:grid-cols-2 gap-6 p-6 rounded-2xl bg-slate-50/50 border border-slate-100 mt-2">
                 <div className="col-span-full mb-2">
                   <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-sky-600 flex items-center gap-2">
                     <User size={14} /> Client Information
                   </h3>
                 </div>
-                
+
                 <FormField
                   control={form.control}
                   name="client_name"
@@ -297,12 +297,12 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                     <FormItem className="md:col-span-2">
                       <FormLabel className="text-[11px] font-bold text-slate-500">Phone Number</FormLabel>
                       <FormControl>
-                        <Input 
-                          placeholder="00000 00000" 
+                        <Input
+                          placeholder="00000 00000"
                           maxLength={10}
-                          autoComplete="off" 
-                          {...field} 
-                          className="h-11 rounded-xl border-slate-200 bg-white font-bold" 
+                          autoComplete="off"
+                          {...field}
+                          className="h-11 rounded-xl border-slate-200 bg-white font-bold"
                           onChange={(e) => {
                             const val = e.target.value.replace(/\D/g, '').slice(0, 10);
                             field.onChange(val);
@@ -315,7 +315,7 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                 />
               </div>
 
-              {/*  */}
+
               <div className="col-span-full space-y-6">
                 <div className="flex items-center gap-3 pt-4">
                   <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-100/50">
@@ -337,8 +337,8 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                       <div className="flex items-center justify-between">
                         <FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Event Type</FormLabel>
                         {isManualEventType && (
-                          <button 
-                            type="button" 
+                          <button
+                            type="button"
                             onClick={() => {
                               setIsManualEventType(false);
                               form.setValue('event_type', 'Corporate Event');
@@ -350,7 +350,7 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                         )}
                       </div>
                       {!isManualEventType ? (
-                        <Select 
+                        <Select
                           onValueChange={(val) => {
                             if (val === 'MANUAL_EVENT_TYPE') {
                               setIsManualEventType(true);
@@ -358,7 +358,7 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                             } else {
                               field.onChange(val);
                             }
-                          }} 
+                          }}
                           defaultValue={field.value}
                         >
                           <FormControl>
@@ -376,11 +376,11 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                         </Select>
                       ) : (
                         <FormControl>
-                          <Input 
-                            placeholder="Type event type (e.g. Award Show)" 
+                          <Input
+                            placeholder="Type event type (e.g. Award Show)"
                             autoComplete="off"
-                            {...field} 
-                            className="h-12 rounded-2xl border-sky-100 bg-sky-50/20 font-bold focus:bg-white transition-all shadow-inner" 
+                            {...field}
+                            className="h-12 rounded-2xl border-sky-100 bg-sky-50/20 font-bold focus:bg-white transition-all shadow-inner"
                             autoFocus
                           />
                         </FormControl>
@@ -399,12 +399,12 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                       <FormControl>
                         <div className="relative group">
                           <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500 group-focus-within:text-emerald-600 transition-colors" size={14} strokeWidth={3} />
-                          <Input 
-                            type="number" 
-                            placeholder="0" 
+                          <Input
+                            type="number"
+                            placeholder="0"
                             autoComplete="off"
-                            {...field} 
-                            className="h-12 pl-10 rounded-2xl border-slate-100 bg-slate-50/30 font-bold focus:bg-white transition-all shadow-inner" 
+                            {...field}
+                            className="h-12 pl-10 rounded-2xl border-slate-100 bg-slate-50/30 font-bold focus:bg-white transition-all shadow-inner"
                           />
                         </div>
                       </FormControl>
@@ -412,15 +412,15 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                         const artistId = form.getValues('artist_id');
                         const artist = artists.find(a => a.id === artistId);
                         if (!artist || !field.value || isManualArtist) return null;
-                        
+
                         const budget = parseInt(field.value);
                         const inRange = budget >= (artist.price_min || 0) && budget <= (artist.price_max || Infinity);
-                        
+
                         return (
                           <div className={cn(
                             "mt-2 px-3 py-2 rounded-xl text-[10px] font-bold flex items-center gap-2 border transition-all animate-in fade-in slide-in-from-top-1",
-                            inRange 
-                              ? "bg-emerald-50 text-emerald-600 border-emerald-100" 
+                            inRange
+                              ? "bg-emerald-50 text-emerald-600 border-emerald-100"
                               : "bg-rose-50 text-rose-600 border-rose-100"
                           )}>
                             {inRange ? (
@@ -428,8 +428,8 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                             ) : (
                               <AlertCircle size={12} />
                             )}
-                            {inRange 
-                              ? `Budget is perfect! (Artist Range: ₹${artist.price_min || 0} - ₹${artist.price_max || 0})` 
+                            {inRange
+                              ? `Budget is perfect! (Artist Range: ₹${artist.price_min || 0} - ₹${artist.price_max || 0})`
                               : `Budget is ${budget < (artist.price_min || 0) ? 'below' : 'above'} artist's range (₹${artist.price_min || 0} - ₹${artist.price_max || 0})`
                             }
                           </div>
@@ -512,7 +512,7 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                   )}
                 />
 
-                {/*  */}
+
                 <div className="col-span-full grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 border-t border-slate-50 mt-2">
                   <FormField
                     control={form.control}
@@ -524,8 +524,8 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                             <Globe size={13} className="text-sky-500" /> State
                           </FormLabel>
                           {isManualState && (
-                            <button 
-                              type="button" 
+                            <button
+                              type="button"
                               onClick={() => {
                                 setIsManualState(false);
                                 setIsManualCity(false);
@@ -539,7 +539,7 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                           )}
                         </div>
                         {!isManualState ? (
-                          <Select 
+                          <Select
                             onValueChange={(val) => {
                               if (val === 'MANUAL_STATE') {
                                 setIsManualState(true);
@@ -551,7 +551,7 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                                 form.setValue('city', '');
                                 setIsManualCity(false);
                               }
-                            }} 
+                            }}
                             value={field.value}
                           >
                             <FormControl>
@@ -569,11 +569,11 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                           </Select>
                         ) : (
                           <FormControl>
-                            <Input 
-                              placeholder="Type state..." 
+                            <Input
+                              placeholder="Type state..."
                               autoComplete="off"
-                              {...field} 
-                              className="h-12 rounded-2xl border-sky-100 bg-sky-50/20 font-bold focus:bg-white transition-all shadow-inner" 
+                              {...field}
+                              className="h-12 rounded-2xl border-sky-100 bg-sky-50/20 font-bold focus:bg-white transition-all shadow-inner"
                               autoFocus
                             />
                           </FormControl>
@@ -598,8 +598,8 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                               <MapPin size={13} className="text-sky-500" /> City
                             </FormLabel>
                             {isManualCity && (
-                              <button 
-                                type="button" 
+                              <button
+                                type="button"
                                 onClick={() => {
                                   setIsManualCity(false);
                                   form.setValue('city', '');
@@ -610,9 +610,9 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                               </button>
                             )}
                           </div>
-                          
+
                           {!isManualCity ? (
-                            <Select 
+                            <Select
                               onValueChange={(val) => {
                                 if (val === 'MANUAL_CITY') {
                                   setIsManualCity(true);
@@ -620,7 +620,7 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                                 } else {
                                   field.onChange(val);
                                 }
-                              }} 
+                              }}
                               value={field.value}
                             >
                               <FormControl>
@@ -642,11 +642,11 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                             </Select>
                           ) : (
                             <FormControl>
-                              <Input 
-                                placeholder="Enter city manually..." 
+                              <Input
+                                placeholder="Enter city manually..."
                                 autoComplete="off"
-                                {...field} 
-                                className="h-12 rounded-2xl border-sky-100 bg-sky-50/30 font-bold focus:bg-white transition-all shadow-inner" 
+                                {...field}
+                                className="h-12 rounded-2xl border-sky-100 bg-sky-50/30 font-bold focus:bg-white transition-all shadow-inner"
                                 autoFocus
                               />
                             </FormControl>
@@ -683,10 +683,10 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
                   <FormItem className="col-span-full">
                     <FormLabel className="text-[11px] font-bold text-slate-500">Special Notes / Requirements</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="Any additional details or guest requirements..." 
-                        {...field} 
-                        className="min-h-[100px] rounded-2xl border-slate-200 bg-white font-medium focus:ring-sky-500/10" 
+                      <Textarea
+                        placeholder="Any additional details or guest requirements..."
+                        {...field}
+                        className="min-h-[100px] rounded-2xl border-slate-200 bg-white font-medium focus:ring-sky-500/10"
                       />
                     </FormControl>
                     <FormMessage />
@@ -696,16 +696,16 @@ export function ManualBookingModal({ open, onOpenChange, onSuccess, initialArtis
             </div>
 
             <DialogFooter className="pt-6 border-t border-slate-50 flex flex-col sm:flex-row gap-3">
-              <Button 
-                type="button" 
-                variant="ghost" 
+              <Button
+                type="button"
+                variant="ghost"
                 onClick={() => onOpenChange(false)}
                 className="h-12 rounded-xl text-[11px] font-bold uppercase tracking-widest text-slate-400 hover:text-slate-900 border border-transparent hover:border-slate-100"
               >
                 Cancel
               </Button>
-              <Button 
-                type="submit" 
+              <Button
+                type="submit"
                 disabled={loading}
                 className="h-12 px-8 rounded-xl bg-slate-900 text-white hover:bg-black text-[11px] font-bold uppercase tracking-widest transition-all shadow-xl shadow-black/10 disabled:opacity-50"
               >

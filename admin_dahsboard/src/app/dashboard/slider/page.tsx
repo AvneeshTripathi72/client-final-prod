@@ -18,7 +18,7 @@ export default function BlogManagement() {
       const { data, error } = await (supabase.from('hero_slides') as any)
         .select('*')
         .order('created_at', { ascending: false });
-      
+
       if (error) {
         if (error.code === '42P01' || error.message?.includes('find the table') || error.code?.startsWith('PGRST')) {
           console.warn('Table hero_slides does not exist yet.');
@@ -72,7 +72,7 @@ export default function BlogManagement() {
           </h1>
           <p className="text-body mt-1 max-w-2xl font-medium">Manage blog posts and articles.</p>
         </div>
-        <button 
+        <button
           className="h-11 px-6 rounded-xl bg-slate-900 text-white shadow-lg shadow-slate-200/50 hover:bg-slate-800 hover:scale-[1.02] active:scale-[0.98] transition-all font-bold text-[12px] uppercase tracking-wider flex items-center justify-center gap-2"
           onClick={() => { toast({ title: 'Coming Soon', description: 'Blog post creator is being finalized.' }); }}
         >
@@ -121,7 +121,7 @@ export default function BlogManagement() {
                     </div>
                   </TableCell>
                   <TableCell className="text-center">
-                    <button 
+                    <button
                       onClick={() => toggleStatus(slide.id, slide.is_active)}
                       className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold transition-all ${
                         slide.is_active ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-slate-100 text-slate-400 border border-slate-200'
@@ -136,7 +136,7 @@ export default function BlogManagement() {
                         <button className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-900 transition-colors">
                            <Pencil size={14} />
                         </button>
-                        <button 
+                        <button
                           onClick={() => handleDelete(slide.id)}
                           className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-rose-500 transition-colors"
                         >

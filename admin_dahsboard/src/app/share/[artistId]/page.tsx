@@ -72,8 +72,8 @@ export default function ArtistSharePage() {
           {}
           <div className="relative h-[480px] overflow-hidden">
             {mainImage ? (
-              <img 
-                src={mainImage} 
+              <img
+                src={mainImage}
                 alt={artist.alias || 'Artist'}
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
               />
@@ -146,7 +146,7 @@ export default function ArtistSharePage() {
                   </p>
                 </div>
               </div>
-              {/*  */}
+
               <div className="p-6 rounded-[28px] bg-slate-50/80 border border-slate-100 space-y-3 hover:bg-white hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300">
                 <div className="w-10 h-10 rounded-xl bg-fuchsia-50 flex items-center justify-center text-fuchsia-600 border border-fuchsia-100">
                   <Tag size={18} />
@@ -157,7 +157,7 @@ export default function ArtistSharePage() {
                 </div>
               </div>
 
-              {/* */}
+
               <div className="p-6 rounded-[28px] bg-emerald-50/30 border border-emerald-100 space-y-3 hover:bg-white hover:shadow-xl hover:shadow-emerald-200/30 transition-all duration-300">
                 <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-700">
                   <IndianRupee size={18} />
@@ -172,7 +172,7 @@ export default function ArtistSharePage() {
                 </div>
               </div>
 
-              {/* Band Size */}
+
               <div className="p-6 rounded-[28px] bg-slate-50/80 border border-slate-100 space-y-3 hover:bg-white hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300">
                 <div className="w-10 h-10 rounded-xl bg-sky-50 flex items-center justify-center text-sky-600 border border-sky-100">
                   <Users size={18} />
@@ -185,7 +185,7 @@ export default function ArtistSharePage() {
                 </div>
               </div>
 
-              {/* Rating/Trust */}
+
               <div className="p-6 rounded-[28px] bg-slate-50/80 border border-slate-100 space-y-3 hover:bg-white hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300">
                 <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center text-amber-500 border border-amber-100">
                   <Star size={18} fill="currentColor" />
@@ -198,7 +198,6 @@ export default function ArtistSharePage() {
                 </div>
               </div>
             </div>
-
 
             {}
             {artist.video_url && (() => {
@@ -232,7 +231,7 @@ export default function ArtistSharePage() {
             })()}
             {}
             <div className="pt-4 flex flex-col gap-4">
-              <button 
+              <button
                 className="w-full h-16 bg-slate-900 text-white rounded-[24px] font-black uppercase tracking-widest text-[13px] hover:bg-indigo-600 active:scale-[0.98] transition-all shadow-xl shadow-slate-200 flex items-center justify-center gap-3 group/btn"
                 onClick={() => {
                    if (navigator.share) {

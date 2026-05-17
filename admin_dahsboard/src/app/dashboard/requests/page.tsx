@@ -37,8 +37,6 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 
-// Client Request page only ever shows client-sourced bookings.
-// 'pending' = unprocessed; once confirmed they move to Bookings.
 const STATUS_OPTIONS = [
   { value: 'pending', label: 'Pending', color: 'bg-amber-50 text-amber-600' },
   { value: 'cancelled', label: 'Archived', color: 'bg-rose-50 text-rose-600' },
@@ -61,7 +59,7 @@ export default function ClientRequestsPage() {
   const [requests, setRequests] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  // Default to 'pending' — confirmed requests move to Bookings
+
   const [statusFilter, setStatusFilter] = useState('pending');
   const [selectedRequest, setSelectedRequest] = useState<any | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
@@ -74,12 +72,12 @@ export default function ClientRequestsPage() {
   const fetchRequests = useCallback(async (showLoading = true) => {
     if (showLoading) setLoading(true);
     try {
-      // Always restrict Client Requests to frontend-submitted bookings only
+
       let query = (supabase
         .from('bookings') as any)
         .select('*, artists(id, name, alias, category, city, price_min, price_max, is_popular, is_artist_of_month, artist_images!fk_artist_id(image_url))')
         .eq('booking_source', 'client')
-        // Exclude confirmed/completed bookings — those live in the Bookings section
+
         .not('status', 'in', '("confirmed","completed")');
 
       if (searchQuery) {
@@ -91,7 +89,7 @@ export default function ClientRequestsPage() {
       if (statusFilter) {
         query = query.eq('status', statusFilter);
       }
-      
+
       const { data, error } = await query.order(sortBy, { ascending: sortOrder === 'asc' });
 
       if (error) throw error;
@@ -130,7 +128,7 @@ export default function ClientRequestsPage() {
       if (error) throw error;
 
       if (newStatus === 'confirmed' || newStatus === 'completed') {
-        // Request confirmed → it now lives in Bookings. Close and refresh.
+
         toast({ title: '✅ Confirmed!', description: 'Request acknowledged and moved to Bookings.' });
         setDetailOpen(false);
         setSelectedRequest(null);
@@ -373,19 +371,19 @@ export default function ClientRequestsPage() {
                  )}
 
                  <div className="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
-                    <button 
+                    <button
                       onClick={() => handleUpdateStatus(selectedRequest.id, 'confirmed')}
                       className="px-6 h-11 rounded-xl bg-sky-600 text-white font-bold text-xs uppercase tracking-widest hover:bg-sky-700 transition-all"
                     >
                       ✅ Confirm &amp; Move to Bookings
                     </button>
-                    <button 
+                    <button
                       onClick={() => handleUpdateStatus(selectedRequest.id, 'cancelled')}
                       className="px-6 h-11 rounded-xl bg-white border border-slate-200 text-slate-400 font-bold text-xs uppercase tracking-widest hover:text-rose-500 hover:border-rose-200 transition-all"
                     >
                       Archive / Cancel
                     </button>
-                    <button 
+                    <button
                       onClick={() => handleDelete(selectedRequest.id)}
                       className="ml-auto p-3 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-rose-600 hover:border-rose-200 transition-all"
                     >

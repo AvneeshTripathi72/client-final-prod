@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '@/app/lib/supabase'
 import '@/app/styles/pages/ServicesPage.css'
@@ -55,7 +55,13 @@ const MaskIcon = () => (
   </svg>
 );
 
-const CATEGORIES = [
+const StarIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lux-svg-icon">
+    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+  </svg>
+);
+
+const DEFAULT_CATEGORIES = [
   { id: 'all', label: 'All Services', icon: <SparklesIcon /> },
   { id: 'singer', label: 'Singers', icon: <MicIcon /> },
   { id: 'band', label: 'Live Bands', icon: <GuitarIcon /> },
@@ -75,32 +81,57 @@ const getCategoryPoster = (category, topic, videoUrl) => {
     return '/assets/lux-singer-session.webp';
   }
   if (text.includes('band') || text.includes('wedding') || text.includes('symphony') || text.includes('collective')) {
-    return '/assets/lux-live-band-concert.jpg';
+    return '/assets/lux-live-band-concert.webp';
   }
   if (text.includes('dj') || text.includes('music') || text.includes('percussion')) {
-    return '/assets/lux-percussion-dj-thumb.jpg';
+    return '/assets/lux-percussion-dj-thumb.webp';
   }
   if (text.includes('anchor') || text.includes('magician') || text.includes('emcee') || text.includes('stage')) {
-    return '/assets/wedding-anchor-stage.jpg';
+    return '/assets/wedding-anchor-stage.webp';
   }
-  return '/assets/lux-hero-artist.jpg';
+  return '/assets/lux-hero-artist.webp';
 };
 
 // Clean dummy/test data entered via Admin dashboard (e.g. "asdf", "N;LSDFA") to keep page beautiful
 const sanitizeVideoData = (video) => {
   const isDummy = (str) => {
     if (!str) return true;
-    const s = str.toLowerCase();
-    return s.includes('asdf') || s.includes('test') || s.includes('qwerty') || s.length < 3;
+    const s = str.toLowerCase().trim();
+    return s === 'test' || s === 'qwerty' || s === 'asdf' || s.length < 2;
   };
 
   let userName = video.user_name;
+  let artistType = '';
+  let artistBio = '';
+
+  try {
+    if (video.user_name && video.user_name.startsWith('{')) {
+      const parsed = JSON.parse(video.user_name);
+      userName = parsed.name || '';
+      artistType = parsed.type || '';
+      artistBio = parsed.bio || '';
+    }
+  } catch (e) {}
+
   if (isDummy(userName)) {
     const cat = (video.category || '').toLowerCase();
-    if (cat.includes('sing')) userName = 'Swaresh & The Sufi Kings';
-    else if (cat.includes('band')) userName = 'Premium Symphony Orchestra';
-    else if (cat.includes('dj')) userName = 'DJ Roy & The Neon Beats';
-    else userName = 'Anchor Rohit Kapoor';
+    if (cat.includes('sing')) {
+      userName = 'Swaresh & The Sufi Kings';
+      artistType = 'Sufi-Rock Band';
+      artistBio = 'An award-winning Sufi performance band delivering high-energy devotional and Bollywood rock orchestrations globally.';
+    } else if (cat.includes('band')) {
+      userName = 'Premium Symphony Orchestra';
+      artistType = 'Cinematic Wedding Orchestra';
+      artistBio = 'Breathtaking full-stage symphony orchestrations specialized in high-end luxury weddings and grand corporate stage entries.';
+    } else if (cat.includes('dj')) {
+      userName = 'DJ Roy & The Neon Beats';
+      artistType = 'Celebrity Festival DJ';
+      artistBio = 'High-energy electronic dance music and celebrity sound mixing featuring custom festival lighting and staging audio.';
+    } else {
+      userName = 'Anchor Rohit Kapoor';
+      artistType = 'Celebrity Host & Emcee';
+      artistBio = 'A highly charismatic celebrity anchor and television host who brings supreme crowd engagement and professional styling to elite events.';
+    }
   }
 
   let category = video.category;
@@ -120,6 +151,8 @@ const sanitizeVideoData = (video) => {
   return {
     ...video,
     user_name: userName,
+    artist_type: artistType,
+    artist_bio: artistBio,
     category: category,
     topic: topic
   };
@@ -238,13 +271,13 @@ const VideoCard = ({ video, onPlay }) => {
             width: '60px',
             height: '60px',
             borderRadius: '50%',
-            background: isYoutube ? 'rgba(239, 68, 68, 0.15)' : 'rgba(255, 224, 50, 0.1)',
+            background: 'rgba(214, 80, 80, 0.15)',
             backdropFilter: 'blur(10px)',
-            border: isYoutube ? '1.5px solid rgba(239, 68, 68, 0.45)' : '1.5px solid rgba(255, 224, 50, 0.35)',
+            border: '1.5px solid rgba(214, 80, 80, 0.45)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: isYoutube ? '0 8px 32px rgba(239, 68, 68, 0.2)' : '0 8px 32px rgba(255, 224, 50, 0.15)',
+            boxShadow: '0 8px 32px rgba(214, 80, 80, 0.2)',
           }}
         >
           <svg 
@@ -254,7 +287,7 @@ const VideoCard = ({ video, onPlay }) => {
             fill="none" 
             style={{ marginLeft: '3px', filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.3))' }}
           >
-            <path d="M18.6667 11L1.99999 20.6667L1.99999 1.33334L18.6667 11Z" fill={isYoutube ? '#ef4444' : '#ffe032'} />
+            <path d="M18.6667 11L1.99999 20.6667L1.99999 1.33334L18.6667 11Z" fill="#D65050" />
           </svg>
         </div>
       </div>
@@ -295,12 +328,157 @@ const VideoCard = ({ video, onPlay }) => {
   );
 };
 
+// Clean static helpers for dynamic category headings and copy descriptions
+const getCategoryHeading = (tabId) => {
+  if (!tabId) return 'Live Showreels';
+  switch (tabId.toLowerCase()) {
+    case 'all':
+      return 'All Live Showreels';
+    case 'singer':
+    case 'singers':
+      return 'Elite Singers & Solo Vocalists';
+    case 'band':
+    case 'live bands':
+    case 'liveband':
+      return 'High-End Live Staging Bands';
+    case 'dj':
+    case 'club djs':
+    case 'djs':
+      return 'Elite Club & Corporate DJs';
+    case 'anchor':
+    case 'anchors & talents':
+    case 'anchors':
+      return 'Celebrity Anchors & Star Talents';
+    default:
+      return `${tabId.charAt(0).toUpperCase() + tabId.slice(1)} Performance Showcases`;
+  }
+};
+
+const getCategoryDescription = (tabId) => {
+  if (!tabId) return 'Exclusive live showcase sessions for premium events.';
+  switch (tabId.toLowerCase()) {
+    case 'all':
+      return 'Explore our comprehensive portfolio of premium live performances, artist showcases, and exclusive event staging showreels.';
+    case 'singer':
+    case 'singers':
+      return 'Experience the mesmerizing vocal staging of our award-winning singers, solo vocalists, and acoustic duos curated for elite events.';
+    case 'band':
+    case 'live bands':
+    case 'liveband':
+      return 'Breathtaking live wedding orchestrations, luxury corporate bands, and elite concert ensembles staged with immersive Dolby staging audio.';
+    case 'dj':
+    case 'club djs':
+    case 'djs':
+      return 'High-energy live showreels of celebrity festival DJs and corporate sound mixers delivering premium club staging experiences.';
+    case 'anchor':
+    case 'anchors & talents':
+    case 'anchors':
+      return 'Discover charismatic event anchors, emcees, and star stage performers curated to elevate wedding functions and high-profile corporate galas.';
+    default:
+      return `Custom-curated stage performances and luxury artist showreels dynamically configured for this high-end category showcase.`;
+  }
+};
+
 export default function ServicesPage() {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeVideo, setActiveVideo] = useState(null);
   const [selectedTab, setSelectedTab] = useState('all');
   const [isMobile, setIsMobile] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(12);
+
+  useEffect(() => {
+    setVisibleCount(isMobile ? 4 : 12);
+  }, [isMobile, selectedTab]);
+
+  // DYNAMIC CATEGORY RESOLUTION: Dynamically fetch custom main categories (topics) from Admin Panel, excluding subcategories
+  const categoriesList = useMemo(() => {
+    const list = [...DEFAULT_CATEGORIES];
+    const seenCategories = new Set(DEFAULT_CATEGORIES.map(c => c.label.toLowerCase()));
+    
+    videos.forEach(video => {
+      const top = video.topic;
+      if (top && typeof top === 'string') {
+        const trimmedTop = top.trim();
+        const lowerTop = trimmedTop.toLowerCase();
+        
+        // Clean out subcategories, specific event targets, or dummy items
+        const isEventOrDummy = 
+          lowerTop.includes('test') || lowerTop.includes('qwerty') || 
+          lowerTop.includes('house party') || lowerTop.includes('wedding') || 
+          lowerTop.includes('corporate');
+          
+        if (isEventOrDummy) return;
+
+        // Verify if it maps to default categories
+        const isDefault = 
+          lowerTop === 'singers' || lowerTop === 'singer' || 
+          lowerTop === 'live bands' || lowerTop === 'live band' || lowerTop === 'band' || 
+          lowerTop === 'club djs' || lowerTop === 'club dj' || lowerTop === 'dj' || 
+          lowerTop === 'anchors & talents' || lowerTop === 'anchors and talents' || lowerTop === 'anchor';
+          
+        if (!isDefault && !seenCategories.has(lowerTop) && trimmedTop.length > 2) {
+          seenCategories.add(lowerTop);
+          list.push({
+            id: lowerTop,
+            label: trimmedTop,
+            icon: null
+          });
+        }
+      }
+    });
+    
+    return list;
+  }, [videos]);
+
+  // CATEGORY VIDEO QUANTITY EVALUATOR: Calculates video counts for badges dynamically!
+  const getCategoryCount = (tabId) => {
+    const list = videos.length > 0 ? videos : [
+      { category: 'Singers' },
+      { category: 'Live Bands' },
+      { category: 'Club DJs' },
+      { category: 'Anchors & Talents' }
+    ];
+    
+    if (tabId === 'all') return list.length;
+    
+    return list.filter(v => {
+      const catField = (v.category || '').toLowerCase();
+      const topicField = (v.topic || '').toLowerCase();
+      
+      if (tabId === 'singer') {
+        return catField.includes('sing') || catField.includes('voice') || catField.includes('vocal') || 
+               topicField.includes('sing') || topicField.includes('voice');
+      }
+      if (tabId === 'band') {
+        return catField.includes('band') || catField.includes('collective') || catField.includes('symphony') || 
+               topicField.includes('band') || topicField.includes('collective');
+      }
+      if (tabId === 'dj') {
+        return catField.includes('dj') || catField.includes('music') || 
+               topicField.includes('dj') || topicField.includes('music');
+      }
+      if (tabId === 'anchor') {
+        return catField.includes('anchor') || catField.includes('emcee') || catField.includes('magician') || catField.includes('talent') || 
+               topicField.includes('anchor') || topicField.includes('emcee');
+      }
+      
+      return catField === tabId || topicField.includes(tabId);
+    }).length;
+  };
+
+  // Lock body scroll when lightbox modal is open to prevent double scrollbar issues
+  useEffect(() => {
+    if (activeVideo) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [activeVideo]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -397,16 +575,34 @@ export default function ServicesPage() {
     if (selectedTab === 'all') return list;
     
     return list.filter(v => {
-      const field = (v.category || v.topic || '').toLowerCase();
-      if (selectedTab === 'singer') return field.includes('sing') || field.includes('voice') || field.includes('vocalist');
-      if (selectedTab === 'band') return field.includes('band') || field.includes('collective') || field.includes('symphony');
-      if (selectedTab === 'dj') return field.includes('dj') || field.includes('music');
-      if (selectedTab === 'anchor') return field.includes('anchor') || field.includes('emcee') || field.includes('magician') || field.includes('talent');
-      return true;
+      const catField = (v.category || '').toLowerCase();
+      const topicField = (v.topic || '').toLowerCase();
+      
+      // Standard filter mappings for robust matching:
+      if (selectedTab === 'singer') {
+        return catField.includes('sing') || catField.includes('voice') || catField.includes('vocal') || 
+               topicField.includes('sing') || topicField.includes('voice');
+      }
+      if (selectedTab === 'band') {
+        return catField.includes('band') || catField.includes('collective') || catField.includes('symphony') || 
+               topicField.includes('band') || topicField.includes('collective');
+      }
+      if (selectedTab === 'dj') {
+        return catField.includes('dj') || catField.includes('music') || 
+               topicField.includes('dj') || topicField.includes('music');
+      }
+      if (selectedTab === 'anchor') {
+        return catField.includes('anchor') || catField.includes('emcee') || catField.includes('magician') || catField.includes('talent') || 
+               topicField.includes('anchor') || topicField.includes('emcee');
+      }
+      
+      // Custom dynamic category match check:
+      return catField === selectedTab || topicField.includes(selectedTab);
     });
   };
 
   const currentVideos = getFilteredVideos();
+  const displayedVideos = currentVideos.slice(0, visibleCount);
   // Safe extraction of spotlight video
   const spotlightVideo = currentVideos[0] || {
     video_url: 'https://assets.mixkit.co/videos/preview/mixkit-singer-performing-on-stage-with-microphone-34374-large.mp4',
@@ -421,211 +617,405 @@ export default function ServicesPage() {
   return (
     <main className="services-page-layout" style={{ background: '#050507', color: '#fff', overflow: 'hidden', position: 'relative', minHeight: '100vh' }}>
       
-      {/* Sleek Cinematic Background Ambient Radial Orbs */}
-      <div style={{ position: 'absolute', top: '0', left: '15%', width: isMobile ? '300px' : '600px', height: isMobile ? '300px' : '600px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255, 224, 50, 0.04) 0%, transparent 70%)', filter: 'blur(120px)', pointerEvents: 'none', zIndex: 0 }} />
+      {/* Dynamic Cinematic Blur Wrapper */}
+      <div 
+        style={{
+          filter: activeVideo ? 'blur(15px)' : 'none',
+          transition: 'filter 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+          pointerEvents: activeVideo ? 'none' : 'auto',
+          width: '100%',
+          minHeight: '100vh'
+        }}
+      >
+        {/* Sleek Cinematic Background Ambient Radial Orbs */}
+      <div style={{ position: 'absolute', top: '0', left: '15%', width: isMobile ? '300px' : '600px', height: isMobile ? '300px' : '600px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(214, 80, 80, 0.05) 0%, transparent 70%)', filter: 'blur(120px)', pointerEvents: 'none', zIndex: 0 }} />
       <div style={{ position: 'absolute', bottom: '15%', right: '5%', width: isMobile ? '350px' : '700px', height: isMobile ? '350px' : '700px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(225, 29, 72, 0.03) 0%, transparent 70%)', filter: 'blur(140px)', pointerEvents: 'none', zIndex: 0 }} />
 
-      <div className="lux-container" style={{ position: 'relative', zIndex: 1, maxWidth: '1200px', margin: '0 auto', padding: isMobile ? '30px 16px' : '40px 24px' }}>
+      <div className="lux-container" style={{ position: 'relative', zIndex: 1, maxWidth: '1200px', margin: '0 auto', padding: isMobile ? '15px 16px' : '15px 24px' }}>
         
-        {/* PREMIUM MINIMALIST HERO */}
-        <header className="services-header" style={{ marginBottom: isMobile ? '30px' : '50px', textAlign: 'center' }}>
-          <span 
-            style={{ 
-              fontSize: '9px', 
-              fontWeight: '900', 
-              color: '#ffe032', 
-              background: 'rgba(255, 224, 50, 0.08)', 
-              padding: '6px 18px', 
-              borderRadius: '100px', 
-              border: '1px solid rgba(255, 224, 50, 0.15)', 
-              letterSpacing: '0.2em',
-              textTransform: 'uppercase',
-              display: 'inline-block'
-            }}
-          >
-            Exclusive Showreel
-          </span>
-          <h1 style={{ fontFamily: 'Outfit, serif', fontSize: isMobile ? '32px' : 'clamp(44px, 5.5vw, 68px)', fontWeight: '900', color: '#fff', letterSpacing: '-0.03em', margin: isMobile ? '12px 0 10px 0' : '20px 0 14px 0' }}>
-            Watch Us <span className="text-gradient" style={{ background: 'linear-gradient(90deg, #ffe032 0%, #ffffff 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Live</span>
-          </h1>
-          <p style={{ color: '#a1a1aa', fontSize: isMobile ? '14px' : '17px', maxWidth: '620px', margin: '0 auto', lineHeight: '1.6', fontWeight: '400' }}>
-            Experience the vibrant luxury performance staging of our premium singers, live wedding bands, corporate showcases, and elite DJs.
-          </p>
-        </header>
-
-        {/* ELEGANT COMPACT SPOTLIGHT BANNER */}
-        <section 
-          onClick={() => setActiveVideo(spotlightVideo)}
+        {/* CINEMATIC SPLIT HERO SHOWCASE (OPTIMIZED SPACE UTILIZATION) */}
+        <div 
           style={{
+            display: 'grid',
+            gridTemplateColumns: isMobile ? '1fr' : '1fr 1.25fr',
+            gap: isMobile ? '30px' : '45px',
+            alignItems: 'center',
+            marginBottom: isMobile ? '35px' : '55px',
             position: 'relative',
-            width: '100%',
-            height: isMobile ? '260px' : '350px',
-            borderRadius: isMobile ? '20px' : '28px',
-            overflow: 'hidden',
-            border: '1px solid rgba(255, 255, 255, 0.06)',
-            marginBottom: isMobile ? '35px' : '50px',
-            background: '#0a0a0c',
-            cursor: 'pointer',
-            boxShadow: '0 25px 60px rgba(0, 0, 0, 0.75)'
+            zIndex: 2
           }}
-          className="spotlight-banner-wrap"
         >
-          {/* Loop silent preview in background */}
-          {spotlightYoutubeId ? (
-            <iframe
-              src={`https://www.youtube.com/embed/${spotlightYoutubeId}?autoplay=1&loop=1&playlist=${spotlightYoutubeId}&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1`}
-              style={{
-                position: 'absolute',
-                top: '50%', left: '50%', width: '100%', height: '100%',
-                transform: 'translate(-50%, -50%) scale(1.35)',
-                pointerEvents: 'none',
-                opacity: 0.3,
-                transition: 'opacity 0.4s ease'
-              }}
-            />
-          ) : (
-            <video 
-              src={spotlightVideo.video_url}
-              autoPlay
-              loop
-              muted
-              playsInline
-              style={{
-                position: 'absolute',
-                top: 0, left: 0, width: '100%', height: '100%',
-                objectFit: 'cover',
-                opacity: 0.35,
-                transition: 'opacity 0.4s ease'
-              }}
-            />
-          )}
-          {/* Subtle vignette overlays */}
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(5, 5, 7, 0.95) 0%, rgba(5, 5, 7, 0.5) 60%, rgba(0, 0, 0, 0.1) 100%)', zIndex: 1 }} />
-          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 15% 50%, rgba(5, 5, 7, 0.9) 0%, rgba(5, 5, 7, 0) 70%)', zIndex: 1 }} />
-
-          {/* Spotlight content */}
-          <div 
-            style={{
-              position: 'absolute',
-              bottom: 0, left: 0, right: 0, top: 0,
-              padding: isMobile ? '20px' : '40px',
+          {/* LEFT COLUMN: ELEGANT LEFT-ALIGNED HERO TEXT & VALUE STATS */}
+          <header 
+            className="services-header" 
+            style={{ 
+              marginBottom: 0, 
+              textAlign: 'left',
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'center',
-              zIndex: 2,
-              maxWidth: '600px'
+              alignItems: 'flex-start'
             }}
           >
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: isMobile ? '6px' : '14px' }}>
-              <span style={{ fontSize: '8px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.12em', background: 'rgba(255, 224, 50, 0.18)', color: '#ffe032', padding: '3px 10px', borderRadius: '100px', border: '1px solid rgba(255, 224, 50, 0.25)' }}>
-                ★ Featured Session
-              </span>
-            </div>
-            <h2 style={{ fontSize: isMobile ? '20px' : 'clamp(26px, 3.5vw, 38px)', fontWeight: '900', color: '#fff', margin: '0 0 6px 0', fontFamily: 'Outfit, sans-serif', letterSpacing: '-0.02em', lineHeight: '1.2' }}>
-              {spotlightVideo.user_name}
-            </h2>
-            <p style={{ color: '#d4d4d8', fontSize: isMobile ? '11px' : '15px', margin: '0 0 16px 0', lineHeight: '1.5' }}>
-              Click to launch this exclusive performance showreel in cinematic high-definition audio.
+            <span 
+              style={{ 
+                fontSize: '9px', 
+                fontWeight: '900', 
+                color: '#D65050', 
+                background: 'rgba(214, 80, 80, 0.08)', 
+                padding: '6px 18px', 
+                borderRadius: '100px', 
+                border: '1px solid rgba(214, 80, 80, 0.15)', 
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                display: 'inline-block',
+                marginBottom: isMobile ? '10px' : '15px'
+              }}
+            >
+              Exclusive Showreel
+            </span>
+            <h1 style={{ fontFamily: 'Outfit, sans-serif', fontSize: isMobile ? '32px' : 'clamp(36px, 4vw, 56px)', fontWeight: '900', color: '#fff', letterSpacing: '-0.03em', margin: '0 0 14px 0', lineHeight: '1.1' }}>
+              Watch Us <span className="text-gradient" style={{ background: 'linear-gradient(90deg, #D65050 0%, #ffffff 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Live</span>
+            </h1>
+            <p style={{ color: '#a1a1aa', fontSize: isMobile ? '13px' : '16px', maxWidth: '520px', margin: '0 0 24px 0', lineHeight: '1.6', fontWeight: '400' }}>
+              Experience the vibrant luxury performance staging of our premium singers, live wedding bands, corporate showcases, and elite DJs.
             </p>
 
-            <div>
-              <button 
-                style={{
-                  background: '#ffe032',
-                  color: '#000',
-                  padding: isMobile ? '9px 20px' : '13px 32px',
-                  borderRadius: '100px',
-                  fontWeight: '900',
-                  border: 'none',
-                  fontSize: isMobile ? '10px' : '13px',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.08em',
-                  cursor: 'pointer',
-                  boxShadow: '0 8px 24px rgba(255, 224, 50, 0.3)',
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                ▶ Watch Spotlight Live
-              </button>
+            {/* HIGH-END INTERACTIVE KEY FACTS ROW */}
+            <div 
+              style={{ 
+                display: 'flex', 
+                gap: isMobile ? '16px' : '24px', 
+                marginTop: isMobile ? '10px' : '15px', 
+                borderTop: '1px solid rgba(255,255,255,0.06)', 
+                paddingTop: '20px',
+                width: '100%'
+              }}
+            >
+              <div>
+                <div style={{ fontSize: isMobile ? '20px' : '24px', fontWeight: '900', color: '#D65050', fontFamily: 'Outfit, sans-serif' }}>50+</div>
+                <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: '2px', fontWeight: '700' }}>Live Showreels</div>
+              </div>
+              <div style={{ width: '1px', background: 'rgba(255,255,255,0.08)' }}></div>
+              <div>
+                <div style={{ fontSize: isMobile ? '20px' : '24px', fontWeight: '900', color: '#fff', fontFamily: 'Outfit, sans-serif' }}>100%</div>
+                <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: '2px', fontWeight: '700' }}>Verified Artists</div>
+              </div>
+              <div style={{ width: '1px', background: 'rgba(255,255,255,0.08)' }}></div>
+              <div>
+                <div style={{ fontSize: isMobile ? '20px' : '24px', fontWeight: '900', color: '#fff', fontFamily: 'Outfit, sans-serif' }}>Dolby</div>
+                <div style={{ fontSize: '9px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: '2px', fontWeight: '700' }}>HD Staging Audio</div>
+              </div>
             </div>
+          </header>
+
+          {/* RIGHT COLUMN: ELEGANT COMPACT SPOTLIGHT BANNER */}
+          <section 
+            onClick={() => setActiveVideo(spotlightVideo)}
+            style={{
+              position: 'relative',
+              width: '100%',
+              height: isMobile ? '260px' : '350px',
+              borderRadius: isMobile ? '20px' : '28px',
+              overflow: 'hidden',
+              border: '1px solid rgba(255, 255, 255, 0.06)',
+              marginBottom: 0,
+              background: '#0a0a0c',
+              cursor: 'pointer',
+              boxShadow: '0 25px 60px rgba(0, 0, 0, 0.75)'
+            }}
+            className="spotlight-banner-wrap"
+          >
+            {/* Loop silent preview in background */}
+            {spotlightYoutubeId ? (
+              <iframe
+                src={`https://www.youtube.com/embed/${spotlightYoutubeId}?autoplay=1&loop=1&playlist=${spotlightYoutubeId}&mute=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1`}
+                style={{
+                  position: 'absolute',
+                  top: '50%', left: '50%', width: '100%', height: '100%',
+                  transform: 'translate(-50%, -50%) scale(1.35)',
+                  pointerEvents: 'none',
+                  opacity: 0.3,
+                  transition: 'opacity 0.4s ease'
+                }}
+              />
+            ) : (
+              <video 
+                src={spotlightVideo.video_url}
+                autoPlay
+                loop
+                muted
+                playsInline
+                style={{
+                  position: 'absolute',
+                  top: 0, left: 0, width: '100%', height: '100%',
+                  objectFit: 'cover',
+                  opacity: 0.35,
+                  transition: 'opacity 0.4s ease'
+                }}
+              />
+            )}
+            {/* Subtle vignette overlays */}
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(5, 5, 7, 0.95) 0%, rgba(5, 5, 7, 0.5) 60%, rgba(0, 0, 0, 0.1) 100%)', zIndex: 1 }} />
+            <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 15% 50%, rgba(5, 5, 7, 0.9) 0%, rgba(5, 5, 7, 0) 70%)', zIndex: 1 }} />
+
+            {/* Spotlight content */}
+            <div 
+              style={{
+                position: 'absolute',
+                bottom: 0, left: 0, right: 0, top: 0,
+                padding: isMobile ? '20px' : '40px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                zIndex: 2,
+                maxWidth: '600px'
+              }}
+            >
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: isMobile ? '6px' : '14px' }}>
+                <span style={{ fontSize: '8px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.12em', background: 'rgba(214, 80, 80, 0.18)', color: '#D65050', padding: '3px 10px', borderRadius: '100px', border: '1px solid rgba(214, 80, 80, 0.25)' }}>
+                  ★ Featured Session
+                </span>
+              </div>
+              <h2 style={{ fontSize: isMobile ? '20px' : 'clamp(26px, 3.5vw, 38px)', fontWeight: '900', color: '#fff', margin: '0 0 6px 0', fontFamily: 'Outfit, sans-serif', letterSpacing: '-0.02em', lineHeight: '1.2' }}>
+                {spotlightVideo.user_name}
+              </h2>
+              <p style={{ color: '#d4d4d8', fontSize: isMobile ? '11px' : '15px', margin: '0 0 16px 0', lineHeight: '1.5' }}>
+                Click to launch this exclusive performance showreel in cinematic high-definition audio.
+              </p>
+
+              <div>
+                <button 
+                  style={{
+                    background: 'linear-gradient(135deg, #D65050 0%, #9F122B 100%)',
+                    color: '#fff',
+                    padding: isMobile ? '9px 20px' : '13px 32px',
+                    borderRadius: '100px',
+                    fontWeight: '900',
+                    border: 'none',
+                    fontSize: isMobile ? '10px' : '13px',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.08em',
+                    cursor: 'pointer',
+                    boxShadow: '0 8px 24px rgba(214, 80, 80, 0.3)',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  ▶ Watch Spotlight Live
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        {/* HIGH-END INTERACTIVE OPTION GRID (FULLY WRAPPING FOR ULTIMATE VISIBILITY) */}
+        <section 
+          style={{ 
+            display: 'flex', 
+            flexDirection: 'column',
+            alignItems: 'center',
+            marginBottom: isMobile ? '30px' : '50px',
+            width: '100%',
+            padding: '0 16px'
+          }}
+        >
+          {/* Elegant header instruction for high usability */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            marginBottom: '20px',
+            fontSize: '11px',
+            fontWeight: '800',
+            color: 'rgba(255, 255, 255, 0.4)',
+            letterSpacing: '0.15em',
+            textTransform: 'uppercase'
+          }}>
+            <span style={{ width: '12px', height: '1px', background: '#D65050' }}></span>
+            FILTER LIVE SHOWREELS BY CATEGORY
+            <span style={{ width: '12px', height: '1px', background: '#D65050' }}></span>
+          </div>
+
+          <div className="lux-tab-bar">
+            {categoriesList.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setSelectedTab(tab.id)}
+                className={`lux-tab-btn ${selectedTab === tab.id ? 'active' : 'inactive'}`}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
         </section>
 
-        {/* HIGH-END INTERACTIVE SVG FILTER BAR (SWEET EDGE-TO-EDGE HORIZONTAL CAROUSEL ON MOBILE) */}
-        <section 
-          className="hide-scrollbar"
-          style={{ 
-            display: 'flex', 
-            justifyContent: isMobile ? 'flex-start' : 'center', 
-            gap: '10px', 
-            overflowX: 'auto',
-            WebkitOverflowScrolling: 'touch',
-            paddingBottom: isMobile ? '12px' : '0px',
-            marginBottom: isMobile ? '30px' : '45px',
-            width: isMobile ? 'calc(100% + 32px)' : '100%',
-            marginLeft: isMobile ? '-16px' : '0',
-            paddingLeft: isMobile ? '16px' : '0',
-            paddingRight: isMobile ? '16px' : '0'
+        {/* DYNAMIC CATEGORY DETAILS TEXT PANEL */}
+        <div 
+          style={{
+            width: '100%',
+            textAlign: 'center',
+            marginBottom: '35px',
+            marginTop: '25px',
+            animation: 'fadeIn 0.6s ease'
           }}
         >
-          {CATEGORIES.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setSelectedTab(tab.id)}
-              style={{
-                background: selectedTab === tab.id ? '#fff' : 'rgba(255, 255, 255, 0.02)',
-                color: selectedTab === tab.id ? '#000' : '#a1a1aa',
-                border: selectedTab === tab.id ? '1px solid #fff' : '1px solid rgba(255, 255, 255, 0.08)',
-                padding: isMobile ? '9px 18px' : '11px 24px',
-                borderRadius: '100px',
-                fontSize: isMobile ? '12px' : '13.5px',
-                fontWeight: '700',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-                boxShadow: selectedTab === tab.id ? '0 8px 20px rgba(255,255,255,0.08)' : 'none',
-                flexShrink: isMobile ? 0 : 1
-              }}
-            >
-              {tab.icon}
-              {tab.label}
-            </button>
-          ))}
-        </section>
+          <h2 style={{ fontFamily: 'Outfit, sans-serif', fontSize: isMobile ? '20px' : '26px', fontWeight: '800', color: '#fff', letterSpacing: '-0.02em', marginBottom: '8px' }}>
+            {getCategoryHeading(selectedTab)}
+          </h2>
+          <p style={{ color: '#8a8f98', fontSize: isMobile ? '13px' : '14px', maxWidth: '600px', margin: '0 auto', lineHeight: '1.5' }}>
+            {getCategoryDescription(selectedTab)}
+          </p>
+        </div>
 
         {/* DENSE GRID PANEL (FULLY RESPONSIVE LAYOUT COLUMNS TO PREVENT COMPRESSION) */}
         {loading ? (
           <div style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-              <div style={{ width: '28px', height: '28px', borderRadius: '50%', border: '2px solid rgba(255,255,255,0.05)', borderTopColor: '#ffe032', animation: 'spin 1s linear infinite' }} />
+              <div style={{ width: '28px', height: '28px', borderRadius: '50%', border: '2px solid rgba(255,255,255,0.05)', borderTopColor: '#D65050', animation: 'spin 1s linear infinite' }} />
               <div style={{ fontSize: '12px', color: '#71717a', letterSpacing: '0.1em' }}>STAGE TUNING...</div>
             </div>
           </div>
         ) : (
-          <motion.div 
-            layout
-            className="hover-video-grid" 
-            style={{ 
-              display: 'grid', 
-              gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(340px, 1fr))', 
-              gap: isMobile ? '20px' : '28px',
-              minHeight: '200px',
-              paddingBottom: '80px'
-            }}
-          >
-            <AnimatePresence mode="popLayout">
-              {currentVideos.map((vid, index) => (
-                <VideoCard 
-                  key={vid.id || index} 
-                  video={vid} 
-                  onPlay={setActiveVideo}
-                />
-              ))}
-            </AnimatePresence>
-          </motion.div>
+          <>
+            <motion.div 
+              layout
+              className="hover-video-grid" 
+              style={{ 
+                display: 'grid', 
+                gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(340px, 1fr))', 
+                gap: isMobile ? '20px' : '28px',
+                minHeight: '200px',
+                paddingBottom: '20px'
+              }}
+            >
+              <AnimatePresence mode="popLayout">
+                {displayedVideos.map((vid, index) => (
+                  <VideoCard 
+                    key={vid.id || index} 
+                    video={vid} 
+                    onPlay={setActiveVideo}
+                  />
+                ))}
+              </AnimatePresence>
+            </motion.div>
+
+            {/* HIGH-END INTERACTIVE LOAD MORE TRIGGER */}
+            {currentVideos.length > visibleCount && (
+              <div 
+                style={{ 
+                  display: 'flex', 
+                  justifyContent: 'center', 
+                  marginTop: '30px', 
+                  marginBottom: '20px',
+                  animation: 'fadeIn 0.5s ease'
+                }}
+              >
+                <button 
+                  onClick={() => setVisibleCount(prev => prev + (isMobile ? 4 : 12))}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.03)',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    color: '#fff',
+                    padding: '14px 36px',
+                    borderRadius: '100px',
+                    fontSize: '11px',
+                    fontWeight: '900',
+                    letterSpacing: '0.12em',
+                    textTransform: 'uppercase',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(214, 80, 80, 0.12)';
+                    e.currentTarget.style.borderColor = 'rgba(214, 80, 80, 0.4)';
+                    e.currentTarget.style.boxShadow = '0 12px 40px rgba(214, 80, 80, 0.2)';
+                    e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                    e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.4)';
+                    e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                  }}
+                >
+                  ✦ Load More Performances
+                </button>
+              </div>
+            )}
+
+            {/* COMPACT TALENT CURATION CTA (SHOWN WHEN VIDEO COUNT IS LOW) */}
+            {currentVideos.length < 3 && (
+              <div 
+                style={{
+                  marginTop: '45px',
+                  padding: isMobile ? '20px 24px' : '30px 40px',
+                  background: 'linear-gradient(135deg, rgba(214, 80, 80, 0.05) 0%, rgba(10, 10, 12, 0.95) 100%)',
+                  borderRadius: '20px',
+                  border: '1px solid rgba(214, 80, 80, 0.15)',
+                  display: 'flex',
+                  flexDirection: isMobile ? 'column' : 'row',
+                  justifyContent: 'space-between',
+                  alignItems: isMobile ? 'flex-start' : 'center',
+                  gap: '20px',
+                  maxWidth: '850px',
+                  margin: '40px auto 0 auto',
+                  boxShadow: '0 15px 35px rgba(0,0,0,0.4)',
+                  animation: 'fadeIn 0.8s ease'
+                }}
+              >
+                <div style={{ flex: 1, textAlign: 'left' }}>
+                  <span style={{ fontSize: '8px', fontWeight: '900', color: '#D65050', textTransform: 'uppercase', letterSpacing: '0.12em', display: 'inline-block', marginBottom: '6px' }}>
+                    ✦ Premium Curation Service
+                  </span>
+                  <h3 style={{ fontFamily: 'Outfit, sans-serif', fontSize: isMobile ? '16px' : '20px', fontWeight: '800', color: '#fff', margin: '0 0 6px 0', letterSpacing: '-0.01em' }}>
+                    Need More Options for {getCategoryHeading(selectedTab).replace('Elite ', '').replace('High-End ', '')}?
+                  </h3>
+                  <p style={{ color: '#a1a1aa', fontSize: isMobile ? '12px' : '13px', margin: 0, lineHeight: '1.5' }}>
+                    Our talent acquisition team has a private catalog of 200+ elite artists. Let us handpick and curate a custom talent roster for your luxury celebration.
+                  </p>
+                </div>
+                <button 
+                  onClick={() => {
+                    const btn = document.querySelector('.contact-btn') || document.querySelector('[href*="contact"]');
+                    if (btn) btn.click();
+                    else alert('Our curators will assist you instantly! Click "Contact Us" at the top.');
+                  }}
+                  style={{
+                    background: '#fff',
+                    color: '#050507',
+                    padding: '12px 24px',
+                    borderRadius: '100px',
+                    fontWeight: '800',
+                    fontSize: '12px',
+                    border: 'none',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.06em',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    flexShrink: 0,
+                    boxShadow: '0 4px 15px rgba(255, 255, 255, 0.2)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#D65050';
+                    e.currentTarget.style.color = '#fff';
+                    e.currentTarget.style.boxShadow = '0 6px 20px rgba(214, 80, 80, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = '#fff';
+                    e.currentTarget.style.color = '#050507';
+                    e.currentTarget.style.boxShadow = '0 4px 15px rgba(255, 255, 255, 0.2)';
+                  }}
+                >
+                  Get Custom Roster
+                </button>
+              </div>
+            )}
+          </>
         )}
+      </div>
       </div>
 
       {/* Cinematic Lightbox Modal (DYNAMICALLY SCALED FOR MOBILE PHONE SCREENPORTS) */}
@@ -642,6 +1032,7 @@ export default function ServicesPage() {
               zIndex: 9999,
               background: 'rgba(3, 3, 5, 0.97)',
               backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -724,7 +1115,7 @@ export default function ServicesPage() {
               >
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                    <span style={{ fontSize: '9px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.1em', background: 'rgba(255, 224, 50, 0.15)', color: '#ffe032', padding: '4px 10px', borderRadius: '100px', border: '1px solid rgba(255, 224, 50, 0.2)' }}>
+                    <span style={{ fontSize: '9px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '0.1em', background: 'rgba(214, 80, 80, 0.15)', color: '#D65050', padding: '4px 10px', borderRadius: '100px', border: '1px solid rgba(214, 80, 80, 0.2)' }}>
                       {activeVideo.category}
                     </span>
                     <span style={{ color: '#52525b', fontSize: '12px' }}>•</span>
@@ -735,6 +1126,37 @@ export default function ServicesPage() {
                   <h3 style={{ margin: 0, fontSize: isMobile ? '20px' : '24px', fontWeight: '800', color: '#fff', fontFamily: 'Outfit, sans-serif', letterSpacing: '-0.01em' }}>
                     {activeVideo.user_name}
                   </h3>
+                  
+                  {activeVideo.artist_type && (
+                    <span style={{ 
+                      fontSize: '13px', 
+                      fontWeight: '700', 
+                      fontFamily: 'Outfit, sans-serif',
+                      marginTop: '4px',
+                      display: 'block',
+                      background: 'linear-gradient(90deg, #D65050 0%, #c084fc 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent'
+                    }}>
+                      ✦ {activeVideo.artist_type}
+                    </span>
+                  )}
+                  
+                  {activeVideo.artist_bio && (
+                    <p style={{ 
+                      margin: '12px 0 0 0', 
+                      fontSize: '13px', 
+                      lineHeight: '1.6', 
+                      color: '#a1a1aa', 
+                      maxWidth: '540px',
+                      fontFamily: 'sans-serif',
+                      borderLeft: '2px solid rgba(214, 80, 80, 0.4)',
+                      paddingLeft: '12px',
+                      fontStyle: 'italic'
+                    }}>
+                      &ldquo;{activeVideo.artist_bio}&rdquo;
+                    </p>
+                  )}
                 </div>
 
                 <button 
@@ -745,15 +1167,15 @@ export default function ServicesPage() {
                     }));
                   }}
                   style={{
-                    background: '#ffe032',
-                    color: '#000',
+                    background: 'linear-gradient(135deg, #D65050 0%, #9F122B 100%)',
+                    color: '#fff',
                     padding: isMobile ? '12px 24px' : '14px 34px',
                     borderRadius: '100px',
                     fontWeight: '900',
                     fontSize: '13px',
                     border: 'none',
                     cursor: 'pointer',
-                    boxShadow: '0 8px 24px rgba(255, 224, 50, 0.3)',
+                    boxShadow: '0 8px 24px rgba(214, 80, 80, 0.3)',
                     transition: 'all 0.2s',
                     textTransform: 'uppercase',
                     letterSpacing: '0.05em',

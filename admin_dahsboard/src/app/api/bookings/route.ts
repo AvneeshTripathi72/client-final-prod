@@ -4,23 +4,23 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    
-    const { 
-      artist_id, 
-      client_name, 
-      client_email, 
-      client_phone, 
-      event_type, 
-      event_date, 
-      event_time, 
-      venue, 
-      budget, 
-      notes 
+
+    const {
+      artist_id,
+      client_name,
+      client_email,
+      client_phone,
+      event_type,
+      event_date,
+      event_time,
+      venue,
+      budget,
+      notes
     } = body;
 
     if (!artist_id || !client_name || !client_email) {
       return NextResponse.json(
-        { error: 'artist_id, client_name, and client_email are required' }, 
+        { error: 'artist_id, client_name, and client_email are required' },
         { status: 400 }
       );
     }
@@ -54,9 +54,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ 
-      message: 'Booking request submitted successfully', 
-      booking: data 
+    return NextResponse.json({
+      message: 'Booking request submitted successfully',
+      booking: data
     }, { status: 201 });
 
   } catch (error: any) {
