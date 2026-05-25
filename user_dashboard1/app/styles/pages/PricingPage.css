@@ -65,7 +65,7 @@
   backdrop-filter: blur(20px);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-xl);
-  padding: 48px 32px;
+  padding: 40px 28px;
   display: flex;
   flex-direction: column;
   transition: var(--trans-normal);
@@ -92,41 +92,41 @@
   transform: translate(-50%, -50%);
   background: linear-gradient(90deg, #FFE032, #EECE3B);
   color: #000;
-  padding: 8px 20px;
+  padding: 6px 16px;
   border-radius: 99px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.1em;
 }
 
 .card-head h3 {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 600;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .plan-tagline {
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 0.2em;
   color: #8a8f98;
   font-weight: 600;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .card-price {
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   display: flex;
   flex-direction: column;
 }
 
 .price-val {
-  font-size: 48px;
+  font-size: 42px;
   font-weight: 700;
   color: #fff;
 }
 
 .price-label {
-  font-size: 14px;
+  font-size: 13px;
   color: #5b626d;
   margin-top: 4px;
 }
@@ -134,10 +134,10 @@
 .card-features {
   list-style: none;
   padding: 0;
-  margin: 0 0 48px;
+  margin: 0 0 40px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .card-features li {
@@ -165,24 +165,68 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--brand-ruby) 0%, #8b2d2d 100%);
+  background: linear-gradient(135deg, #ff2a5f 0%, #b30e38 100%);
   color: #fff;
-  box-shadow: 0 10px 20px var(--glow-red);
+  border: none;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 14px;
+  box-shadow: 0 8px 24px rgba(255, 42, 95, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
 }
 
 .btn-primary:hover {
-  transform: scale(1.05);
-  box-shadow: 0 15px 30px var(--glow-red), 0 0 15px var(--brand-ruby);
+  transform: translateY(-3px);
+  box-shadow: 0 16px 32px rgba(255, 42, 95, 0.5), 0 0 12px rgba(255, 42, 95, 0.3);
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+  transition: 0.8s ease-in-out;
+}
+
+.btn-primary:active {
+  transform: translateY(-1px);
 }
 
 .btn-outline {
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: #fff;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 14px;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .btn-outline:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: #fff;
+  background: rgba(255, 42, 95, 0.08);
+  border-color: rgba(255, 42, 95, 0.4);
+  color: #ff2a5f;
+  box-shadow: 0 12px 24px rgba(255, 42, 95, 0.15);
+  transform: translateY(-3px);
+}
+
+.btn-outline:active {
+  transform: translateY(-1px);
 }
 
 .pricing-footer {

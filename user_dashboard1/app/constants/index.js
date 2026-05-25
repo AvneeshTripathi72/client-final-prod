@@ -36,8 +36,17 @@ export const FEATURED_ARTISTS = [
   { name: 'Sahil Soulful Sufi',        genre: 'Sufi',         bookings: '118 bookings', rating: '4.8', image: '/assets/lux-hero-artist.webp', city: 'Noida' },
   { name: 'Sudhir Retro King',         genre: 'Retro',        bookings: '96 bookings',  rating: '4.7', image: '/assets/lux-live-band-concert.webp', city: 'Gurugram' },
   { name: 'The Wedding Live Unit',     genre: 'Band',         bookings: '146 bookings', rating: '4.9', image: '/assets/lux-wedding-celebration.jpg', city: 'Jaipur' },
-  { name: 'Arohi Evening Notes',       genre: 'Soul Pop',     bookings: '88 bookings',  rating: '4.8', image: '/assets/lux-hero-artist.webp', city: 'Mumbai' },
-  { name: 'The Sangeet Project',       genre: 'Fusion Band',  bookings: '164 bookings', rating: '5.0', image: '/assets/lux-wedding-celebration.jpg', city: 'Bengaluru' },
+  { name: 'Arohi Evening Notes',       genre: 'Soul Pop',     bookings: '88 bookings',  rating: '4.8', image: '/assets/lux-female-singer-thumb.jpg', city: 'Mumbai' },
+  { name: 'The Sangeet Project',       genre: 'Fusion Band',  bookings: '164 bookings', rating: '5.0', image: '/assets/duo-musical-performance.webp', city: 'Bengaluru' },
+  { name: 'DJ Zoya',                   genre: 'EDM & Techno', bookings: '210 bookings', rating: '4.9', image: '/assets/lux-percussion-dj-thumb.webp', city: 'Goa' },
+  { name: 'Rhythm Masters',            genre: 'Instrumental', bookings: '105 bookings', rating: '4.8', image: '/assets/male-singer-acoustic.webp', city: 'Pune' },
+  { name: 'Kabir Poetry',              genre: 'Folk Fusion',  bookings: '75 bookings',  rating: '4.9', image: '/assets/lux-hero-artist.jpg', city: 'Udaipur' },
+  { name: 'The Midnight Jazz',         genre: 'Jazz Band',    bookings: '64 bookings',  rating: '4.7', image: '/assets/lux-live-band-concert.jpg', city: 'Mumbai' },
+  { name: 'Laughter Riot',             genre: 'Standup',      bookings: '150 bookings', rating: '4.9', image: '/assets/standup-comedian.webp', city: 'Delhi' },
+  { name: 'Anchor Sameer',             genre: 'Emcee',        bookings: '230 bookings', rating: '5.0', image: '/assets/wedding-anchor-stage.webp', city: 'Chandigarh' },
+  { name: 'Divine Ghazals',            genre: 'Ghazal',       bookings: '92 bookings',  rating: '4.9', image: '/assets/lux-ghazal-thumb.jpeg', city: 'Lucknow' },
+  { name: 'Acoustic Vibes',            genre: 'Acoustic',     bookings: '128 bookings', rating: '4.8', image: '/assets/male-singer-acoustic.jpg', city: 'Bengaluru' },
+  { name: 'Neon Beatbox',              genre: 'Beatboxer',    bookings: '54 bookings',  rating: '4.6', image: '/assets/lux-singer-session.webp', city: 'Pune' }
 ]
 
 export const BOOKING_STEPS = [
@@ -137,12 +146,12 @@ export const NAV_LINKS = [
     path: '/artists',
     isMega: true,
     children: [
+      { label: 'All', path: '/artists' },
       { label: 'Singer', path: '/artists?category=Singer' },
       { label: 'Music band', path: '/artists?category=Band' },
       { label: 'Dj', path: '/artists?category=Dj' },
       { label: 'Musician', path: '/artists?category=Musician' },
       { label: 'Comedian', path: '/artists?category=Comedian' },
-      { label: 'Emcee', path: '/artists?category=Emcee' },
       { label: 'Celebrity', path: '/artists?category=Celebrity' },
       { label: 'Dancer', path: '/artists?category=Dancer' },
       { label: 'Speaker', path: '/artists?category=Speaker' },

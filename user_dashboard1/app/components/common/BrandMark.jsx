@@ -1,4 +1,6 @@
 /* eslint-disable react/prop-types */
+import Image from 'next/image'
+
 export default function BrandMark({ size = 'md', showTag = false, light = false, hideText = false }) {
   const markSizeMap = { sm: 22, md: 28, lg: 36 }
   const titleSizeMap = { sm: '18px', md: '20px', lg: '25px' }
@@ -22,12 +24,12 @@ export default function BrandMark({ size = 'md', showTag = false, light = false,
           position: 'relative',
         }}
       >
-        <img
+        <Image
           src="/assets/magnevents-logo.webp"
           alt="Magnevents"
+          width={markSize}
+          height={markSize}
           style={{
-            width: '100%',
-            height: '100%',
             objectFit: 'cover'
           }}
         />

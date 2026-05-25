@@ -92,7 +92,7 @@ export default function BookingsPage() {
 
       let query = (supabase
         .from('bookings') as any)
-        .select('*, artists(id, name, alias, category, city, contact_person, phone_no, email, is_popular, is_artist_of_month, artist_images!fk_artist_id(image_url))');
+        .select('*, artists(id, name, alias, category, city, contact_person, phone_no, email, is_trending, is_artist_of_month, artist_images!fk_artist_id(image_url))');
 
 
 
@@ -453,7 +453,7 @@ export default function BookingsPage() {
                             Month
                           </span>
                         )}
-                        {booking.artists?.is_popular ? (
+                        {booking.artists?.is_trending ? (
                           <span className="inline-flex h-fit px-2 py-0.5 rounded-md bg-amber-50 text-amber-600 text-[9px] sm:text-[10px] font-black uppercase tracking-wider w-fit border border-amber-100 flex items-center gap-1">
                             <Star size={10} fill="currentColor" />
                             Popular

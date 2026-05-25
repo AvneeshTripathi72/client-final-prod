@@ -6,10 +6,13 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@
 import { Plus, Loader2, Sliders, Pencil, Trash2, Image as ImageIcon, CheckCircle2, XCircle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
+import { BlogEditorModal } from '@/components/blog/BlogEditorModal';
 
 export default function BlogManagement() {
   const [slides, setSlides] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingPost, setEditingPost] = useState<any | null>(null);
   const { toast } = useToast();
 
   const fetchSlides = useCallback(async () => {
@@ -62,6 +65,38 @@ export default function BlogManagement() {
     }
   };
 
+  const handleSavePost = async (data: any) => {
+    try {
+      if (editingPost) {
+        const { error } = await (supabase.from('hero_slides') as any).update({
+          title: data.title,
+          subtitle: data.subtitle,
+          image_url: data.image_url,
+          content: data.content
+        }).eq('id', editingPost.id);
+        
+        if (error) throw error;
+        toast({ title: 'Updated', description: 'Blog post updated successfully.' });
+      } else {
+        const { error } = await (supabase.from('hero_slides') as any).insert([{
+          title: data.title,
+          subtitle: data.subtitle,
+          image_url: data.image_url,
+          content: data.content,
+          is_active: true
+        }]);
+        
+        if (error) throw error;
+        toast({ title: 'Created', description: 'New blog post created.' });
+      }
+      
+      fetchSlides();
+    } catch (error: any) {
+      toast({ variant: 'destructive', title: 'Error', description: error.message });
+      throw error;
+    }
+  };
+
   return (
     <div className="space-y-8 pb-12">
       <div className="flex justify-between items-end">
@@ -74,7 +109,7 @@ export default function BlogManagement() {
         </div>
         <button
           className="h-11 px-6 rounded-xl bg-slate-900 text-white shadow-lg shadow-slate-200/50 hover:bg-slate-800 hover:scale-[1.02] active:scale-[0.98] transition-all font-bold text-[12px] uppercase tracking-wider flex items-center justify-center gap-2"
-          onClick={() => { toast({ title: 'Coming Soon', description: 'Blog post creator is being finalized.' }); }}
+          onClick={() => { setEditingPost(null); setIsModalOpen(true); }}
         >
           <Plus size={16} strokeWidth={3} />
           Create Blog Post
@@ -111,8 +146,12 @@ export default function BlogManagement() {
                 <TableRow key={slide.id} className="group border-slate-50 hover:bg-slate-50/50 transition-colors">
                   <TableCell className="pl-8 py-4">
                     <div className="flex items-center gap-4">
-                      <div className="w-20 h-12 rounded-lg overflow-hidden border border-slate-100 bg-slate-50 flex-shrink-0">
-                         <img src={slide.image_url} className="w-full h-full object-cover" />
+                      <div className="w-20 h-12 rounded-lg overflow-hidden border border-slate-100 bg-slate-50 flex-shrink-0 flex items-center justify-center">
+                         {slide.image_url ? (
+                           <img src={slide.image_url} className="w-full h-full object-cover" />
+                         ) : (
+                           <ImageIcon size={16} className="text-slate-300" />
+                         )}
                       </div>
                       <div>
                         <p className="font-bold text-slate-900 text-[14px]">{slide.title}</p>
@@ -133,7 +172,10 @@ export default function BlogManagement() {
                   </TableCell>
                   <TableCell className="pr-8">
                      <div className="flex items-center justify-center gap-2">
-                        <button className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-900 transition-colors">
+                        <button 
+                          onClick={() => { setEditingPost(slide); setIsModalOpen(true); }}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-900 transition-colors"
+                        >
                            <Pencil size={14} />
                         </button>
                         <button
@@ -150,6 +192,13 @@ export default function BlogManagement() {
           </TableBody>
         </Table>
       </div>
+
+      <BlogEditorModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onSave={handleSavePost} 
+        initialData={editingPost} 
+      />
     </div>
   );
 }

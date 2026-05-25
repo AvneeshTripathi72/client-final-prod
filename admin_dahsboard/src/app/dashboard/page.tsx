@@ -188,7 +188,7 @@ export default function DashboardOverview() {
       const { data: popularData } = await supabase
         .from('artists')
         .select('*, artist_images!fk_artist_id(image_url)')
-        .eq('is_popular', true)
+        .eq('is_trending', true)
         .order('created_at', { ascending: true })
         .limit(5);
 
@@ -204,7 +204,7 @@ export default function DashboardOverview() {
 
       // If no AOMs are selected, fallback to ONLY ONE popular artist or recent one
       if (spotlightItems.length === 0) {
-        spotlightItems = (uniquePool.filter(a => a.is_popular) || []).slice(0, 1);
+        spotlightItems = (uniquePool.filter(a => a.is_trending) || []).slice(0, 1);
       }
       if (spotlightItems.length === 0) {
         spotlightItems = uniquePool.slice(0, 1);
@@ -437,7 +437,7 @@ export default function DashboardOverview() {
                                  Artist of Month
                                </div>
                              )}
-                             {artist.is_popular && (
+                             {artist.is_trending && (
                                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl text-amber-400 text-[9px] font-black uppercase tracking-[0.2em]">
                                  <Star size={10} fill="currentColor" />
                                  Popular Selection
@@ -600,7 +600,7 @@ export default function DashboardOverview() {
                         <div className="flex items-center gap-2">
                           <p className="font-bold text-slate-900 text-[13px] truncate">{b.artists?.name}</p>
                           <div className="flex items-center gap-1 flex-shrink-0">
-                            {b.artists?.is_popular && (
+                            {b.artists?.is_trending && (
                               <Star size={11} className="text-amber-500" fill="currentColor" />
                             )}
                             {b.artists?.is_artist_of_month && (
@@ -681,7 +681,7 @@ export default function DashboardOverview() {
                       </div>
                     )}
                     <div className="absolute top-1.5 right-1.5 z-10 flex flex-col gap-1 items-end">
-                      {a.is_popular && (
+                      {a.is_trending && (
                         <div className="w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center text-white shadow-lg border border-white/20">
                           <Star size={10} fill="currentColor" />
                         </div>
@@ -852,7 +852,7 @@ export default function DashboardOverview() {
                     )}
                     
                     <div className="absolute top-4 left-4 flex flex-col gap-2 items-start">
-                      {artist.is_popular ? (
+                      {artist.is_trending ? (
                         <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400 text-white text-[9px] font-black uppercase tracking-widest shadow-lg shadow-amber-200/50">
                           <Star size={10} fill="currentColor" />
                           Popular
@@ -1007,7 +1007,7 @@ export default function DashboardOverview() {
                                                    <div className="flex items-center gap-2">
                              <span className="text-[15px] font-bold text-slate-900 tracking-tight">{artist.name}</span>
                              <div className="flex items-center gap-1.5 flex-shrink-0">
-                               {artist.is_popular && <Star size={11} className="text-amber-500" fill="currentColor" />}
+                               {artist.is_trending && <Star size={11} className="text-amber-500" fill="currentColor" />}
                                {artist.is_artist_of_month && <Music size={11} className="text-indigo-600" />}
                              </div>
                           </div>
@@ -1128,7 +1128,7 @@ export default function DashboardOverview() {
                 </div>
               )}
               <div className="absolute top-5 left-5 inline-flex flex-col gap-2 items-start z-20">
-                {selectedArtist?.is_popular && (
+                {selectedArtist?.is_trending && (
                   <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400 text-white text-[9px] font-black uppercase tracking-widest shadow-lg shadow-amber-200/50">
                     <Star size={10} fill="currentColor" />
                     Popular Artist

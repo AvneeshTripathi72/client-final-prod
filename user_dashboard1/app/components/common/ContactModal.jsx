@@ -1,62 +1,104 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { bookingService } from '@/app/services/bookingService'
 import '@/app/styles/components/ContactModal.css'
 
-export default function ContactModal({ isOpen, onClose, initialType = 'booking', initialArtist = null }) {
+export default function ContactModal({ isOpen, onClose, initialType = 'booking', initialArtist = null, initialPlan = null, initialService = null }) {
   const [formType, setFormType] = useState(initialType)
-
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    eventType: '',
-    date: '',
-    location: '',
-    artistType: [],
-    budget: '',
-    budget: '',
-    message: '',
-    selectedArtist: initialArtist
-  })
-
+  const [selectedArtistTypes, setSelectedArtistTypes] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
 
+  const [selectedBudget, setSelectedBudget] = useState('')
+  const [selectedEventType, setSelectedEventType] = useState('')
+
+  const nameRef = useRef(null)
+  const phoneRef = useRef(null)
+  const emailRef = useRef(null)
+  const dateRef = useRef(null)
+  const locationRef = useRef(null)
 
   useEffect(() => {
     if (isOpen) {
       setFormType(initialType)
       setSubmitted(false)
-      setFormData(prev => ({ ...prev, selectedArtist: initialArtist }))
       document.body.style.overflow = 'hidden'
+      document.body.classList.add('modal-open')
+
+      // Smart auto-fill depending on selected item details
+      if (initialPlan) {
+        const planName = initialPlan.name.toLowerCase();
+        if (planName.includes('singer')) {
+          setSelectedArtistTypes(['Singer'])
+          setSelectedBudget('5k_10k')
+        } else if (planName.includes('duo')) {
+          setSelectedArtistTypes(['Singer', 'Musician'])
+          setSelectedBudget('10k_20k')
+        } else if (planName.includes('band')) {
+          setSelectedArtistTypes(['Music Band'])
+          setSelectedBudget('20k_35k')
+        }
+        setSelectedEventType('Live Booking')
+      } else if (initialService) {
+        setSelectedArtistTypes([])
+        setSelectedBudget('')
+        setSelectedEventType(initialService.title)
+      } else if (initialArtist) {
+        const tag = initialArtist.category || '';
+        if (tag) setSelectedArtistTypes([tag])
+        setSelectedBudget('')
+        setSelectedEventType('Artist Booking')
+      } else {
+        setSelectedArtistTypes([])
+        setSelectedBudget('')
+        setSelectedEventType('')
+      }
     } else {
       document.body.style.overflow = ''
+      document.body.classList.remove('modal-open')
     }
     return () => {
       document.body.style.overflow = ''
+      document.body.classList.remove('modal-open')
     }
-  }, [isOpen, initialType, initialArtist])
+  }, [isOpen, initialType, initialPlan, initialService, initialArtist])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setIsSubmitting(true)
 
+    const submissionData = {
+      name: nameRef.current?.value || '',
+      phone: phoneRef.current?.value || '',
+      email: emailRef.current?.value || '',
+      eventType: selectedEventType,
+      date: dateRef.current?.value || '',
+      location: locationRef.current?.value || '',
+      artistType: selectedArtistTypes,
+      budget: selectedBudget,
+      selectedArtist: initialArtist,
+      selectedPlan: initialPlan,
+      selectedService: initialService
+    }
+
     try {
-      await bookingService.submitRequest({ ...formData, formType })
+      await bookingService.submitRequest({ ...submissionData, formType })
       setIsSubmitting(false)
       setSubmitted(true)
 
-
       setTimeout(() => {
         onClose()
-        setFormData({
-          name: '', email: '', phone: '', eventType: '',
-          date: '', location: '', artistType: [], budget: '', message: '', selectedArtist: null
-        })
-      }, 2500)
+        if (nameRef.current) nameRef.current.value = ''
+        if (phoneRef.current) phoneRef.current.value = ''
+        if (emailRef.current) emailRef.current.value = ''
+        if (dateRef.current) dateRef.current.value = ''
+        if (locationRef.current) locationRef.current.value = ''
+        setSelectedEventType('')
+        setSelectedBudget('')
+        setSelectedArtistTypes([])
+      }, 3000)
     } catch (error) {
       console.error("Booking error:", error)
       setIsSubmitting(false)
@@ -96,10 +138,28 @@ export default function ContactModal({ isOpen, onClose, initialType = 'booking',
             <h3 style={{ fontFamily: 'var(--font-display)', color: '#fff', fontSize: '32px' }}>
               {formType === 'register' ? 'Artist Registration' : 'Booking form'}
             </h3>
-            {formData.selectedArtist ? (
+            {initialArtist ? (
               <div style={{ marginTop: '12px', padding: '10px 16px', background: 'rgba(255,224,50,0.1)', border: '1px solid rgba(255,224,50,0.2)', borderRadius: '8px', display: 'inline-block' }}>
                 <span style={{ color: '#FFE032', fontSize: '14px', fontWeight: '500' }}>
-                  Booking Inquiry for: {typeof formData.selectedArtist === 'string' ? formData.selectedArtist : formData.selectedArtist?.name || 'Artist'}
+                  Booking Inquiry for: {typeof initialArtist === 'string' ? initialArtist : initialArtist?.name || 'Artist'}
+                </span>
+              </div>
+            ) : initialPlan ? (
+              <div style={{ marginTop: '12px', padding: '10px 16px', background: 'rgba(255,224,50,0.1)', border: '1px solid rgba(255,224,50,0.2)', borderRadius: '8px', display: 'inline-block', width: '100%', textAlign: 'left' }}>
+                <span style={{ color: '#FFE032', fontSize: '15px', fontWeight: '700', display: 'block', marginBottom: '4px' }}>
+                  Selected Package: {initialPlan.name} ({initialPlan.price})
+                </span>
+                <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '12px', display: 'block' }}>
+                  Tagline: {initialPlan.tagline}
+                </span>
+              </div>
+            ) : initialService ? (
+              <div style={{ marginTop: '12px', padding: '10px 16px', background: 'rgba(255,224,50,0.1)', border: '1px solid rgba(255,224,50,0.2)', borderRadius: '8px', display: 'inline-block', width: '100%', textAlign: 'left' }}>
+                <span style={{ color: '#FFE032', fontSize: '15px', fontWeight: '700', display: 'block' }}>
+                  Selected Service: {initialService.title}
+                </span>
+                <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '12px', display: 'block', marginTop: '4px' }}>
+                  {initialService.desc}
                 </span>
               </div>
             ) : (
@@ -128,17 +188,17 @@ export default function ContactModal({ isOpen, onClose, initialType = 'booking',
                 <div className="lux-form-group">
                   <label>Name</label>
                   <input
+                    ref={nameRef}
                     type="text" required placeholder="e.g. Arjun Sharma"
-                    value={formData.name}
-                    onChange={e => setFormData({...formData, name: e.target.value})}
+                    defaultValue=""
                   />
                 </div>
                 <div className="lux-form-group">
                   <label>Phone no.</label>
                   <input
+                    ref={phoneRef}
                     type="tel" required placeholder="+91 9XXX-XXXXXX"
-                    value={formData.phone}
-                    onChange={e => setFormData({...formData, phone: e.target.value})}
+                    defaultValue=""
                   />
                 </div>
               </div>
@@ -147,17 +207,17 @@ export default function ContactModal({ isOpen, onClose, initialType = 'booking',
                 <div className="lux-form-group">
                   <label>Email ID</label>
                   <input
+                    ref={emailRef}
                     type="email" required placeholder="name@email.com"
-                    value={formData.email}
-                    onChange={e => setFormData({...formData, email: e.target.value})}
+                    defaultValue=""
                   />
                 </div>
                 <div className="lux-form-group">
                   <label>Event Type</label>
                   <input
                     type="text" required placeholder="Wedding, Sangeet, Corporate..."
-                    value={formData.eventType}
-                    onChange={e => setFormData({...formData, eventType: e.target.value})}
+                    value={selectedEventType}
+                    onChange={(e) => setSelectedEventType(e.target.value)}
                   />
                 </div>
               </div>
@@ -166,17 +226,17 @@ export default function ContactModal({ isOpen, onClose, initialType = 'booking',
                 <div className="lux-form-group">
                   <label>Event Date</label>
                   <input
+                    ref={dateRef}
                     type="date" required
-                    value={formData.date}
-                    onChange={e => setFormData({...formData, date: e.target.value})}
+                    defaultValue=""
                   />
                 </div>
                 <div className="lux-form-group">
                   <label>Location</label>
                   <input
+                    ref={locationRef}
                     type="text" required placeholder="Delhi, Mumbai, Lucknow..."
-                    value={formData.location}
-                    onChange={e => setFormData({...formData, location: e.target.value})}
+                    defaultValue=""
                   />
                 </div>
               </div>
@@ -189,12 +249,12 @@ export default function ContactModal({ isOpen, onClose, initialType = 'booking',
                       <button
                         key={type}
                         type="button"
-                        className={`artist-chip ${formData.artistType.includes(type) ? 'active' : ''}`}
+                        className={`artist-chip ${selectedArtistTypes.includes(type) ? 'active' : ''}`}
                         onClick={() => {
-                          const newTypes = formData.artistType.includes(type)
-                            ? formData.artistType.filter(t => t !== type)
-                            : [...formData.artistType, type];
-                          setFormData({...formData, artistType: newTypes});
+                          const newTypes = selectedArtistTypes.includes(type)
+                            ? selectedArtistTypes.filter(t => t !== type)
+                            : [...selectedArtistTypes, type];
+                          setSelectedArtistTypes(newTypes);
                         }}
                       >
                         {type}
@@ -206,8 +266,8 @@ export default function ContactModal({ isOpen, onClose, initialType = 'booking',
                   <label>Budget range</label>
                   <select
                     required
-                    value={formData.budget}
-                    onChange={e => setFormData({...formData, budget: e.target.value})}
+                    value={selectedBudget}
+                    onChange={(e) => setSelectedBudget(e.target.value)}
                   >
                     <option value="" disabled>Select Budget</option>
                     <option value="below_5k">below 5000</option>

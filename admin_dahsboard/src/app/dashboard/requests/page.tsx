@@ -75,7 +75,7 @@ export default function ClientRequestsPage() {
 
       let query = (supabase
         .from('bookings') as any)
-        .select('*, artists(id, name, alias, category, city, price_min, price_max, is_popular, is_artist_of_month, artist_images!fk_artist_id(image_url))')
+        .select('*, artists(id, name, alias, category, city, price_min, price_max, is_trending, is_artist_of_month, artist_images!fk_artist_id(image_url))')
         .eq('booking_source', 'client')
 
         .not('status', 'in', '("confirmed","completed")');
@@ -275,7 +275,7 @@ export default function ClientRequestsPage() {
                                 <Music size={12} />
                               </div>
                             )}
-                            {request.artists?.is_popular ? (
+                            {request.artists?.is_trending ? (
                               <div className="w-6 h-6 rounded-full bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center shadow-sm" title="Popular Artist">
                                 <Star size={12} fill="currentColor" />
                               </div>

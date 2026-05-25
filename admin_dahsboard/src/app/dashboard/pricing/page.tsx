@@ -112,7 +112,12 @@ export default function PricingManagement() {
                       <p className="text-[11px] text-slate-400 mt-0.5 line-clamp-1">{plan.copy}</p>
                     </TableCell>
                     <TableCell>
-                      <span className="text-[14px] font-black text-slate-900">₹{plan.price}</span>
+                      <div className="flex flex-col">
+                        {plan.original_price && (
+                          <span className="text-[12px] font-medium text-slate-400 line-through">₹{plan.original_price}</span>
+                        )}
+                        <span className="text-[14px] font-black text-slate-900">₹{plan.price}</span>
+                      </div>
                     </TableCell>
                     <TableCell>
                       <div className="flex flex-wrap gap-1.5">

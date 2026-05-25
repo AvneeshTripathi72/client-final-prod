@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import FadeSection from '@/app/components/common/FadeSection'
 import { FAQS } from '@/app/constants'
+import '@/app/styles/pages/HomePage.css'
 
 export default function FaqSection({
   eyebrow = "🤔 Common Questions",

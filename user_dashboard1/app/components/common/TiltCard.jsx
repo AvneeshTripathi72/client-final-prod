@@ -1,10 +1,29 @@
 "use client";
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export default function TiltCard({ children, className = '', ...props }) {
   const ref = useRef(null)
   const rafRef = useRef(null)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768)
+    const handleResize = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener('resize', handleResize, { passive: true })
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    }
+  }, [])
+
+  if (isMobile) {
+    return (
+      <article className={className} {...props}>
+        {children}
+      </article>
+    )
+  }
 
   const canAnimateTilt =
     typeof window !== 'undefined' &&
@@ -29,10 +48,6 @@ export default function TiltCard({ children, className = '', ...props }) {
     if (rafRef.current) cancelAnimationFrame(rafRef.current)
     if (ref.current) ref.current.style.transform = ''
   }
-
-  useEffect(() => () => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current)
-  }, [])
 
   return (
     <article ref={ref} className={className} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} {...props}>

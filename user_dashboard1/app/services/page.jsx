@@ -809,13 +809,9 @@ export default function ServicesPage() {
 
         {/* HIGH-END INTERACTIVE OPTION GRID (FULLY WRAPPING FOR ULTIMATE VISIBILITY) */}
         <section 
+          className="lux-filter-section"
           style={{ 
-            display: 'flex', 
-            flexDirection: 'column',
-            alignItems: 'center',
-            marginBottom: isMobile ? '30px' : '50px',
-            width: '100%',
-            padding: '0 16px'
+            marginBottom: isMobile ? '30px' : '50px'
           }}
         >
           {/* Elegant header instruction for high usability */}
@@ -868,11 +864,19 @@ export default function ServicesPage() {
 
         {/* DENSE GRID PANEL (FULLY RESPONSIVE LAYOUT COLUMNS TO PREVENT COMPRESSION) */}
         {loading ? (
-          <div style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
-              <div style={{ width: '28px', height: '28px', borderRadius: '50%', border: '2px solid rgba(255,255,255,0.05)', borderTopColor: '#D65050', animation: 'spin 1s linear infinite' }} />
-              <div style={{ fontSize: '12px', color: '#71717a', letterSpacing: '0.1em' }}>STAGE TUNING...</div>
-            </div>
+          <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fill, minmax(340px, 1fr))', gap: isMobile ? '20px' : '28px', paddingBottom: '20px' }}>
+            {Array.from({ length: isMobile ? 4 : 8 }).map((_, i) => (
+              <div key={`skel-${i}`} style={{ aspectRatio: '16/10', borderRadius: '24px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden' }}>
+                <div className="skeleton-pulse" style={{ position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.03)' }}></div>
+                <div style={{ position: 'absolute', bottom: '24px', left: '24px', right: '24px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div className="skeleton-pulse" style={{ height: '20px', width: '60%', background: 'rgba(255,255,255,0.05)', borderRadius: '4px' }}></div>
+                  <div className="skeleton-pulse" style={{ height: '14px', width: '40%', background: 'rgba(255,255,255,0.05)', borderRadius: '4px' }}></div>
+                </div>
+                <div style={{ position: 'absolute', top: '20px', left: '20px' }}>
+                  <div className="skeleton-pulse" style={{ height: '22px', width: '80px', background: 'rgba(255,255,255,0.05)', borderRadius: '100px' }}></div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <>

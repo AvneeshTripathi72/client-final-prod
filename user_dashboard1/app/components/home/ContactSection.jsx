@@ -1,26 +1,36 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion'
 import FadeSection from '@/app/components/common/FadeSection'
 
 export default function ContactSection() {
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  const nameRef = useRef(null);
+  const emailRef = useRef(null);
+  const phoneRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    const submissionData = {
+      name: nameRef.current?.value || '',
+      email: emailRef.current?.value || '',
+      phone: phoneRef.current?.value || ''
+    };
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...formData, type: 'call_request' }),
+        body: JSON.stringify({ ...submissionData, type: 'call_request' }),
       });
       if (response.ok) {
         setSubmitted(true);
-        setFormData({ name: '', email: '', phone: '' });
+        if (nameRef.current) nameRef.current.value = '';
+        if (emailRef.current) emailRef.current.value = '';
+        if (phoneRef.current) phoneRef.current.value = '';
         setTimeout(() => setSubmitted(false), 5000);
       }
     } catch (error) {
@@ -75,30 +85,30 @@ export default function ContactSection() {
             <div className="hp-form-field">
               <label>Name *</label>
               <input 
+                ref={nameRef}
                 type="text" 
                 placeholder="Your full name" 
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                defaultValue=""
                 required 
               />
             </div>
             <div className="hp-form-field">
               <label>Email *</label>
               <input 
+                ref={emailRef}
                 type="email" 
                 placeholder="your@email.com" 
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                defaultValue=""
                 required 
               />
             </div>
             <div className="hp-form-field">
               <label>Phone *</label>
               <input 
+                ref={phoneRef}
                 type="tel" 
                 placeholder="Your phone number" 
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                defaultValue=""
                 required 
               />
             </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
+import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { supabase } from '@/app/lib/supabase'
@@ -110,8 +111,15 @@ export default function BlogDetailPage() {
 
 
       <section className="blog-detail-hero">
-        <div className="blog-hero-image">
-          <img src={blog.img} alt={blog.title} />
+        <div className="blog-hero-image" style={{ position: 'relative', overflow: 'hidden' }}>
+          <Image
+            src={blog.img}
+            alt={blog.title}
+            fill
+            priority
+            sizes="100vw"
+            style={{ objectFit: 'cover' }}
+          />
           <div className="blog-hero-overlay">
             <div className="lux-container">
               <span className="blog-cat-pill">ARTIST INSIGHTS</span>
@@ -176,8 +184,15 @@ export default function BlogDetailPage() {
               <div className="sidebar-articles">
                 {defaultBlogs.filter(b => b.id !== blog.id).map(item => (
                   <Link key={item.id} href={`/blog-post/${item.slug}`} className="sidebar-card">
-                    <div className="side-img">
-                      <img src={item.img} alt={item.title} />
+                    <div className="side-img" style={{ position: 'relative', overflow: 'hidden' }}>
+                      <Image
+                        src={item.img}
+                        alt={item.title}
+                        fill
+                        sizes="120px"
+                        style={{ objectFit: 'cover' }}
+                        loading="lazy"
+                      />
                     </div>
                     <div className="side-info">
                       <h5>{item.title}</h5>

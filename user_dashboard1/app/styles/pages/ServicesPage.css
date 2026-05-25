@@ -168,6 +168,14 @@
   transform: translateY(0) scale(1.0);
 }
 
+.lux-filter-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 0 16px;
+}
+
 /* Specific styling for the premium segmented tab buttons */
 .lux-tab-bar {
   display: flex;
@@ -178,6 +186,7 @@
   margin: 0 auto;
   padding: 0 16px;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100%;
 }
 
 .lux-tab-btn {
@@ -216,6 +225,37 @@
   border-color: rgba(255, 255, 255, 0.15) !important;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2) !important;
   transform: translateY(-1px);
+}
+
+@media (max-width: 640px) {
+  .lux-filter-section {
+    align-items: stretch !important;
+    padding: 0 !important;
+  }
+
+  .lux-tab-bar {
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    padding: 4px 16px 16px 16px !important;
+    gap: 8px !important;
+    scrollbar-width: none; /* Hide scrollbar Firefox */
+  }
+
+  .lux-tab-bar::-webkit-scrollbar {
+    display: none !important; /* Hide scrollbar WebKit */
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  .lux-tab-btn {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    padding: 8px 18px !important;
+    font-size: 12px !important;
+  }
 }
 
 @media (max-width: 1024px) {

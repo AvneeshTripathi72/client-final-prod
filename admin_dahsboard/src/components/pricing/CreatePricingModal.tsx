@@ -21,6 +21,7 @@ export function CreatePricingModal({ open, onOpenChange, onSuccess, initialData 
   const [formData, setFormData] = useState({
     name: "",
     price: "",
+    originalPrice: "",
     copy: "",
     points: "",
     featured: false
@@ -32,6 +33,7 @@ export function CreatePricingModal({ open, onOpenChange, onSuccess, initialData 
       setFormData({
         name: initialData.name || "",
         price: initialData.price || "",
+        originalPrice: initialData.original_price || "",
         copy: initialData.copy || "",
         points: Array.isArray(initialData.points) ? initialData.points.join(', ') : (initialData.points || ""),
         featured: !!initialData.featured
@@ -40,6 +42,7 @@ export function CreatePricingModal({ open, onOpenChange, onSuccess, initialData 
       setFormData({
         name: "",
         price: "",
+        originalPrice: "",
         copy: "",
         points: "",
         featured: false
@@ -52,7 +55,11 @@ export function CreatePricingModal({ open, onOpenChange, onSuccess, initialData 
     setLoading(true);
 
     const payload = {
-      ...formData,
+      name: formData.name,
+      price: formData.price,
+      original_price: formData.originalPrice,
+      copy: formData.copy,
+      featured: formData.featured,
       points: formData.points.split(',').map(p => p.trim()).filter(p => p !== "")
     };
 
@@ -102,7 +109,7 @@ export function CreatePricingModal({ open, onOpenChange, onSuccess, initialData 
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500 pl-1">Starting Price (INR)</label>
+                <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500 pl-1">Exclusive Price (INR)</label>
                 <div className="relative">
                   <Input
                     required
@@ -113,6 +120,19 @@ export function CreatePricingModal({ open, onOpenChange, onSuccess, initialData 
                   />
                   <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
                 </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-[11px] font-bold uppercase tracking-widest text-slate-500 pl-1">Original Price (Optional) (INR)</label>
+              <div className="relative">
+                <Input
+                  placeholder="e.g. 69,999"
+                  className="rounded-2xl border-slate-100 focus:ring-slate-900 h-12 pl-12"
+                  value={formData.originalPrice}
+                  onChange={e => setFormData({ ...formData, originalPrice: e.target.value })}
+                />
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
               </div>
             </div>
 

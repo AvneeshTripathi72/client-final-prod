@@ -1,11 +1,30 @@
 "use client";
 
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
 
 export default function FadeSection({ children, className = '', delay = 0, ...props }) {
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, margin: '-60px' })
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile, { passive: true })
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  if (isMobile) {
+    return (
+      <section ref={ref} className={`${className} is-mobile-static`} {...props}>
+        {children}
+      </section>
+    )
+  }
+
   return (
     <motion.section
       ref={ref}

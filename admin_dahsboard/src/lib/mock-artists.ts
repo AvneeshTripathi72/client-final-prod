@@ -9,7 +9,7 @@ export const STATIC_ARTISTS = [
     price_min: 5000000,
     price_max: 10000000,
     city: 'Mumbai',
-    is_popular: true,
+    is_trending: true,
     is_artist_of_month: true,
     rating: 5.0,
     artist_images: [{ image_url: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&q=80&w=800' }]
@@ -24,7 +24,7 @@ export const STATIC_ARTISTS = [
     price_min: 3000000,
     price_max: 5000000,
     city: 'Mumbai',
-    is_popular: true,
+    is_trending: true,
     is_artist_of_month: true,
     rating: 4.9,
     artist_images: [{ image_url: 'https://images.unsplash.com/photo-1493225255756-d9584f8606e9?auto=format&fit=crop&q=80&w=800' }]
@@ -39,7 +39,7 @@ export const STATIC_ARTISTS = [
     price_min: 1000000,
     price_max: 2500000,
     city: 'Delhi',
-    is_popular: true,
+    is_trending: true,
     is_artist_of_month: true,
     rating: 4.8,
     artist_images: [{ image_url: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&q=80&w=800' }]
@@ -54,7 +54,7 @@ export const STATIC_ARTISTS = [
     price_min: 2000000,
     price_max: 4000000,
     city: 'Indore',
-    is_popular: true,
+    is_trending: true,
     is_artist_of_month: true,
     rating: 5.0,
     artist_images: [{ image_url: 'https://images.unsplash.com/photo-1514525253361-bee8a19740c1?auto=format&fit=crop&q=80&w=800' }]
@@ -69,7 +69,7 @@ export const STATIC_ARTISTS = [
     price_min: 1500000,
     price_max: 3000000,
     city: 'Goa',
-    is_popular: true,
+    is_trending: true,
     is_artist_of_month: true,
     rating: 4.9,
     artist_images: [{ image_url: 'https://images.unsplash.com/photo-1571266028243-e4733b0f0bb1?auto=format&fit=crop&q=80&w=800' }]
@@ -84,7 +84,7 @@ export const STATIC_ARTISTS = [
     price_min: 2500000,
     price_max: 5000000,
     city: 'Mumbai',
-    is_popular: true,
+    is_trending: true,
     is_artist_of_month: false,
     rating: 4.8,
     artist_images: [{ image_url: 'https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?auto=format&fit=crop&q=80&w=800' }]
@@ -99,7 +99,7 @@ export const STATIC_ARTISTS = [
     price_min: 1500000,
     price_max: 3000000,
     city: 'Jaipur',
-    is_popular: true,
+    is_trending: true,
     is_artist_of_month: false,
     rating: 4.7,
     artist_images: [{ image_url: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&q=80&w=800' }]
@@ -114,7 +114,7 @@ export const STATIC_ARTISTS = [
     price_min: 500000,
     price_max: 1500000,
     city: 'Pune',
-    is_popular: false,
+    is_trending: false,
     is_artist_of_month: false,
     rating: 4.6,
     artist_images: [{ image_url: 'https://images.unsplash.com/photo-1520529611404-615ac2f9274e?auto=format&fit=crop&q=80&w=800' }]
@@ -129,7 +129,7 @@ export const STATIC_ARTISTS = [
     price_min: 200000,
     price_max: 1000000,
     city: 'Kolkata',
-    is_popular: true,
+    is_trending: true,
     is_artist_of_month: false,
     rating: 4.5,
     artist_images: [{ image_url: 'https://images.unsplash.com/photo-1502472544832-763789911f80?auto=format&fit=crop&q=80&w=800' }]
@@ -144,7 +144,7 @@ export const STATIC_ARTISTS = [
     price_min: 800000,
     price_max: 2000000,
     city: 'Ahmedabad',
-    is_popular: false,
+    is_trending: false,
     is_artist_of_month: false,
     rating: 4.8,
     artist_images: [{ image_url: 'https://images.unsplash.com/photo-1459749411177-042180ceea72?auto=format&fit=crop&q=80&w=800' }]
@@ -159,7 +159,7 @@ export const STATIC_ARTISTS = [
     price_min: 500000,
     price_max: 1200000,
     city: 'Bangalore',
-    is_popular: true,
+    is_trending: true,
     is_artist_of_month: false,
     rating: 4.7,
     artist_images: [{ image_url: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&q=80&w=800' }]
@@ -174,7 +174,7 @@ export const STATIC_ARTISTS = [
     price_min: 1200000,
     price_max: 2500000,
     city: 'Bangalore',
-    is_popular: false,
+    is_trending: false,
     is_artist_of_month: false,
     rating: 4.9,
     artist_images: [{ image_url: 'https://images.unsplash.com/photo-1527224857810-8c5d6c299e03?auto=format&fit=crop&q=80&w=800' }]
@@ -189,7 +189,7 @@ export const STATIC_ARTISTS = [
     price_min: 1500000,
     price_max: 3500000,
     city: 'Mumbai',
-    is_popular: true,
+    is_trending: true,
     is_artist_of_month: false,
     rating: 4.8,
     artist_images: [{ image_url: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=800' }]
@@ -204,7 +204,7 @@ export const STATIC_ARTISTS = [
     price_min: 800000,
     price_max: 1800000,
     city: 'Chandigarh',
-    is_popular: false,
+    is_trending: false,
     is_artist_of_month: false,
     rating: 4.6,
     artist_images: [{ image_url: 'https://images.unsplash.com/photo-1514525253361-bee8a19740c1?auto=format&fit=crop&q=80&w=800' }]
@@ -219,7 +219,7 @@ export const STATIC_ARTISTS = [
     price_min: 1800000,
     price_max: 4000000,
     city: 'Pune',
-    is_popular: true,
+    is_trending: true,
     is_artist_of_month: false,
     rating: 4.9,
     artist_images: [{ image_url: 'https://images.unsplash.com/photo-1453090927415-5f45085b65c0?auto=format&fit=crop&q=80&w=800' }]
@@ -234,7 +234,7 @@ export const STATIC_ARTISTS = [
     price_min: 1000000,
     price_max: 2000000,
     city: 'Mumbai',
-    is_popular: false,
+    is_trending: false,
     is_artist_of_month: false,
     rating: 4.7,
     artist_images: [{ image_url: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&q=80&w=800' }]
@@ -249,7 +249,7 @@ export const STATIC_ARTISTS = [
     price_min: 1200000,
     price_max: 2500000,
     city: 'Mumbai',
-    is_popular: true,
+    is_trending: true,
     is_artist_of_month: false,
     rating: 4.5,
     artist_images: [{ image_url: 'https://images.unsplash.com/photo-1493225255756-d9584f8606e9?auto=format&fit=crop&q=80&w=800' }]
@@ -264,7 +264,7 @@ export const STATIC_ARTISTS = [
     price_min: 1000000,
     price_max: 2000000,
     city: 'Mumbai',
-    is_popular: true,
+    is_trending: true,
     is_artist_of_month: false,
     rating: 4.8,
     artist_images: [{ image_url: 'https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?auto=format&fit=crop&q=80&w=800' }]
@@ -279,7 +279,7 @@ export const STATIC_ARTISTS = [
     price_min: 800000,
     price_max: 1500000,
     city: 'Delhi',
-    is_popular: false,
+    is_trending: false,
     is_artist_of_month: false,
     rating: 4.7,
     artist_images: [{ image_url: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&q=80&w=800' }]
@@ -294,7 +294,7 @@ export const STATIC_ARTISTS = [
     price_min: 1500000,
     price_max: 3500000,
     city: 'Ludhiana',
-    is_popular: true,
+    is_trending: true,
     is_artist_of_month: false,
     rating: 4.9,
     artist_images: [{ image_url: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=800' }]

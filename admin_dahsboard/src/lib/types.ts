@@ -38,7 +38,8 @@ export interface Artist {
   state: string;
   locality?: string;
   address?: string;
-  is_popular: boolean;
+  is_featured: boolean;
+  is_trending: boolean;
   is_artist_of_month: boolean;
   contact_person: string;
   phone_no: string;

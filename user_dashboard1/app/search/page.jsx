@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { AppShellWrapper } from '@/app/layouts/AppShellWrapper'
 import SearchResultItem from '@/app/components/search/SearchResultItem'
@@ -9,17 +9,20 @@ import { TRENDING_SEARCHES } from '@/app/constants'
 import '@/app/styles/pages/SearchPage.css'
 
 export default function SearchPage() {
-  const [query, setQuery] = useState('')
+  const queryRef = useRef(null)
+  const [searchedQuery, setSearchedQuery] = useState('')
   const [results, setResults] = useState([])
   const [isSearching, setIsSearching] = useState(false)
 
   const handleSearch = async (e) => {
     if (e) e.preventDefault()
-    if (!query) return
+    const currentQuery = queryRef.current?.value || ''
+    if (!currentQuery) return
     setIsSearching(true)
+    setSearchedQuery(currentQuery)
 
     try {
-      const searchResults = await searchService.searchArtists(query)
+      const searchResults = await searchService.searchArtists(currentQuery)
       setResults(searchResults)
     } catch (error) {
       console.error("Search error:", error)
@@ -29,7 +32,8 @@ export default function SearchPage() {
   }
 
   const handleTrendingClick = (tag) => {
-    setQuery(tag)
+    if (queryRef.current) queryRef.current.value = tag
+    setSearchedQuery(tag)
 
     setIsSearching(true)
     searchService.searchArtists(tag).then(res => {
@@ -48,10 +52,10 @@ export default function SearchPage() {
 
         <form className="search-large-bar" onSubmit={handleSearch}>
           <input
+            ref={queryRef}
             type="text"
             placeholder="Search for 'Sufi Singers', 'Wedding Bands'..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            defaultValue=""
             autoFocus
           />
           <button type="submit" className="fx-glow-button" disabled={isSearching}>
@@ -71,13 +75,13 @@ export default function SearchPage() {
                   />
                 ))}
               </div>
-            ) : query && !isSearching ? (
+            ) : searchedQuery && !isSearching ? (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="search-empty"
               >
-                <p>No results found for &ldquo;{query}&rdquo;. Try searching for categories like &ldquo;Singers&rdquo; or &ldquo;Bands&rdquo;.</p>
+                <p>No results found for &ldquo;{searchedQuery}&rdquo;. Try searching for categories like &ldquo;Singers&rdquo; or &ldquo;Bands&rdquo;.</p>
               </motion.div>
             ) : null}
           </AnimatePresence>

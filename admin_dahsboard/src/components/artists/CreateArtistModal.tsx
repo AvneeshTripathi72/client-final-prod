@@ -83,7 +83,7 @@ const artistSchema = z.object({
     .refine((val) => val.toLowerCase().endsWith("@gmail.com"), {
       message: "Only @gmail.com addresses are allowed.",
     }),
-  is_popular: z.boolean().default(false),
+  spotlight_status: z.enum(['standard', 'featured', 'trending']).default('standard'),
   is_artist_of_month: z.boolean().default(false),
   images: z.array(z.string()).max(15, { message: "Maximum 15 photos allowed." }).optional().default([]),
   cover_image_url: z.string().optional(),
@@ -129,7 +129,7 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
       contact_person: initialData?.contact_person || "",
       phone_no: initialData?.phone_no || "",
       phone_no_alt: initialData?.phone_no_alt || "",
-      is_popular: initialData?.is_popular ?? false,
+      spotlight_status: initialData?.is_trending ? 'trending' : (initialData?.is_featured ? 'featured' : 'standard'),
       is_artist_of_month: initialData?.is_artist_of_month ?? false,
       images: initialData?.artist_images?.map((img: any) => img.image_url) || [],
       cover_image_url: initialData?.cover_image_url || initialData?.artist_images?.[0]?.image_url || "",
@@ -167,7 +167,7 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
           contact_person: initialData.contact_person || "",
           phone_no: initialData.phone_no || "",
           phone_no_alt: initialData.phone_no_alt || "",
-          is_popular: initialData.is_popular ?? false,
+          spotlight_status: initialData.is_trending ? 'trending' : (initialData.is_featured ? 'featured' : 'standard'),
           is_artist_of_month: initialData.is_artist_of_month ?? false,
           images: initialData.artist_images?.map((img: any) => img.image_url) || [],
           cover_image_url: initialData.cover_image_url || initialData.artist_images?.[0]?.image_url || "",
@@ -201,7 +201,7 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
           performance_duration: "60-90 mins",
           video_urls: [""],
           email: "",
-          is_popular: false,
+          spotlight_status: 'standard',
           is_artist_of_month: false,
           images: [],
           cover_image_url: "",
@@ -235,7 +235,8 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
         phone_no: values.phone_no,
         phone_no_alt: values.phone_no_alt || null,
         email: values.email,
-        is_popular: values.is_popular,
+        is_trending: values.spotlight_status === 'trending',
+        is_featured: values.spotlight_status === 'featured',
         is_artist_of_month: values.is_artist_of_month,
         rating: parseFloat(values.rating || '5.0'),
         members_min: parseInt(values.members_min || '1'),
@@ -244,6 +245,25 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
         successful_bookings: parseInt(values.successful_bookings || '0'),
         video_url: values.video_urls?.filter(Boolean).join(', ') || null,
       };
+
+      if (values.is_artist_of_month) {
+        // If setting this artist as Artist of the Month, turn off all others first
+        const { data: currentAOMs } = await (supabase.from('artists') as any)
+          .select('id')
+          .eq('is_artist_of_month', true);
+        
+        if (currentAOMs && currentAOMs.length > 0) {
+          const idsToTurnOff = currentAOMs.map((a: any) => a.id).filter((id: string) => id !== initialData?.id);
+          if (idsToTurnOff.length > 0) {
+            const { error: resetError } = await (supabase.from('artists') as any)
+              .update({ is_artist_of_month: false })
+              .in('id', idsToTurnOff);
+            if (resetError) {
+              console.error("Failed to reset other artists:", resetError);
+            }
+          }
+        }
+      }
       const images = values.images || [];
       let artistId = initialData?.id;
       if (artistId) {
@@ -1181,26 +1201,31 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-6 border-t border-slate-50">
                       <FormField
                         control={form.control}
-                        name="is_popular"
+                        name="spotlight_status"
                         render={({ field }) => (
                           <FormItem className="flex items-center justify-between rounded-2xl border border-slate-100 p-4 bg-slate-50/30 hover:border-sky-100 transition-all shadow-sm">
                             <div className="space-y-0.5">
                               <FormLabel className="text-[10px] font-black uppercase tracking-wider text-slate-900">Spotlight Status</FormLabel>
-                              <p className="text-[9px] font-semibold text-slate-400 italic">Set as Trending Profile</p>
+                              <p className="text-[9px] font-semibold text-slate-400 italic">
+                                {field.value === 'trending' ? 'Trending Profile' : (field.value === 'featured' ? 'Featured Artist' : 'Standard')}
+                              </p>
                             </div>
                             <FormControl>
                               <Select
-                                value={field.value ? 'popular' : 'standard'}
-                                onValueChange={(val) => field.onChange(val === 'popular')}
+                                value={field.value}
+                                onValueChange={field.onChange}
                               >
-                                <SelectTrigger className="w-[120px] h-9 rounded-xl border-slate-200 bg-white text-[11px] font-black shadow-sm focus:ring-sky-400">
+                                <SelectTrigger className="w-[140px] h-9 rounded-xl border-slate-200 bg-white text-[11px] font-black shadow-sm focus:ring-sky-400">
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className="rounded-xl border-slate-100 shadow-lg p-1">
-                                  <SelectItem value="standard" className="rounded-lg text-[11px] font-black text-slate-700 py-2">
+                                  <SelectItem value="standard" className="rounded-lg text-[11px] font-black text-slate-500 py-2">
+                                    Standard Profile
+                                  </SelectItem>
+                                  <SelectItem value="featured" className="rounded-lg text-[11px] font-black text-amber-600 py-2">
                                     ⭐ Featured Artist
                                   </SelectItem>
-                                  <SelectItem value="popular" className="rounded-lg text-[11px] font-black text-amber-600 py-2">
+                                  <SelectItem value="trending" className="rounded-lg text-[11px] font-black text-orange-600 py-2">
                                     🔥 Trending Profile
                                   </SelectItem>
                                 </SelectContent>

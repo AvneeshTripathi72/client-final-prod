@@ -58,10 +58,10 @@ export default function ArtistManagement() {
       }
 
       if (filters.isStandard) {
-        query = query.eq('is_popular', false).eq('is_artist_of_month', false);
+        query = query.eq('is_trending', false).eq('is_artist_of_month', false);
       }
       if (filters.isPopular) {
-        query = query.eq('is_popular', true);
+        query = query.eq('is_trending', true);
       }
       if (filters.isArtistOfMonth) {
         query = query.eq('is_artist_of_month', true);
@@ -112,6 +112,46 @@ export default function ArtistManagement() {
       toast({ variant: 'destructive', title: 'Error', description: error.message || 'Failed to delete artist.' });
     }
   };
+
+  const handleToggleArtistOfMonth = async (artist: any) => {
+    try {
+      if (artist.is_artist_of_month) {
+        // Toggle off
+        const { error } = await (supabase.from('artists') as any)
+          .update({ is_artist_of_month: false })
+          .eq('id', artist.id);
+        if (error) throw error;
+        toast({ title: 'Updated', description: `${artist.name} is no longer the Artist of the Month.` });
+      } else {
+        // Toggle on: first turn off all others
+        const { data: currentAOMs } = await (supabase.from('artists') as any)
+          .select('id')
+          .eq('is_artist_of_month', true);
+        
+        if (currentAOMs && currentAOMs.length > 0) {
+          const idsToTurnOff = currentAOMs.map((a: any) => a.id).filter((id: string) => id !== artist.id);
+          if (idsToTurnOff.length > 0) {
+            const { error: error1 } = await (supabase.from('artists') as any)
+              .update({ is_artist_of_month: false })
+              .in('id', idsToTurnOff);
+            if (error1) throw error1;
+          }
+        }
+
+        // Set this one to true
+        const { error: error2 } = await (supabase.from('artists') as any)
+          .update({ is_artist_of_month: true })
+          .eq('id', artist.id);
+        if (error2) throw error2;
+        
+        toast({ title: 'Updated', description: `${artist.name} is now the Artist of the Month.` });
+      }
+      fetchArtists(false);
+    } catch (error: any) {
+      toast({ variant: 'destructive', title: 'Error', description: error.message || 'Failed to update artist of the month.' });
+    }
+  };
+
   const handleViewDetails = (artistName: string) => {
     router.push(`/dashboard/browse?search=${encodeURIComponent(artistName)}`);
   };
@@ -248,7 +288,7 @@ export default function ArtistManagement() {
                             <div className="flex items-center gap-1.5">
                               <p className="font-bold text-slate-900 text-[15px] leading-tight truncate active:text-sky-600 transition-colors cursor-pointer" title={artist.name}>{artist.name}</p>
                               <div className="flex items-center gap-1 flex-shrink-0">
-                                {artist.is_popular && <Star size={12} className="text-amber-500" fill="currentColor" />}
+                                {artist.is_trending && <Star size={12} className="text-amber-500" fill="currentColor" />}
                                 {artist.is_artist_of_month && <Music size={12} className="text-indigo-600" />}
                               </div>
                             </div>
@@ -309,13 +349,13 @@ export default function ArtistManagement() {
                               Artist of Month
                             </span>
                           )}
-                          {artist.is_popular && (
+                          {artist.is_trending && (
                             <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[11px] font-bold bg-amber-50/50 text-amber-600 border border-amber-200/50 shadow-sm">
                               <Star size={10} fill="currentColor" />
                               Trending
                             </span>
                           )}
-                          {!artist.is_popular && !artist.is_artist_of_month && (
+                          {!artist.is_trending && !artist.is_artist_of_month && (
                             <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[11px] font-bold bg-slate-50 text-slate-500 border border-slate-200 shadow-sm opacity-60">
                               <User size={10} />
                               Standard
@@ -325,6 +365,18 @@ export default function ArtistManagement() {
                       </TableCell>
                       <TableCell className="pr-8">
                         <div className="flex items-center justify-center gap-2">
+                          <button
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); handleToggleArtistOfMonth(artist); }}
+                            className={`w-9 h-9 rounded-lg flex items-center justify-center border transition-colors shadow-sm relative z-10 ${
+                              artist.is_artist_of_month 
+                                ? 'bg-indigo-50 border-indigo-200 text-indigo-600 hover:bg-white hover:border-slate-100 hover:text-slate-400' 
+                                : 'bg-white border-slate-100 text-slate-400 hover:border-indigo-600 hover:text-indigo-600'
+                            }`}
+                            title={artist.is_artist_of_month ? "Remove Artist of Month" : "Make Artist of Month"}
+                          >
+                            <Music size={14} />
+                          </button>
                           <button
                             type="button"
                             onClick={(e) => { e.stopPropagation(); handleEditArtist(artist); }}

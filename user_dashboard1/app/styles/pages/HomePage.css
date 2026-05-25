@@ -341,101 +341,139 @@
   margin-top: 80px;
   display: flex;
   justify-content: center;
-  gap: 60px;
+  align-items: center;
   width: 100%;
-  max-width: 1400px;
+  max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
-  padding: 0 40px;
-}
-
-.hp-stat-card {
+  
+  /* Make the wrapper the single card */
   background: rgba(20, 10, 10, 0.6);
   backdrop-filter: blur(40px);
   border: 1px solid rgba(214, 80, 80, 0.2);
-  border-radius: 20px;
-  padding: 26px 24px;
-  flex: 1;
-  position: relative;
-  text-align: center;
-  overflow: hidden;
+  border-radius: 24px;
+  padding: 40px;
   box-shadow:
     0 30px 60px rgba(0, 0, 0, 0.5),
     inset 0 0 30px rgba(214, 80, 80, 0.05);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 220px;
-  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.hp-stat-card::before {
+.hp-stats::before {
   content: '';
   position: absolute;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 40px;
+  width: 100px;
   height: 4px;
   background: var(--brand-ruby);
   border-radius: 0 0 4px 4px;
   box-shadow: 0 0 15px var(--glow-red);
 }
 
-.hp-stat-card::after {
+.hp-stat-card {
+  flex: 1;
+  position: relative;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 20px;
+}
+
+/* Add dividers between items */
+.hp-stat-card:not(:last-child)::after {
   content: '';
   position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at 50% 0%, rgba(214, 80, 80, 0.1), transparent 70%);
-  pointer-events: none;
+  right: 0;
+  top: 10%;
+  height: 80%;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(214, 80, 80, 0.3), transparent);
 }
 
 .hp-stat-card strong {
   display: block;
-  color: var(--brand-ruby);
-  font-size: clamp(4.2rem, 7.4vw, 5.8rem);
-  font-weight: 900;
-  margin-bottom: 12px;
-  letter-spacing: -0.05em;
+  color: rgba(214, 80, 80, 0.85); /* Slightly darker/less bright red */
+  font-size: clamp(1.6rem, 3.2vw, 2.4rem); /* Reduced by 20% */
+  font-weight: 700; /* Decreased boldness */
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
   line-height: 1;
-  text-shadow: 0 0 40px rgba(214, 80, 80, 0.4);
+  text-shadow: 0 0 15px rgba(214, 80, 80, 0.15); /* Reduced glow brightness */
+  white-space: nowrap;
 }
 
-.hp-stat-card span {
+.hp-stat-card strong span {
+  font-size: inherit;
+  font-weight: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  opacity: 1;
+}
+
+.hp-stat-card > span {
   color: #fff;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.2em;
   opacity: 0.9;
   position: relative;
 }
 
-.hp-stat-card span::after {
+.hp-stat-card > span::before {
   content: '';
   display: block;
   width: 30px;
   height: 2px;
   background: var(--brand-ruby);
-  margin: 12px auto 0;
+  margin: 0 auto 10px;
   opacity: 0.6;
 }
 
 @media (max-width: 1024px) {
   .hp-stats {
-    flex-direction: column;
-    gap: 30px;
-    padding: 0 24px;
+    padding: 30px 15px;
+    margin-left: 20px;
+    margin-right: 20px;
+    width: auto;
   }
+}
+
+@media (max-width: 768px) {
+  .hp-stats {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 30px 0;
+    padding: 30px 10px;
+    border-radius: 20px;
+  }
+  
   .hp-stat-card {
-    min-height: 198px;
-    padding: 36px 20px;
+    flex: 1 1 33.33%;
+    padding: 0 5px;
   }
+
+  /* Remove vertical dividers on mobile, replace with nothing since it's a tight row */
+  .hp-stat-card:not(:last-child)::after {
+    display: none;
+  }
+
   .hp-stat-card strong {
-    font-size: 3.5rem;
+    font-size: 1.6rem;
+    margin-bottom: 6px;
   }
-  .hp-stat-card span {
-    font-size: 14px;
+  
+  .hp-stat-card > span {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+
+  .hp-stat-card > span::before {
+    margin: 0 auto 6px;
   }
 }
 
@@ -935,7 +973,7 @@
   margin-top: 18px;
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(320px, 1fr);
+  grid-auto-columns: 320px;
   gap: 24px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
@@ -961,7 +999,7 @@
   margin-top: 18px;
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(320px, 1fr);
+  grid-auto-columns: 320px;
   gap: 24px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;

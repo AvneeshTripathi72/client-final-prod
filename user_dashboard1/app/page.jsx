@@ -1,16 +1,14 @@
-import dynamic from 'next/dynamic'
 import HeroSection from '@/app/components/home/HeroSection'
 import TopPerformerSection from '@/app/components/home/TopPerformerSection'
 import CategoriesSection from '@/app/components/home/CategoriesSection'
 import FeaturedArtistsSection from '@/app/components/home/FeaturedArtistsSection'
 import WhyChooseSection from '@/app/components/home/WhyChooseSection'
+import TestimonialsSection from '@/app/components/home/TestimonialsSection'
 import HowToBookSection from '@/app/components/home/HowToBookSection'
+import FaqSection from '@/app/components/home/FaqSection'
+import InfoCards from '@/app/components/home/InfoCards'
+import ContactSection from '@/app/components/home/ContactSection'
 import '@/app/styles/pages/HomePage.css'
-
-const TestimonialsSection = dynamic(() => import('@/app/components/home/TestimonialsSection'), { ssr: true })
-const FaqSection = dynamic(() => import('@/app/components/home/FaqSection'), { ssr: true })
-const InfoCards = dynamic(() => import('@/app/components/home/InfoCards'), { ssr: true })
-const ContactSection = dynamic(() => import('@/app/components/home/ContactSection'), { ssr: true })
 
 export default function HomePage() {
   return (

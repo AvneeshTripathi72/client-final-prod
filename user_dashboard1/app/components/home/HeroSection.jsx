@@ -58,20 +58,55 @@ export default function HeroSection() {
           <div className="hp-hero-main full-width">
             <motion.h1
               className="hp-hero-h1"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: { opacity: 1 },
+                visible: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.05, delayChildren: 0.0 }
+                }
+              }}
             >
-              Book A <span className="hp-gradient-text accent-text">Musician</span>
+              {"Book A".split(" ").map((word, i) => (
+                <motion.span key={`w1-${i}`} style={{ display: 'inline-block', marginRight: '16px' }} variants={{ hidden: { opacity: 0, y: 15, filter: 'blur(8px)' }, visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } } }}>
+                  {word}
+                </motion.span>
+              ))}
+              <motion.span 
+                className="hp-gradient-text accent-text" 
+                style={{ display: 'inline-block' }}
+                variants={{ hidden: { opacity: 0, y: 15, filter: 'blur(8px)' }, visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } } }}
+              >
+                Musician
+              </motion.span>
               <br />
-              For Your <span className="hp-gradient-text accent-text">Grand Event!</span>
+              {"For Your".split(" ").map((word, i) => (
+                <motion.span key={`w2-${i}`} style={{ display: 'inline-block', marginRight: '16px' }} variants={{ hidden: { opacity: 0, y: 15, filter: 'blur(8px)' }, visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } } }}>
+                  {word}
+                </motion.span>
+              ))}
+              <motion.span 
+                className="hp-gradient-text accent-text" 
+                style={{ display: 'inline-block', marginRight: '16px' }}
+                variants={{ hidden: { opacity: 0, y: 15, filter: 'blur(8px)' }, visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } } }}
+              >
+                Grand
+              </motion.span>
+              <motion.span 
+                className="hp-gradient-text accent-text" 
+                style={{ display: 'inline-block' }}
+                variants={{ hidden: { opacity: 0, y: 15, filter: 'blur(8px)' }, visible: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } } }}
+              >
+                Event!
+              </motion.span>
             </motion.h1>
 
             <motion.div
               className="hp-hero-contact-wrap"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.28 }}
+              transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             >
               <a href="tel:+918076515257" className="hp-hero-contact-pill">
                 <span className="hp-contact-icon">📞</span>
@@ -81,9 +116,9 @@ export default function HeroSection() {
 
             <motion.div
               className="hp-hero-actions"
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.45 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             >
               <button
                 onClick={() => window.dispatchEvent(new CustomEvent('open-contact-modal', { detail: { type: 'booking' } }))}
@@ -99,17 +134,30 @@ export default function HeroSection() {
 
             <motion.div
               className="hp-stats"
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.62 }}
+              initial="hidden"
+              animate="visible"
+              variants={{
+                hidden: { opacity: 0 },
+                visible: {
+                  opacity: 1,
+                  transition: { staggerChildren: 0.1, delayChildren: 0.5 }
+                }
+              }}
             >
               {HERO_STATS.map(item => (
-                <div key={item.label} className="hp-stat-card">
+                <motion.div 
+                  key={item.label} 
+                  className="hp-stat-card"
+                  variants={{
+                    hidden: { opacity: 0, y: 15, scale: 0.95 },
+                    visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+                  }}
+                >
                   <strong>
                     <AnimatedCounter to={item.value} suffix={item.suffix} />
                   </strong>
                   <span>{item.label}</span>
-                </div>
+                </motion.div>
               ))}
             </motion.div>
           </div>

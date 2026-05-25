@@ -100,9 +100,9 @@ function BrowseArtistsContent() {
       }
 
       if (filters.isStandard) {
-        query = query.eq('is_popular', false).eq('is_artist_of_month', false);
+        query = query.eq('is_trending', false).eq('is_artist_of_month', false);
       }
-      if (filters.isPopular) query = query.eq('is_popular', true);
+      if (filters.isPopular) query = query.eq('is_trending', true);
       if (filters.isArtistOfMonth) query = query.eq('is_artist_of_month', true);
 
       const { data, error } = await query.order('name', { ascending: true });
@@ -283,7 +283,7 @@ function BrowseArtistsContent() {
                     </div>
                   )}
                   <div className="absolute top-4 left-4 flex flex-col gap-2 items-start">
-                    {artist.is_popular ? (
+                    {artist.is_trending ? (
                       <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400 text-white text-[9px] font-black uppercase tracking-widest shadow-lg shadow-amber-200/50">
                         <Star size={10} fill="currentColor" />
                         Popular
@@ -421,7 +421,7 @@ function BrowseArtistsContent() {
                 </div>
               )}
               <div className="absolute top-4 left-4 z-20 flex flex-col gap-2 items-start">
-                {selectedArtist?.is_popular && (
+                {selectedArtist?.is_trending && (
                   <div className="px-3 py-1.5 rounded-full bg-amber-400 text-white text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 border border-amber-300/50 shadow-lg shadow-amber-900/10">
                     <Star size={12} fill="white" />
                     Popular Artist

@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter, usePathname } from 'next/navigation'
-import { HomeIcon, ServicesIcon, AboutIcon, ContactIcon } from '@/app/components/icons/NavigationIcons'
+import { HomeIcon, ServicesIcon, AboutIcon, ContactIcon, RegisterIcon } from '@/app/components/icons/NavigationIcons'
 
 function Tab({ path, icon, label, onNavigate, isActive }) {
   const iconColor = isActive ? '#FFE032' : '#8a8f98'
@@ -59,13 +59,60 @@ export default function BottomNav() {
         display: 'flex',
         padding: '0 8px',
       }}>
+        {/* Slot 1: Home */}
         <Tab path="/" icon={(color) => <HomeIcon color={color} />} label="Home" onNavigate={(p) => router.push(p)} isActive={active('/')} />
+        
+        {/* Slot 2: Services */}
         <Tab path="/services" icon={(color) => <ServicesIcon color={color} />} label="Services" onNavigate={(p) => router.push(p)} isActive={active('/services')} />
+        
+        {/* Slot 3: Center Elevated Register FAB */}
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'relative',
+          height: '100%',
+          zIndex: 180
+        }}>
+          <button
+            className="booking-tab-btn register-center-fab"
+            onClick={() => {
+              window.dispatchEvent(new CustomEvent('open-register-modal'));
+            }}
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -55%)',
+              width: '64px',
+              height: '64px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #FF2E93 0%, #FF8A00 100%)',
+              border: '3px solid #1d1c1c',
+              boxShadow: '0 8px 25px rgba(255, 46, 147, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.25)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              WebkitTapHighlightColor: 'transparent',
+              transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
+            }}
+          >
+            <RegisterIcon color="#fff" />
+            <span style={{ fontSize: '8px', fontWeight: '900', color: '#fff', letterSpacing: '0.05em', textTransform: 'uppercase', marginTop: '1px' }}>Register</span>
+          </button>
+        </div>
+
+        {/* Slot 4: Blog */}
         <Tab path="/blog-post" icon={(color) => <AboutIcon color={color} />} label="Blog" onNavigate={(p) => router.push(p)} isActive={active('/blog-post')} />
+        
+        {/* Slot 5: Contact */}
         <Tab
           path="/contact"
           icon={(color) => <ContactIcon color={color} />}
-          label="Contact Us"
+          label="Contact"
           onNavigate={(p) => {
             window.dispatchEvent(new CustomEvent('open-contact-modal', { detail: { type: 'contact' } }));
           }}
@@ -76,12 +123,12 @@ export default function BottomNav() {
       <div className="booking-bottom-nav-spacer" style={{ height: 'calc(62px + env(safe-area-inset-bottom))' }} />
 
       <style>{`
-        .booking-bottom-nav .booking-tab-btn {
+        .booking-bottom-nav .booking-tab-btn:not(.register-center-fab) {
           color: #8a8f98 !important;
           opacity: 0.7 !important;
         }
 
-        .booking-bottom-nav .booking-tab-btn.is-active {
+        .booking-bottom-nav .booking-tab-btn:not(.register-center-fab).is-active {
           color: #FFE032 !important;
           opacity: 1 !important;
         }
@@ -90,11 +137,28 @@ export default function BottomNav() {
           color: currentColor !important;
         }
 
+        .booking-bottom-nav .register-center-fab {
+          opacity: 1 !important;
+          color: #fff !important;
+        }
+
+        .booking-bottom-nav .register-center-fab:hover,
+        .booking-bottom-nav .register-center-fab:active {
+          transform: translate(-50%, -64%) scale(1.08) !important;
+          box-shadow: 0 12px 30px rgba(255, 46, 147, 0.65), inset 0 2px 4px rgba(255, 255, 255, 0.4) !important;
+          background: linear-gradient(135deg, #ff1a84 0%, #ff7b00 100%) !important;
+        }
+
         @media (min-width: 768px) {
           .booking-bottom-nav,
           .booking-bottom-nav-spacer {
             display: none !important;
           }
+        }
+
+        body.modal-open .booking-bottom-nav,
+        body.modal-open .booking-bottom-nav-spacer {
+          display: none !important;
         }
       `}</style>
     </>

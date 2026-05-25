@@ -12,25 +12,23 @@ export default function PWAInstallPrompt() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    // 🧪 TESTING OVERRIDE: Bypassed to persistently display the install banner on every page refresh.
-    // ⚠️ IN PRODUCTION: Simply uncomment the blocks below to restore dismissal and standalone state checks!
-    /*
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
     if (isStandalone) {
       return;
     }
 
-    const isDismissed = localStorage.getItem('magnevents-pwa-dismissed');
-    if (isDismissed === 'true') {
+    // 🔒 Limit display to the very first visit only
+    const hasBeenShown = localStorage.getItem('magnevents-pwa-shown');
+    if (hasBeenShown === 'true') {
       return;
     }
-    */
 
     const handleBeforeInstallPrompt = (e) => {
       e.preventDefault();
       setDeferredPrompt(e);
       window.deferredPrompt = e;
       setShowPrompt(true);
+      localStorage.setItem('magnevents-pwa-shown', 'true');
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
@@ -38,9 +36,11 @@ export default function PWAInstallPrompt() {
     if (window.deferredPrompt) {
       setDeferredPrompt(window.deferredPrompt);
       setShowPrompt(true);
+      localStorage.setItem('magnevents-pwa-shown', 'true');
     } else {
       const timer = setTimeout(() => {
         setShowPrompt(true);
+        localStorage.setItem('magnevents-pwa-shown', 'true');
       }, 3000);
       
       return () => {

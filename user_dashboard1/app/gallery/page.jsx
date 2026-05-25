@@ -1,6 +1,7 @@
 "use client"
 
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import { AppShellWrapper } from '@/app/layouts/AppShellWrapper'
 import '@/app/styles/pages/Gallery.css'
 import { GALLERY_ITEMS } from '@/app/constants'
@@ -25,8 +26,15 @@ export default function GalleryPage() {
               transition={{ delay: idx * 0.1 }}
               className={`gallery-item ${item.size}`}
             >
-              <div className="gallery-media">
-                <img src={item.img} alt={item.title} />
+              <div className="gallery-media" style={{ position: 'relative', overflow: 'hidden' }}>
+                <Image
+                  src={item.img}
+                  alt={item.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  style={{ objectFit: 'cover' }}
+                  loading="lazy"
+                />
                 <div className="gallery-overlay">
                   <h3>{item.title}</h3>
                 </div>

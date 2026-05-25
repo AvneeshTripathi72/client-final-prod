@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import FadeSection from '@/app/components/common/FadeSection'
 import { ARTIST_CATEGORIES } from '@/app/constants'
 
-export default function CategoriesSection() {
+function CategoriesSection() {
   const [catPage, setCatPage] = useState(0)
   const [catPerPage, setCatPerPage] = useState(4)
 
@@ -116,6 +116,8 @@ export default function CategoriesSection() {
     </FadeSection>
   )
 }
+
+export default React.memo(CategoriesSection);
 
 // Next HMR Cache Invalidation Trigger: Categories Carousel Mobile 2/2 Swipe Fixed 2026-05-17
 

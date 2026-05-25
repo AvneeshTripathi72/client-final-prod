@@ -32,10 +32,11 @@ export default function Nav() {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [query, setQuery] = useState('');
   const [contactModalOpen, setContactModalOpen] = useState(false);
   const [modalType, setModalType] = useState('booking');
   const [selectedArtist, setSelectedArtist] = useState('');
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [selectedService, setSelectedService] = useState(null);
 
   const searchRef = useRef(null);
   const scrolled = useScrolled(20);
@@ -48,8 +49,16 @@ export default function Nav() {
   useEffect(() => {
     const handleOpenModal = (e) => {
       if (e.detail?.type) setModalType(e.detail.type);
+      
       if (e.detail?.artist) setSelectedArtist(e.detail.artist);
       else setSelectedArtist('');
+
+      if (e.detail?.pricingPlan) setSelectedPlan(e.detail.pricingPlan);
+      else setSelectedPlan(null);
+
+      if (e.detail?.service) setSelectedService(e.detail.service);
+      else setSelectedService(null);
+
       setContactModalOpen(true);
       setMenuOpen(false);
     };
@@ -59,15 +68,18 @@ export default function Nav() {
 
   function handleSearchSubmit(e) {
     e.preventDefault();
-    if (!query.trim()) return;
+    const currentQuery = searchRef.current?.value || '';
+    if (!currentQuery.trim()) return;
     setSearchOpen(false);
-    router.push(`/search?q=${encodeURIComponent(query.trim())}`);
-    setQuery('');
+    router.push(`/search?q=${encodeURIComponent(currentQuery.trim())}`);
+    if (searchRef.current) searchRef.current.value = '';
   }
 
   const openContactModal = (type) => {
     setModalType(type);
     setSelectedArtist('');
+    setSelectedPlan(null);
+    setSelectedService(null);
     setContactModalOpen(true);
   };
 
@@ -113,9 +125,10 @@ export default function Nav() {
 
             <button
               onClick={() => window.dispatchEvent(new CustomEvent('open-register-modal'))}
-              className="lux-nav-cta secondary"
+              className="lux-nav-cta secondary lux-nav-register-btn"
             >
-              Artist Register
+              <span className="cta-long-text">Register</span>
+              <span className="cta-short-text">Register</span>
             </button>
 
             <button className={`lux-hamburger ${menuOpen ? 'is-open' : ''}`} onClick={() => setMenuOpen(!menuOpen)}>
@@ -139,8 +152,6 @@ export default function Nav() {
       <SearchOverlay
         isOpen={searchOpen}
         onClose={() => setSearchOpen(false)}
-        query={query}
-        onQueryChange={e => setQuery(e.target.value)}
         onSubmit={handleSearchSubmit}
         searchRef={searchRef}
       />
@@ -150,6 +161,8 @@ export default function Nav() {
         onClose={() => setContactModalOpen(false)}
         initialType={modalType}
         initialArtist={selectedArtist}
+        initialPlan={selectedPlan}
+        initialService={selectedService}
       />
     </>
   );
