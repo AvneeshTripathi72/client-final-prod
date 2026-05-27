@@ -358,55 +358,12 @@
   margin-top: 20px; /* Reduced empty space */
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
+  gap: 20px;
   width: 100%;
   max-width: 1000px; /* Reduced box width */
   margin-left: auto;
   margin-right: auto;
-  
-  /* Make the wrapper the single card */
-  background: rgba(20, 10, 10, 0.6);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(214, 80, 80, 0.2);
-  border-radius: 24px;
-  padding: 30px 20px; /* Decreased box height/padding */
-  box-shadow:
-    0 30px 60px rgba(0, 0, 0, 0.5),
-    inset 0 0 30px rgba(214, 80, 80, 0.05);
-  position: relative;
-  overflow: hidden;
-}
-
-.hp-stats::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100px;
-  height: 4px;
-  background: var(--brand-ruby);
-  border-radius: 0 0 4px 4px;
-  box-shadow: 0 0 15px var(--glow-red);
-}
-
-/* Subtle glowing shimmer moving across the single card */
-.hp-stats::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform: translateX(-100%);
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(
-    to right,
-    transparent 0%,
-    rgba(214, 80, 80, 0.05) 50%,
-    transparent 100%
-  );
-  animation: stats-shimmer 6s infinite;
-  pointer-events: none;
 }
 
 @keyframes stats-shimmer {
@@ -422,18 +379,48 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 0 20px;
+  
+  /* Make each card individual */
+  background: rgba(20, 10, 10, 0.6);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(214, 80, 80, 0.2);
+  border-radius: 24px;
+  padding: 30px 20px;
+  box-shadow:
+    0 30px 60px rgba(0, 0, 0, 0.5),
+    inset 0 0 30px rgba(214, 80, 80, 0.05);
+  overflow: hidden;
 }
 
-/* Add dividers between items */
-.hp-stat-card:not(:last-child)::after {
+.hp-stat-card::before {
   content: '';
   position: absolute;
-  right: 0;
-  top: 10%;
-  height: 80%;
-  width: 1px;
-  background: linear-gradient(to bottom, transparent, rgba(214, 80, 80, 0.3), transparent);
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: var(--brand-ruby);
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 0 15px var(--glow-red);
+}
+
+.hp-stat-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(-100%);
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(214, 80, 80, 0.05) 50%,
+    transparent 100%
+  );
+  animation: stats-shimmer 6s infinite;
+  pointer-events: none;
 }
 
 .hp-stat-card strong {
@@ -482,7 +469,6 @@
 
 @media (max-width: 1024px) {
   .hp-stats {
-    padding: 30px 15px;
     margin-left: 20px;
     margin-right: 20px;
     width: auto;
@@ -491,35 +477,47 @@
 
 @media (max-width: 768px) {
   .hp-stats {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 30px 0;
-    padding: 30px 10px;
-    border-radius: 20px;
+    flex-direction: column;
+    gap: 12px;
   }
   
   .hp-stat-card {
-    flex: 1 1 33.33%;
-    padding: 0 5px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    padding: 18px 24px;
+    border-radius: 18px;
+    flex: 1 1 100%;
   }
 
-  /* Remove vertical dividers on mobile, replace with nothing since it's a tight row */
-  .hp-stat-card:not(:last-child)::after {
-    display: none;
+  /* Move the top glowing line to the left side for horizontal ribbons */
+  .hp-stat-card::before {
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 60%;
+    border-radius: 0 4px 4px 0;
   }
 
   .hp-stat-card strong {
-    font-size: 1.6rem;
-    margin-bottom: 6px;
+    font-size: 1.8rem;
+    margin-bottom: 0;
+    padding: 0;
   }
   
   .hp-stat-card > span {
-    font-size: 10px;
+    font-size: 11px;
     letter-spacing: 0.1em;
+    text-align: right;
+    max-width: 50%;
+    line-height: 1.4;
   }
 
+  /* Hide the horizontal line above text */
   .hp-stat-card > span::before {
-    margin: 0 auto 6px;
+    display: none;
   }
 }
 

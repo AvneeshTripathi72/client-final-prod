@@ -18,8 +18,8 @@ export default function HomePage() {
       <CategoriesSection />
       <FeaturedArtistsSection />
       <WhyChooseSection />
-      <TestimonialsSection />
       <HowToBookSection />
+      <TestimonialsSection />
       <FaqSection />
       <InfoCards />
       <ContactSection />
