@@ -51,8 +51,7 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [isEditOpen, setIsEditOpen] = useState(true);
-
-
+  const [pendingRequestsCount, setPendingRequestsCount] = useState(0);
 
   useEffect(() => {
     const getAuthUser = async () => {
@@ -81,6 +80,24 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
     };
     getAuthUser();
 
+    const fetchPendingCount = async () => {
+      try {
+        const { count, error } = await (supabase
+          .from('bookings') as any)
+          .select('*', { count: 'exact', head: true })
+          .eq('booking_source', 'client')
+          .eq('status', 'pending');
+          
+        if (!error && count !== null) {
+          setPendingRequestsCount(count);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    
+    fetchPendingCount();
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session?.user) {
         setUser(session.user);
@@ -88,8 +105,17 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
         setUser(null);
       }
     });
+    
+    const channel = supabase.channel('bookings_changes_sidebar')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => {
+        fetchPendingCount();
+      })
+      .subscribe();
 
-    return () => subscription.unsubscribe();
+    return () => {
+      subscription.unsubscribe();
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const handleSignOut = async () => {
@@ -194,17 +220,24 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
                 href={item.href || '#'}
                 onClick={onClose}
                 className={cn(
-                  "nav-item group",
+                  "nav-item group relative flex items-center justify-between",
                   isActive && "active"
                 )}
               >
-                <item.icon size={18} strokeWidth={isActive ? 2.5 : 2} className={cn(
-                  "nav-icon transition-colors",
-                  isActive ? "text-white" : "text-white/40 group-hover:text-white/70"
-                )} />
-                <span className={cn(isActive ? "font-bold text-white" : "font-medium text-white/60 group-hover:text-white/80")}>
-                  {item.name}
-                </span>
+                <div className="flex items-center gap-3">
+                  <item.icon size={18} strokeWidth={isActive ? 2.5 : 2} className={cn(
+                    "nav-icon transition-colors",
+                    isActive ? "text-white" : "text-white/40 group-hover:text-white/70"
+                  )} />
+                  <span className={cn(isActive ? "font-bold text-white" : "font-medium text-white/60 group-hover:text-white/80")}>
+                    {item.name}
+                  </span>
+                </div>
+                {item.name === 'Client Request' && pendingRequestsCount > 0 && (
+                  <span className="bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg border border-rose-400 animate-pulse">
+                    {pendingRequestsCount}
+                  </span>
+                )}
               </Link>
             );
           })}

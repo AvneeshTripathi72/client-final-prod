@@ -251,7 +251,7 @@ export default function ArtistManagement() {
                   artists
                     .slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
                     .map((artist) => (
-                    <TableRow key={artist.id} className="group border-slate-50 hover:bg-slate-50/50 transition-colors">
+                    <TableRow key={artist.id} className="group border-slate-50 hover:bg-slate-50/50 transition-colors cursor-pointer" onClick={() => handleEditArtist(artist)}>
                       <TableCell className="pl-8 py-5">
                         <div className="flex items-center gap-4">
                           <div className="relative flex-shrink-0 group/img">

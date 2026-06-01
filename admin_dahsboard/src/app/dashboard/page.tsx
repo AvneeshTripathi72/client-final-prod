@@ -930,32 +930,21 @@ export default function DashboardOverview() {
             {totalPages > 1 && (
               <div className="flex items-center justify-center gap-2 pt-6">
                 <button
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  className="btn-secondary h-9 px-4 text-[12px] font-semibold disabled:opacity-30 disabled:cursor-not-allowed"
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  className="w-10 h-10 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed hover:border-sky-600 hover:text-sky-600 transition-all shadow-sm"
                 >
-                  <ChevronLeft size={14} /> Previous
+                  <ChevronLeft size={18} strokeWidth={2.5} />
                 </button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                  <button
-                    key={page}
-                    onClick={() => setCurrentPage(page)}
-                    className={cn(
-                      "w-9 h-9 rounded-[8px] text-[12px] font-bold transition-all",
-                      currentPage === page
-                        ? "bg-sky-600 text-white shadow-md"
-                        : "bg-white text-slate-600 border border-slate-200"
-                    )}
-                  >
-                    {page}
-                  </button>
-                ))}
+                <div className="px-4 py-2 rounded-xl bg-white border border-slate-200 shadow-sm flex items-center h-10">
+                  <p className="text-[13px] font-bold text-slate-900">Page <span className="text-sky-600">{currentPage}</span> of <span className="text-slate-900">{totalPages}</span></p>
+                </div>
                 <button
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
-                  className="btn-secondary h-9 px-4 text-[12px] font-semibold disabled:opacity-30 disabled:cursor-not-allowed"
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  className="w-10 h-10 rounded-xl flex items-center justify-center border border-slate-200 bg-white text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed hover:border-sky-600 hover:text-sky-600 transition-all shadow-sm"
                 >
-                  Next <ChevronRight size={14} />
+                  <ChevronRight size={18} strokeWidth={2.5} />
                 </button>
               </div>
             )}

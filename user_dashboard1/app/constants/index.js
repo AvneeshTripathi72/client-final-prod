@@ -162,7 +162,7 @@ export const NAV_LINKS = [
   { label: 'Blog Post', path: '/blog-post' },
 ]
 
-export const ARTISTS_CAT_FILTER = ['All', 'Singers', 'Bands', 'DJs', 'Instrumentalists', 'Stage Shows']
+export const ARTISTS_CAT_FILTER = ['All', 'Singer', 'Live band', 'Magician', 'Anchor', 'Comedian', 'Instrumentalist', 'Djs']
 
 export const ALL_ARTISTS = [
   {

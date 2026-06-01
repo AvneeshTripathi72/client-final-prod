@@ -139,6 +139,55 @@ ${artistDetailsString}${planDetailsString}${serviceDetailsString}
       console.error("Background email sending error:", err);
     });
 
+    // Also save to Supabase bookings table for admin dashboard
+    if (!isRegister && !isCallRequest) {
+      try {
+        const { createClient } = require('@supabase/supabase-js');
+        const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL || '', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '');
+        
+        let numericBudget = 0;
+        if (data.budget) {
+          // extract some numeric budget if possible
+          if (data.budget.includes('5k_10k')) numericBudget = 10000;
+          else if (data.budget.includes('10k_20k')) numericBudget = 20000;
+          else if (data.budget.includes('20k_35k')) numericBudget = 35000;
+          else if (data.budget.includes('35k_50k')) numericBudget = 50000;
+          else if (data.budget.includes('50k_80k')) numericBudget = 80000;
+          else if (data.budget.includes('80k_1.2L')) numericBudget = 120000;
+          else if (data.budget.includes('1.2L_1.5L')) numericBudget = 150000;
+          else if (data.budget.includes('1.5L_2L')) numericBudget = 200000;
+          else if (data.budget.includes('2L_3L')) numericBudget = 300000;
+          else if (data.budget.includes('3L_5L')) numericBudget = 500000;
+          else if (data.budget.includes('5L_plus')) numericBudget = 500000;
+          else numericBudget = 5000;
+        }
+
+        const bookingData = {
+          client_name: data.name || 'Unknown',
+          client_email: data.email || 'N/A',
+          client_phone: data.phone || 'N/A',
+          event_type: data.eventType || 'N/A',
+          event_date: data.date || null,
+          venue: data.location || 'TBD',
+          budget: numericBudget,
+          notes: data.message || (data.artistType ? `Requested Types: ${data.artistType.join(', ')}` : ''),
+          status: 'pending',
+          booking_source: 'client',
+        };
+
+        if (data.selectedArtist && data.selectedArtist.id) {
+          bookingData.fk_artist_id = data.selectedArtist.id;
+        }
+
+        supabase.from('bookings').insert([bookingData]).then(({ error }) => {
+          if (error) console.error("Supabase insert error:", error);
+          else console.log("Successfully saved booking to Supabase");
+        });
+      } catch (dbErr) {
+        console.error("Failed to connect to Supabase:", dbErr);
+      }
+    }
+
     return new Response(JSON.stringify({ success: true, message: 'Email request received!' }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
