@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect, useMemo } from 'react'
@@ -105,6 +106,7 @@ const sanitizeVideoData = (video) => {
   let userName = video.user_name;
   let artistType = '';
   let artistBio = '';
+  let isFeatured = false;
 
   try {
     if (video.user_name && video.user_name.startsWith('{')) {
@@ -112,6 +114,7 @@ const sanitizeVideoData = (video) => {
       userName = parsed.name || '';
       artistType = parsed.type || '';
       artistBio = parsed.bio || '';
+      isFeatured = parsed.is_featured || false;
     }
   } catch (e) {}
 
@@ -152,11 +155,12 @@ const sanitizeVideoData = (video) => {
 
   return {
     ...video,
-    user_name: userName,
+    user_name: userName, // Now it's a plain string
     artist_type: artistType,
     artist_bio: artistBio,
     category: category,
-    topic: topic
+    topic: topic,
+    is_featured: isFeatured // Pass the boolean flag explicitly!
   };
 };
 

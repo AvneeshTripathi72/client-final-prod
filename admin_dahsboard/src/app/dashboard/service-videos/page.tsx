@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, Plus, Trash2, Upload, Video, Youtube, ExternalLink, RefreshCw, Folder, Play } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 
 // Helper to extract YouTube video ID
@@ -48,6 +49,7 @@ export default function ServiceVideos() {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [youtubeUrl, setYoutubeUrl] = useState('');
   const [isDragging, setIsDragging] = useState(false);
+  const [isMainHeading, setIsMainHeading] = useState(false);
 
   const predefinedTopics = [
     'Singers',
@@ -205,7 +207,8 @@ export default function ServiceVideos() {
       const payloadUserName = JSON.stringify({
         name: userName || 'Featured Artist',
         type: artistType || '',
-        bio: artistBio || ''
+        bio: artistBio || '',
+        is_featured: isMainHeading
       });
 
       const { error } = await (supabase.from('service_videos') as any).insert([
@@ -230,6 +233,7 @@ export default function ServiceVideos() {
       setIsCustomTopic(false);
       setVideoFile(null);
       setYoutubeUrl('');
+      setIsMainHeading(false);
       setIsModalOpen(false);
       fetchVideos();
     } catch (error: any) {
@@ -251,6 +255,47 @@ export default function ServiceVideos() {
     }
   };
 
+  const handleToggleFeature = async (video: any) => {
+    const newValue = !video._is_featured;
+    
+    // Optimistic UI Update for instant feedback
+    setVideos(prev => prev.map(v => {
+      if (v.id === video.id) {
+        let p: any = { name: v.user_name };
+        try { if (v.user_name && v.user_name.startsWith('{')) p = JSON.parse(v.user_name); } catch(e){}
+        p.is_featured = newValue;
+        return { ...v, user_name: JSON.stringify(p), _is_featured: newValue };
+      }
+      return v;
+    }));
+
+    try {
+      let parsed: any = {};
+      try {
+        if (video.user_name && video.user_name.startsWith('{')) {
+          parsed = JSON.parse(video.user_name);
+        } else {
+          parsed = { name: video.user_name };
+        }
+      } catch (e) {
+        parsed = { name: video.user_name };
+      }
+
+      parsed.is_featured = newValue;
+
+      const { error } = await (supabase.from('service_videos') as any)
+        .update({ user_name: JSON.stringify(parsed) })
+        .eq('id', video.id);
+
+      if (error) throw error;
+      toast({ title: newValue ? 'Promoted' : 'Unpromoted', description: 'Video feature status updated.' });
+      // We don't need to fetchVideos() here because the optimistic update and Realtime sync handles it.
+    } catch (err: any) {
+      toast({ variant: 'destructive', title: 'Error updating', description: err.message });
+      fetchVideos(true); // Revert on failure
+    }
+  };
+
   // Group videos dynamically by Category/Topic for "Category-Wise" Layout
   const groupedVideos: { [key: string]: any[] } = {};
   videos.forEach(video => {
@@ -259,6 +304,13 @@ export default function ServiceVideos() {
       groupedVideos[key] = [];
     }
     groupedVideos[key].push(video);
+  });
+
+  // Extract is_featured flag for each video so we can use it in the UI
+  Object.keys(groupedVideos).forEach(category => {
+    groupedVideos[category].forEach((vid) => {
+      try { vid._is_featured = JSON.parse(vid.user_name).is_featured || false; } catch(e) { vid._is_featured = false; }
+    });
   });
 
   const activeYoutubeId = getYoutubeId(youtubeUrl);
@@ -364,7 +416,12 @@ export default function ServiceVideos() {
                   return (
                     <div 
                       key={video.id} 
-                      className="bg-white rounded-[24px] border border-slate-100 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group flex flex-col justify-between"
+                      className={cn(
+                        "rounded-[24px] overflow-hidden transition-all duration-300 group flex flex-col justify-between border relative",
+                        video._is_featured 
+                          ? "bg-amber-50/30 border-amber-300 shadow-md shadow-amber-500/10" 
+                          : "bg-white border-slate-100 shadow-sm hover:shadow-md"
+                      )}
                     >
                       <div className="aspect-video bg-black relative overflow-hidden">
                         {ytId ? (
@@ -439,12 +496,25 @@ export default function ServiceVideos() {
                           )}
                         </div>
                         
-                        <button 
-                          onClick={() => handleDelete(video.id)}
-                          className="w-9 h-9 rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition-colors shadow-sm flex-shrink-0"
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                        <div className="flex flex-col items-end gap-3 flex-shrink-0">
+                          <div className="flex items-center gap-2">
+                            <Label className="text-[10px] font-bold text-slate-500 uppercase cursor-pointer" onClick={() => handleToggleFeature(video)}>
+                              MAIN HEADING VIDEOS
+                            </Label>
+                            <Switch 
+                              checked={video._is_featured}
+                              onCheckedChange={() => handleToggleFeature(video)}
+                              className="data-[state=checked]:bg-amber-500"
+                            />
+                          </div>
+                          <button 
+                            onClick={() => handleDelete(video.id)}
+                            className="w-9 h-9 rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition-colors shadow-sm"
+                            title="Delete Video"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   );
@@ -606,6 +676,19 @@ export default function ServiceVideos() {
                     className="w-full h-12 py-3 px-4 bg-slate-950/60 border border-white/[0.08] text-white placeholder-slate-600 rounded-2xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500/30 transition-all text-sm resize-none"
                   />
                 </div>
+              </div>
+
+              {/* Main Heading Video Toggle */}
+              <div className="flex items-center justify-between p-4 bg-slate-950/40 border border-white/[0.05] rounded-2xl">
+                <div className="space-y-1">
+                  <Label className="text-xs font-bold text-white uppercase tracking-wider">Set as Main Heading Video</Label>
+                  <p className="text-[10px] text-slate-400">If ON, this video will instantly appear in the main showcase section.</p>
+                </div>
+                <Switch 
+                  checked={isMainHeading}
+                  onCheckedChange={setIsMainHeading}
+                  className="data-[state=checked]:bg-amber-500"
+                />
               </div>
 
               {/* Dynamic input based on selected tab */}

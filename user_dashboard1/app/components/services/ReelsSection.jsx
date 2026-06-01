@@ -1,5 +1,6 @@
 "use client";
 
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/app/lib/supabase';
 
@@ -192,7 +193,20 @@ export default function ReelsSection() {
         <p className="reels-page-subtitle">Discover the incredible talent available to book for your next event.</p>
       </div>
       
-      {Object.entries(finalGroups).map(([category, videos]) => (
+      {Object.entries(finalGroups).map(([category, videos]) => {
+        // Filter videos to only show those that are explicitly featured (toggled ON)
+        const visibleVideos = [...videos].filter((vid) => {
+          try {
+            if (vid.user_name && vid.user_name.startsWith('{')) {
+              return JSON.parse(vid.user_name).is_featured === true;
+            }
+          } catch(e) {}
+          return false;
+        });
+
+        if (visibleVideos.length === 0) return null; // Don't show category if no videos are toggled ON
+
+        return (
         <div className="reels-container" key={category} style={{ marginBottom: '80px' }}>
           <div className="reels-header">
             {/* Running Text Marquee Background */}
@@ -231,7 +245,7 @@ export default function ReelsSection() {
             </button>
           </div>
           <div className="reels-grid">
-            {videos.slice(0, 4).map((vid) => {
+            {visibleVideos.slice(0, 4).map((vid) => {
               const ytId = getYoutubeId(vid.video_url);
               return (
                 <div 
@@ -250,7 +264,7 @@ export default function ReelsSection() {
                     <iframe
                       src={`https://www.youtube.com/embed/${ytId}?rel=0&modestbranding=1&controls=0&showinfo=0&autoplay=1&mute=1&loop=1&playlist=${ytId}`}
                       className="reel-video"
-                      style={{ border: 'none' }}
+                      style={{ border: 'none', objectFit: 'cover', width: '100%', height: '100%' }}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                     />
@@ -264,8 +278,17 @@ export default function ReelsSection() {
                       playsInline
                       className="reel-video"
                       controlsList="nodownload"
+                      style={{ objectFit: 'cover', width: '100%', height: '100%' }}
                     />
                   )}
+                  <div style={{ position: 'absolute', bottom: '24px', left: '24px', right: '24px', display: 'flex', flexDirection: 'column', gap: '8px', zIndex: 5 }}>
+                    <h3 style={{ margin: 0, color: '#fff', fontSize: '18px', fontWeight: '800' }}>
+                      {vid.user_name && vid.user_name.startsWith('{') ? (JSON.parse(vid.user_name).name || vid.user_name) : vid.user_name}
+                    </h3>
+                    <p style={{ margin: 0, color: 'rgba(255,255,255,0.7)', fontSize: '13px' }}>
+                      {vid.topic}
+                    </p>
+                  </div>
                   {/* Category Logo Icon */}
                   <div 
                     className="reel-overlay-icon"
@@ -291,7 +314,8 @@ export default function ReelsSection() {
             })}
           </div>
         </div>
-      ))}
+        );
+      })}
     </section>
   );
 }
