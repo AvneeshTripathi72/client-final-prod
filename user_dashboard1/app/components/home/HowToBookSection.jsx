@@ -28,7 +28,7 @@ export default function HowToBookSection() {
             transition={{ delay: 0.1 }}
             className="how-title"
           >
-            How to book a <span>musician</span>
+            How to book a <span>musician?</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}

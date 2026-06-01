@@ -4,6 +4,8 @@ import { useState, useEffect, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '@/app/lib/supabase'
 import '@/app/styles/pages/ServicesPage.css'
+import '@/app/styles/components/ReelsSection.css'
+import ReelsSection from '@/app/components/services/ReelsSection'
 
 // Parse YouTube video ID cleanly
 const getYoutubeId = (url) => {
@@ -617,6 +619,8 @@ export default function ServicesPage() {
   return (
     <main className="services-page-layout" style={{ background: '#050507', color: '#fff', overflow: 'hidden', position: 'relative', minHeight: '100vh' }}>
       
+      <ReelsSection />
+
       {/* Dynamic Cinematic Blur Wrapper */}
       <div 
         style={{

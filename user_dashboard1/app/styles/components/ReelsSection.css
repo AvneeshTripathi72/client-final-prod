@@ -1,0 +1,82 @@
+.reels-section-wrapper {
+  background-color: #ffffff;
+  padding: 60px 20px;
+  color: #000;
+  width: 100%;
+}
+
+.reels-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.reels-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.quick-book-btn {
+  background-color: #E7286A;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 28px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 16px;
+  transition: opacity 0.2s;
+}
+
+.quick-book-btn:hover {
+  opacity: 0.9;
+}
+
+.reels-title {
+  font-family: var(--font-display, "Playfair Display", serif);
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 800;
+  margin: 0;
+  color: #000;
+}
+
+.reels-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .reels-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
+
+.reel-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 9/16;
+  background-color: #000;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.reel-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.reel-overlay-text {
+  position: absolute;
+  bottom: 70px;
+  left: 15px;
+  right: 15px;
+  color: white;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.9);
+  font-family: var(--font-display, "Playfair Display", serif);
+  font-size: 16px;
+  pointer-events: none;
+}
