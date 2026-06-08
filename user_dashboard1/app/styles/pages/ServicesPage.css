@@ -313,15 +313,10 @@
 }
 
 .v4-videos-scroll {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
   gap: 2rem;
-  overflow-x: auto;
-  padding-bottom: 2rem;
-  scrollbar-width: none;
-}
-
-.v4-videos-scroll::-webkit-scrollbar {
-  display: none;
+  padding-bottom: 1rem;
 }
 
 /* =========================================
@@ -349,7 +344,7 @@
    VIDEO CARDS
    ========================================= */
 .v4-video-card {
-  flex: 0 0 calc(33.333% - 1.33rem);
+  width: 100%;
   aspect-ratio: 16/9;
   position: relative;
   border-radius: 24px;
@@ -370,11 +365,11 @@
 }
 
 @media (max-width: 1200px) {
-  .v4-video-card { flex: 0 0 calc(50% - 1rem); }
+  .v4-videos-scroll { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
 }
 
 @media (max-width: 600px) {
-  .v4-video-card { flex: 0 0 calc(85%); }
+  .v4-videos-scroll { grid-template-columns: 1fr; }
 }
 
 .v4-video-media {
