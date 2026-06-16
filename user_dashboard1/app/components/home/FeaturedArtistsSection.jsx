@@ -165,9 +165,9 @@ function FeaturedArtistsSection() {
       >
         {loading ? (
           Array.from({ length: 5 }).map((_, i) => (
-            <div key={`skel-${i}`} className="hp-feat-slide" style={{ width: '320px' }}>
-              <div className="hp-feat-card" style={{ height: '440px', background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.05)' }}>
-                 <div className="skeleton-pulse" style={{ height: '210px', background: 'rgba(255,255,255,0.04)' }}></div>
+            <div key={`skel-${i}`} className="hp-feat-slide" style={{ width: '100%' }}>
+              <div className="hp-feat-card" style={{ height: '550px', background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.05)' }}>
+                 <div className="skeleton-pulse" style={{ height: '60%', background: 'rgba(255,255,255,0.04)' }}></div>
                  <div style={{ padding: '20px' }}>
                    <div className="skeleton-pulse" style={{ height: '12px', width: '40%', background: 'rgba(255,255,255,0.04)', borderRadius: '4px', marginBottom: '10px' }}></div>
                    <div className="skeleton-pulse" style={{ height: '24px', width: '80%', background: 'rgba(255,255,255,0.04)', borderRadius: '6px', marginBottom: '16px' }}></div>
@@ -193,19 +193,18 @@ function FeaturedArtistsSection() {
               viewport={{ once: true, margin: '-20px' }}
               transition={{ duration: 0.45, delay: (i % 3) * 0.1 }}
             >
-              <TiltCard className="hp-feat-card-v2">
-                <div 
-                  className="hp-feat-img-wrap-v2" 
-                  onClick={() => router.push(`/artist/${encodeURIComponent(artist.name)}`)}
-                  style={{ cursor: 'pointer' }}
-                >
+              <TiltCard 
+                className="hp-feat-card-v2"
+                onClick={() => router.push(`/artist/${encodeURIComponent(artist.name)}`)}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className="hp-feat-img-wrap-v2">
                   <Image
                     src={artist.image}
                     alt={artist.name}
-                    width={320}
-                    height={400}
+                    fill
                     style={{ objectFit: 'cover' }}
-                    unoptimized
+                    quality={100}
                   />
                   <div className="hp-feat-overlay-v2">
                     <span className="hp-live-badge">VIEW PROFILE</span>
@@ -223,18 +222,16 @@ function FeaturedArtistsSection() {
 
                   <div className="hp-feat-btn-grid">
                     <button
-                      onClick={() => window.dispatchEvent(new CustomEvent('open-contact-modal', {
-                        detail: { type: 'booking', artist: artist }
-                       }))}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        window.dispatchEvent(new CustomEvent('open-contact-modal', {
+                          detail: { type: 'booking', artist: artist }
+                        }));
+                      }}
                       className="hp-btn-book-v2"
+                      style={{ gridColumn: '1 / -1' }}
                     >
                       BOOK THIS ARTIST
-                    </button>
-                    <button 
-                      onClick={() => router.push(`/artist/${encodeURIComponent(artist.name)}`)} 
-                      className="hp-btn-view-v2"
-                    >
-                      VIEW PROFILE
                     </button>
                   </div>
                 </div>

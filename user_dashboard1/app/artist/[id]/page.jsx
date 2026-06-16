@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/app/lib/supabase';
 import '@/app/styles/pages/ArtistProfile.css';
 
-// A mock rating component for UI
 const StarRating = ({ rating }) => {
   return (
     <div style={{ display: 'flex', gap: '4px', color: '#FFE032' }}>

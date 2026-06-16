@@ -133,11 +133,12 @@ ${artistDetailsString}${planDetailsString}${serviceDetailsString}
     };
 
 
-    transporter.sendMail(mailOptions).then(() => {
-      console.log("Email dispatched successfully in background.");
-    }).catch(err => {
-      console.error("Background email sending error:", err);
-    });
+    try {
+      await transporter.sendMail(mailOptions);
+      console.log("Email dispatched successfully.");
+    } catch (err) {
+      console.error("Email sending error:", err);
+    }
 
     // Also save to Supabase bookings table for admin dashboard
     if (!isRegister && !isCallRequest) {
@@ -179,16 +180,15 @@ ${artistDetailsString}${planDetailsString}${serviceDetailsString}
           bookingData.fk_artist_id = data.selectedArtist.id;
         }
 
-        supabase.from('bookings').insert([bookingData]).then(({ error }) => {
-          if (error) console.error("Supabase insert error:", error);
-          else console.log("Successfully saved booking to Supabase");
-        });
+        const { error } = await supabase.from('bookings').insert([bookingData]);
+        if (error) console.error("Supabase insert error:", error);
+        else console.log("Successfully saved booking to Supabase");
       } catch (dbErr) {
         console.error("Failed to connect to Supabase:", dbErr);
       }
     }
 
-    return new Response(JSON.stringify({ success: true, message: 'Email request received!' }), {
+    return new Response(JSON.stringify({ success: true, message: 'Request processed successfully!' }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });
