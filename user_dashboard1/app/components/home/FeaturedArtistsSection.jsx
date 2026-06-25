@@ -27,6 +27,7 @@ function FeaturedArtistsSection() {
           .from('artists')
           .select('*, artist_images(image_url)')
           .eq('is_featured', true)
+          .eq('is_live', true)
           .limit(6);
 
         if (error) {
@@ -50,6 +51,7 @@ function FeaturedArtistsSection() {
           const { data: anyData, error: anyError } = await supabase
             .from('artists')
             .select('*, artist_images(image_url)')
+            .eq('is_live', true)
             .limit(6);
             
           if (anyData && anyData.length > 0) {

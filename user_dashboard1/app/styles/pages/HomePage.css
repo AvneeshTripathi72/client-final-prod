@@ -3679,7 +3679,7 @@
   transition: all 0.4s var(--ease-premium);
   display: flex;
   flex-direction: column;
-  height: 440px;
+  height: 418px;
 }
 
 .hp-feat-card-v2:hover {

@@ -4,7 +4,7 @@ export async function generateMetadata({ params }) {
   const decodedId = decodeURIComponent(params.id);
   const isUUID = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(decodedId);
   
-  let query = supabase.from('artists').select('name, alias, bio, artist_images(image_url)');
+  let query = supabase.from('artists').select('name, alias, bio, artist_images(image_url)').eq('is_live', true);
   if (isUUID) {
     query = query.eq('id', decodedId);
   } else {
@@ -38,7 +38,7 @@ export default async function ArtistLayout({ children, params }) {
   const decodedId = decodeURIComponent(params.id);
   const isUUID = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(decodedId);
   
-  let query = supabase.from('artists').select('name, alias, bio, artist_images(image_url), category, city');
+  let query = supabase.from('artists').select('name, alias, bio, artist_images(image_url), category, city').eq('is_live', true);
   if (isUUID) {
     query = query.eq('id', decodedId);
   } else {

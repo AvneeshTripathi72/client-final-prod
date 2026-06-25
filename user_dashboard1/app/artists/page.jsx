@@ -26,6 +26,7 @@ export default function ArtistsPage() {
       let query = supabase
         .from('artists')
         .select('*, artist_images(image_url)', { count: 'exact' })
+        .eq('is_live', true)
 
       if (category !== 'All') {
         const filterCat = category.replace(/s$/i, '')

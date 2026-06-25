@@ -24,6 +24,7 @@ function TopPerformerSection() {
           .from('artists')
           .select('*, artist_images(image_url)')
           .eq('is_artist_of_month', true)
+          .eq('is_live', true)
           .limit(1)
           .single();
 
@@ -34,6 +35,7 @@ function TopPerformerSection() {
           const { data: fallbackData } = await supabase
             .from('artists')
             .select('*, artist_images(image_url)')
+            .eq('is_live', true)
             .limit(1)
             .single();
             

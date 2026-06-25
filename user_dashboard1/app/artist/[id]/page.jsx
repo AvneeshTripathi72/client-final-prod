@@ -44,7 +44,7 @@ export default function ArtistProfilePage({ params }) {
         // 1. Try fetching from artists table first
         const isUUID = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(decodedId);
         
-        let query = supabase.from('artists').select('*, artist_images(image_url)');
+        let query = supabase.from('artists').select('*, artist_images(image_url)').eq('is_live', true);
         
         if (isUUID) {
           query = query.eq('id', decodedId);
@@ -211,7 +211,7 @@ export default function ArtistProfilePage({ params }) {
 
           <div className="bio-block">
             <h2 className="section-title">Professional Bio</h2>
-            <p>{artist.bio || "This artist is a spectacular performer known for bringing high energy and unforgettable moments to every stage. Whether it's a corporate event, a private wedding, or a grand festival, their versatile talent ensures the crowd is always engaged and amazed."}</p>
+            <p style={{ whiteSpace: 'pre-wrap' }}>{artist.bio || "This artist is a spectacular performer known for bringing high energy and unforgettable moments to every stage. Whether it's a corporate event, a private wedding, or a grand festival, their versatile talent ensures the crowd is always engaged and amazed."}</p>
           </div>
         </section>
 
