@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogClose,
 } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -47,7 +48,8 @@ import {
   ImageIcon,
   PlayCircle,
   X,
-  Plus
+  Plus,
+  AlertCircle
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { Switch } from '@/components/ui/switch';
@@ -61,7 +63,10 @@ const artistSchema = z.object({
   category: z.string().min(1, { message: "Please select a category." }),
   sub_categories: z.array(z.string()).min(1, { message: "Select at least one genre." }),
   languages: z.array(z.string()).min(1, { message: "Select at least one language." }),
-  bio: z.string().min(10, { message: "Bio must be at least 10 characters." }),
+  bio: z.string().min(1, { message: "Bio is required." }).refine(val => {
+    const wordCount = val.trim().split(/\s+/).filter(Boolean).length;
+    return wordCount >= 70 && wordCount <= 1500;
+  }, { message: "Bio must be between 70 and 1500 words." }),
   price_min: z.string().min(1, { message: "Min price is required." }),
   price_max: z.string().min(1, { message: "Max price is required." }),
   original_price: z.string().optional(),
@@ -85,6 +90,7 @@ const artistSchema = z.object({
   is_artist_of_month: z.boolean().default(false),
   images: z.array(z.string()).max(15, { message: "Maximum 15 photos allowed." }).optional().default([]),
   cover_image_url: z.string().optional(),
+  is_live: z.boolean().default(true),
 });
 type ArtistFormValues = z.infer<typeof artistSchema>;
 interface CreateArtistModalProps {
@@ -100,6 +106,9 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
   const [isManualState, setIsManualState] = useState(false);
   const [customGenre, setCustomGenre] = useState("");
   const [customLanguage, setCustomLanguage] = useState("");
+  const [duplicateConflict, setDuplicateConflict] = useState<{ field: string, message: string, existingArtist: any } | null>(null);
+  const [approvalReason, setApprovalReason] = useState("");
+  const [requestingApproval, setRequestingApproval] = useState(false);
   const { toast } = useToast();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const form = useForm<ArtistFormValues>({
@@ -129,6 +138,7 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
       phone_no_alt: initialData?.phone_no_alt || "",
       spotlight_status: initialData?.is_trending ? 'trending' : (initialData?.is_featured ? 'featured' : 'standard'),
       is_artist_of_month: initialData?.is_artist_of_month ?? false,
+      is_live: initialData?.is_live ?? true,
       images: initialData?.artist_images?.map((img: any) => img.image_url) || [],
       cover_image_url: initialData?.cover_image_url || initialData?.artist_images?.[0]?.image_url || "",
       sub_categories: (initialData?.sub_categories && initialData.sub_categories.length > 0)
@@ -167,6 +177,7 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
           phone_no_alt: initialData.phone_no_alt || "",
           spotlight_status: initialData.is_trending ? 'trending' : (initialData.is_featured ? 'featured' : 'standard'),
           is_artist_of_month: initialData.is_artist_of_month ?? false,
+          is_live: initialData.is_live ?? true,
           images: initialData.artist_images?.map((img: any) => img.image_url) || [],
           cover_image_url: initialData.cover_image_url || initialData.artist_images?.[0]?.image_url || "",
           sub_categories: (initialData.sub_categories && initialData.sub_categories.length > 0)
@@ -201,6 +212,7 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
           email: "",
           spotlight_status: 'standard',
           is_artist_of_month: false,
+          is_live: true,
           images: [],
           cover_image_url: "",
         });
@@ -236,6 +248,7 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
         is_trending: values.spotlight_status === 'trending',
         is_featured: values.spotlight_status === 'featured',
         is_artist_of_month: values.is_artist_of_month,
+        is_live: values.is_live,
         rating: parseFloat(values.rating || '5.0'),
         members_min: parseInt(values.members_min || '1'),
         members_max: parseInt(values.members_max || '1'),
@@ -243,6 +256,39 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
         successful_bookings: parseInt(values.successful_bookings || '0'),
         video_url: values.video_urls?.filter(Boolean).join(', ') || null,
       };
+
+      // Duplicate Check Logic (Application Level) - ONLY check phone_no
+      let artistId = initialData?.id;
+      const { data: duplicates } = await (supabase
+        .from('artists') as any)
+        .select('id, name, alias, phone_no')
+        .eq('phone_no', values.phone_no)
+        .neq('id', artistId || '00000000-0000-0000-0000-000000000000');
+
+      if (duplicates && duplicates.length > 0) {
+        const duplicate = duplicates[0];
+        const fieldName = 'phone_no';
+        const fieldValue = values.phone_no;
+        
+        // Check if there is an approved override
+        const { data: approvals } = await (supabase
+          .from('duplicate_approvals') as any)
+          .select('*')
+          .eq('field_name', fieldName)
+          .eq('field_value', fieldValue)
+          .eq('status', 'approved');
+
+        if (!approvals || approvals.length === 0) {
+          // Block saving and show override UI
+          setDuplicateConflict({
+            field: fieldName,
+            message: `This Phone Number is already assigned to ${duplicate.name}.`,
+            existingArtist: duplicate
+          });
+          setLoading(false);
+          return;
+        }
+      }
 
       if (values.is_artist_of_month) {
         // If setting this artist as Artist of the Month, turn off all others first
@@ -263,7 +309,7 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
         }
       }
       const images = values.images || [];
-      let artistId = initialData?.id;
+      artistId = initialData?.id;
       if (artistId) {
         const { error: updateError } = await (supabase
           .from('artists') as any)
@@ -272,6 +318,11 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
         if (updateError) throw updateError;
         await supabase.from('artist_images').delete().eq('artist_id', artistId);
       } else {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user?.id) {
+          artistData.created_by = session.user.id;
+        }
+
         const { data: artist, error: artistError } = await (supabase
           .from('artists')
           .insert([artistData] as any)
@@ -317,17 +368,77 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
     }
   }
 
+  const handleSendApprovalRequest = async () => {
+    setRequestingApproval(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const userEmail = session?.user?.email || 'admin@magnevents.com';
+      
+      const { error } = await (supabase
+        .from('duplicate_approvals') as any)
+        .insert({
+          field_name: duplicateConflict?.field,
+          field_value: form.getValues('phone_no'),
+          requested_by: userEmail,
+          reason: approvalReason,
+          draft_data: form.getValues() // Save the entire draft payload
+        });
+      
+      if (error) throw error;
+
+      toast({ title: 'Request Sent', description: 'Approval request sent to Super Admin.' });
+      setDuplicateConflict(null);
+      setApprovalReason("");
+      onOpenChange(false);
+    } catch (err: any) {
+      toast({ variant: 'destructive', title: 'Error', description: err.message || 'Failed to send request' });
+    } finally {
+      setRequestingApproval(false);
+    }
+  };
+
   const onError = (errors: any) => {
     console.log('Form Validation Errors:', errors);
+    const errorFields = Object.keys(errors);
+    
+    if (errorFields.length > 0) {
+      const readableFields = errorFields.map(f => f.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())).join(', ');
+      
+      toast({
+        variant: "destructive",
+        title: "Validation Failed",
+        description: `Missing or invalid: ${readableFields}`,
+      });
 
+      const firstErrorKey = errorFields[0];
+      
+      // Try to find the exact input element strictly within the modal
+      let errorElement: any = scrollAreaRef.current?.querySelector(`[name="${firstErrorKey}"]`);
+      
+      // If not found, try finding the label or container within the modal
+      if (!errorElement && scrollAreaRef.current) {
+         const labels = Array.from(scrollAreaRef.current.querySelectorAll('label'));
+         const targetLabel = labels.find(l => l.htmlFor?.includes(firstErrorKey) || l.textContent?.toLowerCase().includes(firstErrorKey.replace('_', ' ')));
+         errorElement = targetLabel || scrollAreaRef.current.querySelector(`[id*="${firstErrorKey}"]`);
+      }
 
-    const firstErrorKey = Object.keys(errors)[0];
-    if (firstErrorKey && scrollAreaRef.current) {
-      const errorElement = document.getElementsByName(firstErrorKey)[0] ||
-                          document.querySelector(`[id*="${firstErrorKey}"]`);
-
-      if (errorElement) {
-        errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (errorElement && scrollAreaRef.current) {
+        // Calculate precise scroll position inside the scrollable container
+        const container = scrollAreaRef.current;
+        const containerRect = container.getBoundingClientRect();
+        const elementRect = errorElement.getBoundingClientRect();
+        
+        // Target scroll position = current scroll + (element position relative to container) - (offset)
+        const targetScrollTop = container.scrollTop + (elementRect.top - containerRect.top) - 150;
+        
+        container.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
+        
+        if (typeof errorElement.focus === 'function') {
+           errorElement.focus();
+        }
+      } else if (scrollAreaRef.current) {
+        // Fallback: Scroll to top of the modal content
+        scrollAreaRef.current.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
   };
@@ -339,6 +450,44 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
         onPointerDownOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
+        {duplicateConflict && (
+          <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+            <div className="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl border border-slate-100 flex flex-col relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+              <div className="flex items-center gap-4 text-rose-500 mb-2 relative z-10">
+                <AlertCircle size={28} strokeWidth={2.5} />
+                <h3 className="text-xl font-black tracking-tight text-slate-900">Duplicate Found</h3>
+              </div>
+              <p className="text-slate-600 text-[13px] font-medium mb-6 relative z-10 leading-relaxed">
+                {duplicateConflict.message} Duplicate values are restricted to maintain data integrity. If this is intentional, you must request an override from the Super Admin.
+              </p>
+              <div className="space-y-4 relative z-10">
+                <div>
+                  <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 block">Reason for Duplicate</label>
+                  <Textarea 
+                    placeholder="e.g., This manager handles multiple artists and uses a single contact number."
+                    value={approvalReason}
+                    onChange={(e) => setApprovalReason(e.target.value)}
+                    className="h-24 resize-none rounded-xl border-slate-200 bg-slate-50/50 focus:bg-white transition-colors"
+                  />
+                </div>
+                <div className="flex gap-3 pt-2">
+                  <Button variant="outline" type="button" className="flex-1 rounded-xl h-11 border-slate-200 font-bold text-slate-600 hover:bg-slate-50" onClick={() => { setDuplicateConflict(null); setApprovalReason(""); }}>
+                    Cancel & Edit
+                  </Button>
+                  <Button 
+                    type="button"
+                    className="flex-1 rounded-xl h-11 bg-rose-500 hover:bg-rose-600 text-white font-bold tracking-wide shadow-lg shadow-rose-500/30" 
+                    onClick={handleSendApprovalRequest}
+                    disabled={requestingApproval || !approvalReason}
+                  >
+                    {requestingApproval ? <Loader2 className="animate-spin w-4 h-4" /> : 'Request Approval'}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit, onError)} className="flex flex-col flex-1 overflow-hidden bg-white relative">
             <div ref={scrollAreaRef} className="flex-1 overflow-y-auto">
@@ -1064,13 +1213,20 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                     <FormField
                       control={form.control}
                       name="bio"
-                      render={({ field }) => (
+                      render={({ field }) => {
+                        const wordCount = field.value ? field.value.trim().split(/\s+/).filter(Boolean).length : 0;
+                        return (
                         <FormItem className="space-y-1.5 col-span-full">
-                          <FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Professional Bio / Description</FormLabel>
+                          <div className="flex items-center justify-between">
+                            <FormLabel className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Professional Bio / Description</FormLabel>
+                            <span className={cn("text-[10px] font-black uppercase tracking-widest", (wordCount < 70 || wordCount > 1500) ? "text-rose-500" : "text-slate-400")}>
+                              {wordCount} / 1500 words (Min 70)
+                            </span>
+                          </div>
                           <FormControl><Textarea placeholder="Describe the artist's journey, achievements, and performance style..." className="min-h-[120px] rounded-[20px] border-slate-100 bg-slate-50/30 font-medium focus:bg-white transition-all p-4 resize-none shadow-inner leading-relaxed" {...field} /></FormControl>
                           <FormMessage className="text-[10px]" />
                         </FormItem>
-                      )}
+                      )}}
                     />
                   </div>
                 </div>
@@ -1187,7 +1343,7 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-6 border-t border-slate-50">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-slate-50">
                       <FormField
                         control={form.control}
                         name="spotlight_status"
@@ -1204,7 +1360,7 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                                 value={field.value}
                                 onValueChange={field.onChange}
                               >
-                                <SelectTrigger className="w-[140px] h-9 rounded-xl border-slate-200 bg-white text-[11px] font-black shadow-sm focus:ring-sky-400">
+                                <SelectTrigger className="w-[110px] h-9 rounded-xl border-slate-200 bg-white text-[11px] font-black shadow-sm focus:ring-sky-400">
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className="rounded-xl border-slate-100 shadow-lg p-1">
@@ -1234,6 +1390,21 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
                             </div>
                             <FormControl>
                               <Switch checked={field.value} onCheckedChange={field.onChange} className="data-[state=checked]:bg-indigo-500" />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="is_live"
+                        render={({ field }) => (
+                          <FormItem className="flex items-center justify-between rounded-2xl border border-slate-100 p-4 bg-slate-50/30 hover:border-emerald-100 transition-all shadow-sm">
+                            <div className="space-y-0.5">
+                              <FormLabel className="text-[10px] font-black uppercase tracking-wider text-slate-900">Live on Website</FormLabel>
+                              <p className="text-[9px] font-semibold text-slate-400 italic">Show to public users</p>
+                            </div>
+                            <FormControl>
+                              <Switch checked={field.value} onCheckedChange={field.onChange} className="data-[state=checked]:bg-emerald-500" />
                             </FormControl>
                           </FormItem>
                         )}

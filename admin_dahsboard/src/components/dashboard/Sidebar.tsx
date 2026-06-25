@@ -16,7 +16,9 @@ import {
   CreditCard,
   PencilLine,
   ChevronDown,
-  X
+  X,
+  Server,
+  GitPullRequest
 } from 'lucide-react';
 import NextImage from 'next/image';
 
@@ -34,8 +36,17 @@ export const navItems = [
     ]
   },
   { name: 'Artists', href: '/dashboard/artists', icon: Mic2 },
-  { name: 'Client Request', href: '/dashboard/requests', icon: Users },
+  {
+    name: 'Requests',
+    icon: GitPullRequest,
+    isExpandable: true,
+    subItems: [
+      { name: 'Client Requests', href: '/dashboard/requests' },
+      { name: 'Admin Requests', href: '/dashboard/team-requests' },
+    ]
+  },
   { name: 'Bookings', href: '/dashboard/bookings', icon: CalendarCheck },
+  { name: 'API', href: '/dashboard/api', icon: Server },
   { name: 'Browse', href: '/dashboard/browse', icon: Eye },
   { name: 'Admins', href: '/dashboard/admins', icon: ShieldAlert },
 ];
@@ -48,18 +59,19 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
   const pathname = usePathname();
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
-  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({});
   const [pendingRequestsCount, setPendingRequestsCount] = useState(0);
 
   useEffect(() => {
-    if (
-      pathname.startsWith('/dashboard/categories') ||
-      pathname.startsWith('/dashboard/pricing') ||
-      pathname.startsWith('/dashboard/slider') ||
-      pathname.startsWith('/dashboard/service-videos')
-    ) {
-      setIsEditOpen(true);
-    }
+    setExpandedMenus(prev => ({
+      ...prev,
+      'Edit': pathname.startsWith('/dashboard/categories') ||
+              pathname.startsWith('/dashboard/pricing') ||
+              pathname.startsWith('/dashboard/slider') ||
+              pathname.startsWith('/dashboard/service-videos'),
+      'Requests': pathname.startsWith('/dashboard/requests') ||
+                  pathname.startsWith('/dashboard/team-requests')
+    }));
   }, [pathname]);
 
   useEffect(() => {
@@ -168,16 +180,23 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
       </div>
       <nav className="px-3 space-y-1 flex-1">
         {navItems
-          .filter(item => item.name !== 'Admins' || userRole === 'super_admin')
+          .filter(item => {
+            const restricted = ['Admins', 'API'];
+            if (restricted.includes(item.name)) {
+              return userRole === 'super_admin';
+            }
+            return true;
+          })
           .map((item) => {
             if (item.isExpandable) {
+              const isOpen = expandedMenus[item.name];
               return (
                 <div key={item.name} className="space-y-1">
                   <button
-                    onClick={() => setIsEditOpen(!isEditOpen)}
+                    onClick={() => setExpandedMenus(prev => ({ ...prev, [item.name]: !isOpen }))}
                     className={cn(
                       "nav-item group w-full flex justify-between",
-                      isEditOpen && "bg-white/5"
+                      isOpen && "bg-white/5"
                     )}
                   >
                     <div className="flex items-center gap-3">
@@ -186,15 +205,22 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
                         {item.name}
                       </span>
                     </div>
+                    {item.name === 'Requests' && pendingRequestsCount > 0 && !isOpen && (
+                      <span className="bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg border border-rose-400 animate-pulse mr-2">
+                        {pendingRequestsCount}
+                      </span>
+                    )}
                     <ChevronDown
                       size={14}
-                      className={cn("text-white/20 transition-transform", isEditOpen && "rotate-180")}
+                      className={cn("text-white/20 transition-transform", isOpen && "rotate-180")}
                     />
                   </button>
 
-                  {isEditOpen && (
+                  {isOpen && (
                     <div className="pl-4 space-y-1">
-                      {item.subItems?.map((sub) => {
+                      {item.subItems?.map((sub: any) => {
+                        if (sub.restricted && userRole !== 'super_admin') return null;
+                        
                         const isSubActive = pathname === sub.href;
                         return (
                           <Link
@@ -202,17 +228,24 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
                             href={sub.href}
                             onClick={onClose}
                             className={cn(
-                              "flex items-center gap-3 px-4 py-2.5 rounded-xl text-[13px] font-bold transition-all",
+                              "flex items-center justify-between px-4 py-2.5 rounded-xl text-[13px] font-bold transition-all",
                               isSubActive
                                 ? "bg-white/10 text-white shadow-lg"
                                 : "text-white/30 hover:text-white/60 hover:bg-white/5"
                             )}
                           >
-                            <span className={cn(
-                              "w-1.5 h-1.5 rounded-full transition-all",
-                              isSubActive ? "bg-indigo-400" : "bg-white/10"
-                            )} />
-                            {sub.name}
+                            <div className="flex items-center gap-3">
+                              <span className={cn(
+                                "w-1.5 h-1.5 rounded-full transition-all",
+                                isSubActive ? "bg-indigo-400" : "bg-white/10"
+                              )} />
+                              {sub.name}
+                            </div>
+                            {sub.name === 'Client Requests' && pendingRequestsCount > 0 && (
+                              <span className="bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-lg border border-rose-400 animate-pulse">
+                                {pendingRequestsCount}
+                              </span>
+                            )}
                           </Link>
                         );
                       })}
@@ -242,11 +275,6 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
                     {item.name}
                   </span>
                 </div>
-                {item.name === 'Client Request' && pendingRequestsCount > 0 && (
-                  <span className="bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg border border-rose-400 animate-pulse">
-                    {pendingRequestsCount}
-                  </span>
-                )}
               </Link>
             );
           })}

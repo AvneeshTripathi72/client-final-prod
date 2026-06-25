@@ -19,12 +19,17 @@ export async function POST(request: Request) {
         }
       }
     );
-    const { error: authError } = await supabaseAdmin.auth.admin.deleteUser(userId);
+    const superAdminId = process.env.NEXT_PUBLIC_SUPER_ADMIN_ID;
 
-    if (authError && authError.message !== 'User not found') {
-      return NextResponse.json({ error: authError.message }, { status: 500 });
+    // 0. Transfer ownership of any uploaded profiles to Super Admin
+    if (superAdminId && superAdminId !== userId) {
+      await supabaseAdmin
+        .from('artists')
+        .update({ created_by: superAdminId })
+        .eq('created_by', userId);
     }
 
+    // 1. Delete from profiles table first (to prevent foreign key constraint violations)
     const { error: profileError } = await supabaseAdmin
       .from('profiles')
       .delete()
@@ -32,6 +37,13 @@ export async function POST(request: Request) {
 
     if (profileError) {
       return NextResponse.json({ error: profileError.message }, { status: 500 });
+    }
+
+    // 2. Delete from auth.users
+    const { error: authError } = await supabaseAdmin.auth.admin.deleteUser(userId);
+
+    if (authError && authError.message !== 'User not found') {
+      return NextResponse.json({ error: authError.message }, { status: 500 });
     }
 
     return NextResponse.json({ message: 'User deleted successfully from both Auth and Database' });

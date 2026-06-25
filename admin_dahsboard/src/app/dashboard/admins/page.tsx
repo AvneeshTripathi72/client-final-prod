@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 import {
   UserPlus,
@@ -10,20 +11,25 @@ import {
   Mail,
   Info,
   ShieldAlert,
+  Edit3,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { CreateAdminModal } from '../../../components/admins/CreateAdminModal';
+import { EditAdminModal } from '../../../components/admins/EditAdminModal';
 
 export default function AdminManagement() {
   const [admins, setAdmins] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedAdmin, setSelectedAdmin] = useState<any>(null);
   const [currentUserEmail, setCurrentUserEmail] = useState('');
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
   const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
     const getAuthUser = async () => {
@@ -140,21 +146,7 @@ export default function AdminManagement() {
         )}
       </div>
 
-      {currentUserRole !== null && currentUserRole !== 'super_admin' && (
-        <div className="luxe-card p-12 text-center">
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-rose-50 flex items-center justify-center text-rose-500 shadow-sm border border-rose-100">
-              <ShieldAlert size={32} />
-            </div>
-            <h2 className="text-xl font-bold text-slate-900">Access Restricted</h2>
-            <p className="text-slate-500 max-w-sm mx-auto">
-              Only Super Administrators have permission to manage team members and access levels.
-            </p>
-          </div>
-        </div>
-      )}
-
-      {currentUserRole === 'super_admin' && (
+      {currentUserRole !== null && (
         <>
           <CreateAdminModal
             open={isModalOpen}
@@ -196,8 +188,14 @@ export default function AdminManagement() {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    admins.map((admin) => (
-                      <TableRow key={admin.id} className="group border-slate-50 hover:bg-slate-50/50 transition-colors">
+                    admins.map((admin) => {
+                      const isRootAdmin = admin.email === process.env.NEXT_PUBLIC_SUPER_ADMIN_EMAIL;
+                      return (
+                      <TableRow 
+                        key={admin.id} 
+                        className="group border-slate-50 hover:bg-slate-50/50 transition-colors cursor-pointer"
+                        onClick={() => router.push(`/dashboard/admins/${admin.id}`)}
+                      >
                         <TableCell className="pl-8 py-5">
                           <div className="flex items-center gap-4">
                             <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 font-bold group-hover:bg-indigo-50 group-hover:text-[#7578F2] transition-colors">
@@ -234,19 +232,31 @@ export default function AdminManagement() {
                         <TableCell className="text-[13px] font-bold text-slate-500 font-display">
                           {admin.created_at ? format(new Date(admin.created_at), 'MMM dd, yyyy') : '—'}
                         </TableCell>
-                        <TableCell className="pr-8 text-center">
-                          {admin.email !== currentUserEmail && currentUserRole === 'super_admin' && (
-                            <button
-                              onClick={() => handleDelete(admin.id, admin.email)}
-                              className="w-9 h-9 rounded-lg flex items-center justify-center bg-white border border-slate-100 hover:border-rose-500 hover:text-rose-500 text-slate-400 transition-colors shadow-sm"
-                              title="Revoke Access"
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          )}
+                        <TableCell className="pr-8 text-center" onClick={(e) => e.stopPropagation()}>
+                          <div className="flex items-center justify-center gap-2">
+                            {currentUserRole === 'super_admin' && (
+                              <button
+                                onClick={(e) => { e.stopPropagation(); setSelectedAdmin(admin); setIsEditModalOpen(true); }}
+                                className="w-9 h-9 rounded-lg flex items-center justify-center bg-white border border-slate-100 hover:border-indigo-500 hover:text-indigo-500 text-slate-400 transition-colors shadow-sm"
+                                title="Edit Admin"
+                              >
+                                <Edit3 size={16} />
+                              </button>
+                            )}
+                            {admin.email !== currentUserEmail && !isRootAdmin && (
+                              <button
+                                onClick={(e) => { e.stopPropagation(); handleDelete(admin.id, admin.email); }}
+                                className="w-9 h-9 rounded-lg flex items-center justify-center bg-white border border-slate-100 hover:border-rose-500 hover:text-rose-500 text-slate-400 transition-colors shadow-sm"
+                                title="Revoke Access"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            )}
+                          </div>
                         </TableCell>
                       </TableRow>
-                    ))
+                    );
+                    })
                   )}
                 </TableBody>
               </Table>
@@ -260,6 +270,12 @@ export default function AdminManagement() {
                </p>
             </div>
           </div>
+          <EditAdminModal
+            open={isEditModalOpen}
+            onOpenChange={setIsEditModalOpen}
+            adminData={selectedAdmin}
+            onSuccess={fetchAdmins}
+          />
         </>
       )}
 
