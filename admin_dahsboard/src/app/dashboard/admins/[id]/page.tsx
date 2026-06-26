@@ -18,6 +18,8 @@ import {
   Zap,
   Edit3,
   User,
+  Mic2,
+  Layers,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -243,34 +245,36 @@ export default function AdminProfileDashboard() {
 
       {/* Uploaded Profiles List */}
       <div className="bg-white border border-slate-100 rounded-[32px] p-8 md:p-10 shadow-sm relative overflow-hidden">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-10 gap-6">
+        <div className="flex flex-col mb-10 gap-6">
           <h3 className="text-[13px] font-black tracking-[0.25em] text-slate-900 uppercase">
             Uploaded Profiles
           </h3>
-          <div className="flex items-center gap-4">
-            <div className="flex bg-slate-100/80 p-1 rounded-xl">
-              <button 
-                onClick={() => setFilterType('all')}
-                className={cn("text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-lg transition-all", filterType === 'all' ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-700")}
-              >
-                All
-              </button>
-              <button 
-                onClick={() => setFilterType('original')}
-                className={cn("text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-lg transition-all", filterType === 'original' ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-700")}
-              >
-                Original
-              </button>
-              <button 
-                onClick={() => setFilterType('duplicate')}
-                className={cn("text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-lg transition-all", filterType === 'duplicate' ? "bg-white text-indigo-600 shadow-sm" : "text-slate-500 hover:text-slate-700")}
-              >
-                Duplicate
-              </button>
-            </div>
-            <span className="bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-full border border-indigo-100/50">
-              {uploadedArtists.filter(a => filterType === 'all' ? true : filterType === 'original' ? !a.is_duplicate_pending : a.is_duplicate_pending).length} Total
-            </span>
+          
+          <div className="flex bg-slate-100 p-1.5 rounded-2xl w-fit shadow-inner">
+            <button 
+              className={`px-8 py-3 rounded-xl text-[13px] font-black transition-all flex items-center gap-2 ${filterType === 'all' ? 'bg-white text-slate-800 shadow-md scale-[1.02]' : 'text-slate-500 hover:text-slate-700 hover:bg-white/50'}`}
+              onClick={() => setFilterType('all')}
+            >
+              <User size={16} />
+              All Profiles
+              <span className={`ml-2 px-2 py-0.5 rounded-md text-[10px] ${filterType === 'all' ? 'bg-slate-100 text-slate-600' : 'bg-slate-200 text-slate-500'}`}>{uploadedArtists.length}</span>
+            </button>
+            <button 
+              className={`px-8 py-3 rounded-xl text-[13px] font-black transition-all flex items-center gap-2 ${filterType === 'original' ? 'bg-white text-indigo-600 shadow-md scale-[1.02]' : 'text-slate-500 hover:text-slate-700 hover:bg-white/50'}`}
+              onClick={() => setFilterType('original')}
+            >
+              <Mic2 size={16} />
+              Original Profiles 
+              <span className={`ml-2 px-2 py-0.5 rounded-md text-[10px] ${filterType === 'original' ? 'bg-indigo-50 text-indigo-600' : 'bg-slate-200 text-slate-500'}`}>{uploadedArtists.filter(a => !a.is_duplicate_pending).length}</span>
+            </button>
+            <button 
+              className={`px-8 py-3 rounded-xl text-[13px] font-black transition-all flex items-center gap-2 ${filterType === 'duplicate' ? 'bg-white text-rose-600 shadow-md scale-[1.02]' : 'text-slate-500 hover:text-slate-700 hover:bg-white/50'}`}
+              onClick={() => setFilterType('duplicate')}
+            >
+              <Layers size={16} />
+              Duplicate Profiles
+              <span className={`ml-2 px-2 py-0.5 rounded-md text-[10px] ${filterType === 'duplicate' ? 'bg-rose-50 text-rose-600' : 'bg-slate-200 text-slate-500'}`}>{uploadedArtists.filter(a => a.is_duplicate_pending).length}</span>
+            </button>
           </div>
         </div>
 
