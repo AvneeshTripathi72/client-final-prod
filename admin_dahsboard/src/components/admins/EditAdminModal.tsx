@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -60,7 +60,7 @@ export function EditAdminModal({ open, onOpenChange, adminData, onSuccess }: Edi
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { toast } = useToast();
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<EditFormValues>({
     resolver: zodResolver(editSchema),
