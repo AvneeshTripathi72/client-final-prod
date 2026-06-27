@@ -4,7 +4,7 @@ import nodemailer from 'nodemailer';
 
 export async function POST(req: Request) {
   try {
-    const { bookingId, to, subject, message } = await req.json();
+    const { bookingId, to, subject, message, newStatus = 'pending' } = await req.json();
 
     if (!bookingId || !to || !subject || !message) {
       return new NextResponse('Missing required parameters', { status: 400 });
@@ -17,10 +17,10 @@ export async function POST(req: Request) {
       .eq('id', bookingId)
       .single();
 
-    // Update booking status to pending as we are starting a dialogue
+    // Update booking status
     const { error: err } = await supabase
       .from('bookings')
-      .update({ status: 'pending' })
+      .update({ status: newStatus })
       .eq('id', bookingId);
 
     if (err) throw err;
