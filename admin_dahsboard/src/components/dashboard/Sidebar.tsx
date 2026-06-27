@@ -222,6 +222,12 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
                         if (sub.restricted && userRole !== 'super_admin') return null;
                         
                         const isSubActive = pathname === sub.href;
+                        
+                        let displayName = sub.name;
+                        if (sub.name === 'Admin Approvals' && userRole !== 'super_admin') {
+                          displayName = 'Approved Requests';
+                        }
+
                         return (
                           <Link
                             key={sub.name}
@@ -239,7 +245,7 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
                                 "w-1.5 h-1.5 rounded-full transition-all",
                                 isSubActive ? "bg-indigo-400" : "bg-white/10"
                               )} />
-                              {sub.name}
+                              {displayName}
                             </div>
                             {sub.name === 'Client Requests' && pendingRequestsCount > 0 && (
                               <span className="bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-lg border border-rose-400 animate-pulse">
