@@ -209,7 +209,7 @@ export async function POST(req) {
       
       const confirmLink = `${adminUrl}/api/action-request?id=${bookingId}&type=client_request&action=confirm`;
       const approveLink = `${adminUrl}/api/action-request?id=${bookingId}&type=client_request&action=approve`;
-      const moreInfoLink = `${adminUrl}/api/action-request?id=${bookingId}&type=client_request&action=more_info`;
+      const moreInfoLink = `${adminUrl}/dashboard/requests?reply=${bookingId}&action=more_info`;
       const unavailableLink = `${adminUrl}/api/action-request?id=${bookingId}&type=client_request&action=unavailable`;
       const rejectLink = `${adminUrl}/api/action-request?id=${bookingId}&type=client_request&action=reject`;
       const customReplyLink = `${adminUrl}/dashboard/requests?reply=${bookingId}&action=custom`;
