@@ -42,7 +42,7 @@ export const navItems = [
     isExpandable: true,
     subItems: [
       { name: 'Client Requests', href: '/dashboard/requests' },
-      { name: 'Admin Requests', href: '/dashboard/team-requests' },
+      { name: 'Admin Approvals', href: '/dashboard/team-requests' },
     ]
   },
   { name: 'Bookings', href: '/dashboard/bookings', icon: CalendarCheck },
