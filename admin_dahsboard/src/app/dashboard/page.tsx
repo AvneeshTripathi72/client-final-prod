@@ -102,6 +102,7 @@ export default function DashboardOverview() {
   const [recentArtists, setRecentArtists] = useState<any[]>([]);
   const [recentBookings, setRecentBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentUserData, setCurrentUserData] = useState<{ id: string, canViewAll: boolean } | null>(null);
   const [spotlightArtists, setSpotlightArtists] = useState<any[]>([]);
   const [filteredArtists, setFilteredArtists] = useState<any[]>([]);
   const [browseLoading, setBrowseLoading] = useState(true);
@@ -159,6 +160,7 @@ export default function DashboardOverview() {
           canViewAll = currentUserRole === 'super_admin' || !!(profile as any)?.can_view_all_artists;
         }
         setUserRole(currentUserRole);
+        setCurrentUserData({ id: currentUserId, canViewAll });
       }
 
       const shouldFilter = !canViewAll && currentUserId;
@@ -258,11 +260,16 @@ export default function DashboardOverview() {
 
 
   const fetchBrowseArtists = useCallback(async () => {
+    if (!currentUserData) return;
     setBrowseLoading(true);
     try {
       let query = supabase
         .from('artists')
         .select('*, artist_images!fk_artist_id(image_url)');
+
+      if (!currentUserData.canViewAll) {
+        query = query.eq('created_by', currentUserData.id);
+      }
 
       if (searchQuery) {
         query = query.or(
@@ -291,7 +298,7 @@ export default function DashboardOverview() {
     } finally {
       setBrowseLoading(false);
     }
-  }, [searchQuery, selectedCategory, selectedSubCategories]);
+  }, [searchQuery, selectedCategory, selectedSubCategories, currentUserData]);
 
   useEffect(() => {
     if (detailOpen || isModalOpen) {
