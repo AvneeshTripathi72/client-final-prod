@@ -25,18 +25,25 @@ export async function POST(req) {
         let emailBody = '';
     const row = (label, value, isLink = false, href = '') => {
       if (!value || value === 'N/A') return '';
-      const displayValue = isLink ? `<a href="${href}" style="color: #3b82f6; text-decoration: none; font-weight: 600;">${value}</a>` : `<strong style="color: #0f172a;">${value}</strong>`;
-      return `<tr><td style="padding: 8px 0; width: 140px; color: #64748b; font-weight: 500;">${label}</td><td style="padding: 8px 0;">${displayValue}</td></tr>`;
+      const displayValue = isLink ? `<a href="${href}" style="color: #2563eb; text-decoration: none; font-weight: 600; word-break: break-word;">${value}</a>` : `<span style="color: #0f172a; font-weight: 500; word-break: break-word;">${value}</span>`;
+      return `<tr>
+        <td style="padding: 10px 0; width: 35%; max-width: 130px; color: #64748b; font-weight: 600; font-size: 13px; vertical-align: top; border-bottom: 1px solid #f1f5f9;">${label}</td>
+        <td style="padding: 10px 0; vertical-align: top; font-size: 14px; border-bottom: 1px solid #f1f5f9;">${displayValue}</td>
+      </tr>`;
     };
 
     const buildSection = (title, contentHTML) => {
       if (!contentHTML || contentHTML.trim() === '') return '';
       return `
-        <div style="margin-bottom: 32px;">
-          <h4 style="font-size: 13px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; margin: 0 0 12px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px;">${title}</h4>
-          <table width="100%" cellpadding="0" cellspacing="0" style="font-size: 15px; color: #334155; line-height: 1.6;">
-            ${contentHTML}
-          </table>
+        <div style="margin-bottom: 24px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+          <div style="background-color: #f8fafc; padding: 14px 20px; border-bottom: 1px solid #e2e8f0;">
+            <h4 style="font-size: 13px; font-weight: 800; color: #334155; text-transform: uppercase; letter-spacing: 1px; margin: 0;">${title}</h4>
+          </div>
+          <div style="padding: 10px 20px;">
+            <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
+              ${contentHTML}
+            </table>
+          </div>
         </div>
       `;
     };
@@ -188,24 +195,25 @@ export async function POST(req) {
       <html>
       <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
       </head>
-      <body style="background-color: #f1f5f9; font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding: 40px 20px; -webkit-font-smoothing: antialiased;">
-        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);">
+      <body style="background-color: #f1f5f9; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 20px 10px; -webkit-font-smoothing: antialiased;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.01); border: 1px solid #e2e8f0;">
           
-          <div style="background-color: #0f172a; padding: 32px; text-align: center;">
-            <h1 style="color: #ffffff; font-size: 24px; font-weight: 900; margin: 0; letter-spacing: -0.5px;">MAGNEVENTS</h1>
-            <p style="color: #94a3b8; font-size: 13px; margin: 8px 0 0 0; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;">${subjectPrefix}</p>
+          <div style="background-color: #020617; padding: 40px 20px; text-align: center;">
+            <h1 style="color: #ffffff; font-size: 26px; font-weight: 900; margin: 0; letter-spacing: -0.5px;">MAGNEVENTS</h1>
+            <p style="color: #94a3b8; font-size: 13px; margin: 8px 0 0 0; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;">${subjectPrefix}</p>
           </div>
 
-          <div style="padding: 40px;">
-            <h2 style="margin-top: 0; font-size: 20px; color: #0f172a; font-weight: 800; margin-bottom: 32px;">You have received a new inquiry!</h2>
+          <div style="padding: 30px 20px;">
+            <h2 style="margin-top: 0; font-size: 20px; color: #0f172a; font-weight: 800; margin-bottom: 24px; text-align: center;">You have a new inquiry!</h2>
             ${contentSections}
           </div>
     `;
 
     if (bookingId) {
       const adminUrl = process.env.NEXT_PUBLIC_ADMIN_URL || 'https://admin.magnevents.in';
-      const btnBase = "display: inline-block; color: #ffffff; padding: 10px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 13px; margin-right: 8px; margin-bottom: 8px;";
+      const btnBase = "display: block; width: 100%; box-sizing: border-box; color: #ffffff; padding: 14px 16px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px; margin-bottom: 12px; text-align: center; border: 1px solid rgba(0,0,0,0.1);";
       
       const confirmLink = `${adminUrl}/api/action-request?id=${bookingId}&type=client_request&action=confirm`;
       const approveLink = `${adminUrl}/api/action-request?id=${bookingId}&type=client_request&action=approve`;
@@ -216,25 +224,38 @@ export async function POST(req) {
       const previewLink = `${adminUrl}/dashboard/requests`;
 
       htmlBody += `
-        <div style="background-color: #f8fafc; padding: 32px 40px; border-top: 1px solid #e2e8f0;">
-          <h3 style="margin-top: 0; color: #334155; font-size: 16px;">Quick Replies</h3>
-          <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">Clicking these buttons will <b>instantly</b> send a standard email to the client. Use Custom Reply to write your own message.</p>
-          <div style="display: flex; flex-wrap: wrap;">
-            <a href="${confirmLink}" style="${btnBase} background-color: #10b981;">✅ Confirm Booking</a>
-            <a href="${approveLink}" style="${btnBase} background-color: #059669;">👍 Approve Booking</a>
-            <a href="${moreInfoLink}" style="${btnBase} background-color: #3b82f6;">📞 Request More Info</a>
-            <a href="${customReplyLink}" style="${btnBase} background-color: #8b5cf6;">✍️ Custom Reply</a>
-            <a href="${unavailableLink}" style="${btnBase} background-color: #f59e0b;">🗓️ Artist Unavailable</a>
-            <a href="${rejectLink}" style="${btnBase} background-color: #ef4444;">❌ Reject / Not Possible</a>
+        <div style="background-color: #f8fafc; padding: 30px 20px; border-top: 1px solid #e2e8f0;">
+          <div style="text-align: center; margin-bottom: 24px;">
+            <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px; font-weight: 800;">Quick Actions</h3>
+            <p style="font-size: 13px; color: #64748b; margin: 0; line-height: 1.5;">Click a button below to instantly respond to the client. Responses are logged automatically.</p>
           </div>
-          <div style="margin-top: 16px;">
-            <a href="${previewLink}" style="display: inline-block; background-color: #e2e8f0; color: #334155; padding: 10px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 13px;">Preview in Dashboard</a>
+          
+          <div style="max-width: 320px; margin: 0 auto;">
+            <a href="${confirmLink}" style="${btnBase} background-color: #10b981; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);">✅ Confirm Booking</a>
+            <a href="${approveLink}" style="${btnBase} background-color: #059669; box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.2);">👍 Approve Booking</a>
+            
+            <div style="height: 1px; background-color: #e2e8f0; margin: 20px 0;"></div>
+            
+            <a href="${moreInfoLink}" style="${btnBase} background-color: #2563eb; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);">📞 Request More Info</a>
+            <a href="${customReplyLink}" style="${btnBase} background-color: #7c3aed; box-shadow: 0 4px 6px -1px rgba(124, 58, 237, 0.2);">✍️ Custom Reply (Dashboard)</a>
+            
+            <div style="height: 1px; background-color: #e2e8f0; margin: 20px 0;"></div>
+            
+            <a href="${unavailableLink}" style="${btnBase} background-color: #ea580c; box-shadow: 0 4px 6px -1px rgba(234, 88, 12, 0.2);">🗓️ Artist Unavailable</a>
+            <a href="${rejectLink}" style="${btnBase} background-color: #dc2626; box-shadow: 0 4px 6px -1px rgba(220, 38, 38, 0.2);">❌ Reject / Not Possible</a>
+          </div>
+          
+          <div style="margin-top: 32px; text-align: center;">
+            <a href="${previewLink}" style="display: inline-block; background-color: #ffffff; color: #475569; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px; border: 1px solid #cbd5e1; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">View All Requests in Dashboard</a>
           </div>
         </div>
       `;
     }
 
     htmlBody += `
+        </div>
+        <div style="text-align: center; margin-top: 24px;">
+          <p style="color: #94a3b8; font-size: 12px; margin: 0;">Sent securely by Magnevents Admin System</p>
         </div>
       </body>
       </html>
