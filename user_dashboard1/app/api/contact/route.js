@@ -41,70 +41,8 @@ export async function POST(req) {
       `;
     };
 
-    let contentSections = '';
-
-    if (isRegister) {
-      emailBody = `New Artist Registration from ${data.name || 'Unknown'}\nPhone: ${data.phone || 'N/A'}\nEmail: ${data.email || 'N/A'}`;
-      contentSections += buildSection('👤 Artist Details', 
-        row('Name', data.name) +
-        row('Email', data.email, true, `mailto:${data.email}`) +
-        row('Phone', data.phone, true, `tel:${data.phone}`) +
-        row('Category', data.category)
-      );
-      contentSections += buildSection('🔗 Portfolio & Socials', row('Link', data.portfolio, true, data.portfolio));
-      contentSections += buildSection('📝 Bio & Experience', `<tr><td style="padding: 8px 0; color: #0f172a;">${data.bio || 'No bio provided.'}</td></tr>`);
-    } else {
-      emailBody = `New Inquiry from ${data.name || 'Unknown'}\nPhone: ${data.phone || 'N/A'}\nEmail: ${data.email || 'N/A'}`;
-      contentSections += buildSection('👤 User & Contact Details', 
-        row('Name', data.name) +
-        row('Email', data.email, true, `mailto:${data.email}`) +
-        row('Phone', data.phone, true, `tel:${data.phone}`)
-      );
-
-      contentSections += buildSection('📅 Event Details', 
-        row('Event Type', data.eventType) +
-        row('Event Date', data.date) +
-        row('Location', data.location) +
-        row('Requested Type', data.artistType && data.artistType.length > 0 ? data.artistType.join(', ') : '') +
-        row('Budget', data.budget)
-      );
-
-      contentSections += buildSection('📝 Additional Message', `<tr><td style="padding: 16px; background-color: #f8fafc; border-radius: 8px; font-style: italic; color: #475569; border: 1px solid #e2e8f0;">"${data.message || 'No additional message provided.'}"</td></tr>`);
-
-      if (data.selectedArtist && typeof data.selectedArtist === 'object') {
-        const a = data.selectedArtist;
-        const price = a.priceMin && a.priceMax ? `₹${a.priceMin} - ₹${a.priceMax}` : (a.priceMin ? `Starting at ₹${a.priceMin}` : '');
-        contentSections += buildSection('✨ Requested Artist Details', 
-          row('Artist Name', a.name) +
-          row('Category', a.subCategory || a.category) +
-          row('Location', [a.city, a.state].filter(Boolean).join(', ') || a.location) +
-          row('Languages', a.languages) +
-          row('Price Range', price)
-        );
-      } else if (artistName) {
-        contentSections += buildSection('✨ Requested Artist Details', row('Artist Name', artistName));
-      }
-
-      if (data.selectedPlan && typeof data.selectedPlan === 'object') {
-        const p = data.selectedPlan;
-        contentSections += buildSection('📦 Selected Pricing Package', 
-          row('Package Name', p.name) +
-          row('Starts From', p.price) +
-          row('Tagline', p.tagline) +
-          row('Features', p.features && p.features.length > 0 ? p.features.join(', ') : '')
-        );
-      }
-      if (data.selectedService && typeof data.selectedService === 'object') {
-        const s = data.selectedService;
-        contentSections += buildSection('🛠️ Selected Service Details', 
-          row('Service Title', s.title) +
-          row('Description', s.desc)
-        );
-      }
-    }
-
     let bookingId = null;
-
+    let dbArtistInfo = null;
     // 1. Insert ALL requests into Supabase to track them and enable buttons
     try {
       const { createClient } = require('@supabase/supabase-js');
@@ -160,9 +98,89 @@ export async function POST(req) {
         console.log("Successfully saved booking to Supabase");
         bookingId = insertedData.id;
       }
+      
+      if (bookingData.fk_artist_id) {
+        const { data: artistData } = await supabase.from('artists').select('*').eq('id', bookingData.fk_artist_id).single();
+        if (artistData) dbArtistInfo = artistData;
+      }
+
     } catch (dbErr) {
       console.error("Failed to connect to Supabase:", dbErr);
     }
+
+    let contentSections = '';
+
+    if (isRegister) {
+      emailBody = `New Artist Registration from ${data.name || 'Unknown'}\nPhone: ${data.phone || 'N/A'}\nEmail: ${data.email || 'N/A'}`;
+      contentSections += buildSection('👤 Artist Details', 
+        row('Name', data.name) +
+        row('Email', data.email, true, `mailto:${data.email}`) +
+        row('Phone', data.phone, true, `tel:${data.phone}`) +
+        row('Category', data.category)
+      );
+      contentSections += buildSection('🔗 Portfolio & Socials', row('Link', data.portfolio, true, data.portfolio));
+      contentSections += buildSection('📝 Bio & Experience', `<tr><td style="padding: 8px 0; color: #0f172a;">${data.bio || 'No bio provided.'}</td></tr>`);
+    } else {
+      emailBody = `New Inquiry from ${data.name || 'Unknown'}\nPhone: ${data.phone || 'N/A'}\nEmail: ${data.email || 'N/A'}`;
+      contentSections += buildSection('👤 User & Contact Details', 
+        row('Name', data.name) +
+        row('Email', data.email, true, `mailto:${data.email}`) +
+        row('Phone', data.phone, true, `tel:${data.phone}`)
+      );
+
+      contentSections += buildSection('📅 Event Details', 
+        row('Event Type', data.eventType) +
+        row('Event Date', data.date) +
+        row('Location', data.location) +
+        row('Requested Type', data.artistType && data.artistType.length > 0 ? data.artistType.join(', ') : '') +
+        row('Budget', data.budget)
+      );
+
+      contentSections += buildSection('📝 Additional Message', `<tr><td style="padding: 16px; background-color: #f8fafc; border-radius: 8px; font-style: italic; color: #475569; border: 1px solid #e2e8f0;">"${data.message || 'No additional message provided.'}"</td></tr>`);
+
+      if (dbArtistInfo) {
+        const a = dbArtistInfo;
+        const price = a.priceMin && a.priceMax ? `₹${a.priceMin} - ₹${a.priceMax}` : (a.priceMin ? `Starting at ₹${a.priceMin}` : '');
+        contentSections += buildSection('✨ Requested Artist Details', 
+          row('Artist Name', a.name) +
+          row('Category', a.subCategory || a.category) +
+          row('Location', [a.city, a.state].filter(Boolean).join(', ') || a.location) +
+          row('Languages', a.languages) +
+          row('Price Range', price)
+        );
+      } else if (data.selectedArtist && typeof data.selectedArtist === 'object') {
+        const a = data.selectedArtist;
+        const price = a.priceMin && a.priceMax ? `₹${a.priceMin} - ₹${a.priceMax}` : (a.priceMin ? `Starting at ₹${a.priceMin}` : '');
+        contentSections += buildSection('✨ Requested Artist Details', 
+          row('Artist Name', a.name) +
+          row('Category', a.subCategory || a.category) +
+          row('Location', [a.city, a.state].filter(Boolean).join(', ') || a.location) +
+          row('Languages', a.languages) +
+          row('Price Range', price)
+        );
+      } else if (artistName) {
+        contentSections += buildSection('✨ Requested Artist Details', row('Artist Name', artistName));
+      }
+
+      if (data.selectedPlan && typeof data.selectedPlan === 'object') {
+        const p = data.selectedPlan;
+        contentSections += buildSection('📦 Selected Pricing Package', 
+          row('Package Name', p.name) +
+          row('Starts From', p.price) +
+          row('Tagline', p.tagline) +
+          row('Features', p.features && p.features.length > 0 ? p.features.join(', ') : '')
+        );
+      }
+      if (data.selectedService && typeof data.selectedService === 'object') {
+        const s = data.selectedService;
+        contentSections += buildSection('🛠️ Selected Service Details', 
+          row('Service Title', s.title) +
+          row('Description', s.desc)
+        );
+      }
+    }
+
+
 
     // 2. Prepare HTML Email body with action buttons if bookingId exists
         let htmlBody = `
