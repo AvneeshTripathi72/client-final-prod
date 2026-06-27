@@ -35,6 +35,8 @@ export default function TeamRequestsPage() {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isDraftModalOpen, setIsDraftModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('All');
+  const tabs = ['All', 'Pending', 'Approved', 'Rejected'];
 
   // New Request Form State
   const [newTitle, setNewTitle] = useState('');
@@ -157,7 +159,7 @@ export default function TeamRequestsPage() {
     }
   };
 
-  const handleCreateRequest = (e: React.FormEvent) => {
+  const handleCreateRequest = async (e: React.FormEvent) => {
     e.preventDefault();
     const newReq = {
       id: `REQ-${new Date().getFullYear()}-00${requests.length + 1}`,
@@ -183,6 +185,22 @@ export default function TeamRequestsPage() {
     setNewTitle('');
     setNewDesc('');
     toast({ title: 'Request Created', description: 'Your request has been submitted for review.' });
+
+    // Send Email Notification
+    try {
+      await fetch('/api/send-approval-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: newReq.title,
+          description: newReq.description,
+          submittedBy: newReq.submittedBy.name,
+          approvalLink: `${window.location.origin}/dashboard/team-requests`
+        })
+      });
+    } catch (err) {
+      console.error("Failed to send email notification", err);
+    }
   };
 
   const handleUpdateStatus = async (id: string, newStatus: string) => {
@@ -351,9 +369,16 @@ export default function TeamRequestsPage() {
 
   if (loading) return <div className="p-8">Loading...</div>;
 
-  const displayRequests = userRole === 'super_admin' 
+  const baseRequests = userRole === 'super_admin' 
     ? requests 
     : requests.filter(r => r.submittedBy.email === currentUser?.email);
+
+  const displayRequests = baseRequests.filter(r => {
+    if (activeTab === 'All') return true;
+    return r.status.toLowerCase() === activeTab.toLowerCase();
+  });
+
+  const pendingCount = baseRequests.filter(r => r.status === 'pending').length;
 
   return (
     <div className="space-y-8 pb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -371,6 +396,35 @@ export default function TeamRequestsPage() {
         >
           <Plus size={16} strokeWidth={2.5} /> Create Request
         </button>
+      </div>
+
+      {pendingCount > 0 && (
+        <div className="bg-indigo-50 border border-indigo-100 rounded-2xl p-4 flex items-center gap-3 shadow-sm shadow-indigo-100/50">
+          <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+            <AlertCircle size={20} strokeWidth={2.5} />
+          </div>
+          <div>
+            <h3 className="text-sm font-black text-indigo-900">Action Required</h3>
+            <p className="text-xs font-bold text-indigo-600">You have {pendingCount} pending {pendingCount === 1 ? 'request' : 'requests'} waiting for your approval.</p>
+          </div>
+        </div>
+      )}
+
+      <div className="flex items-center gap-2 border-b border-slate-100 pb-4">
+        {tabs.map(tab => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={cn(
+              "px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all duration-200",
+              activeTab === tab 
+                ? "bg-slate-900 text-white shadow-md shadow-slate-200" 
+                : "bg-transparent text-slate-400 hover:bg-slate-50 hover:text-slate-600"
+            )}
+          >
+            {tab}
+          </button>
+        ))}
       </div>
 
       <div className="grid grid-cols-1 gap-4">

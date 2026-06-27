@@ -90,6 +90,24 @@ export function CreatePricingModal({ open, onOpenChange, onSuccess, initialData,
         if (error) throw error;
         toast({ title: pendingApproval ? "Submitted" : "Created", description: pendingApproval ? "Sent for super admin approval." : "New pricing plan added." });
       }
+
+      if (pendingApproval) {
+        try {
+          await fetch('/api/send-approval-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              title: `Pricing Plan Approval: ${payload.name}`,
+              description: `Editor submitted pricing plan "${payload.name}" for approval. Price: ₹${payload.price}`,
+              submittedBy: 'Editor', // In a real app, fetch the actual user name
+              approvalLink: `${window.location.origin}/dashboard/team-requests`
+            })
+          });
+        } catch (err) {
+          console.error("Failed to send email notification", err);
+        }
+      }
+
       onSuccess();
       onOpenChange(false);
     } catch (error: any) {
