@@ -80,12 +80,6 @@ export async function GET(req: Request) {
             });
 
             let clientMessage = '';
-            let subject = 'Update on your Magnevents Request';
-            const artistName = booking.artists?.name ? ` for ${booking.artists.name}` : '';
-
-            if (action === 'confirm' || action === 'approve') {
-              subject = 'Your Magnevents Booking is Confirmed!';
-              clientMessage = `Great news! Your booking request${artistName} has been approved and confirmed by our team. We will reach out shortly with the final contract and next steps.`;
             let subject = '';
             let actionColor = '#3b82f6';
             let actionLabel = 'Updated';
