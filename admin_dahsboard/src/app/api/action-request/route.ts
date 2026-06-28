@@ -215,6 +215,9 @@ export async function GET(req: Request) {
             } catch (dbErr) {
               console.error("Failed to log email to database:", dbErr);
             }
+          } catch (err) {
+            console.error("Outer email block error:", err);
+          }
         }
       }
     } else {
