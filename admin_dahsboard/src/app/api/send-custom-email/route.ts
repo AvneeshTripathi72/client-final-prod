@@ -85,6 +85,20 @@ export async function POST(req: Request) {
       `;
     }
 
+    let actionLabel = 'Status Updated';
+    let actionColor = '#7c3aed';
+
+    if (newStatus === 'confirmed') {
+      actionLabel = 'Booking Confirmed';
+      actionColor = '#059669';
+    } else if (newStatus === 'cancelled') {
+      actionLabel = 'Booking Cancelled';
+      actionColor = '#ef4444';
+    } else if (newStatus === 'pending') {
+      actionLabel = 'Pending Review';
+      actionColor = '#f59e0b';
+    }
+
     const htmlBody = `
       <!DOCTYPE html>
       <html>
@@ -104,6 +118,12 @@ export async function POST(req: Request) {
           <div style="padding: 40px;">
             <h2 style="margin-top: 0; font-size: 24px; color: #0f172a; font-weight: 800; letter-spacing: -0.5px;">Hello ${booking ? booking.client_name : 'there'},</h2>
             <p style="font-size: 16px; line-height: 1.7; color: #475569; margin-bottom: 32px; white-space: pre-wrap;">${message}</p>
+            
+            <div style="text-align: center; margin: 32px 0;">
+              <a href="https://magnevents.in/track" style="display: inline-block; background-color: ${actionColor}; color: #ffffff; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                Status: ${actionLabel}
+              </a>
+            </div>
             
             <div style="margin-top: 40px; border-left: 4px solid #3b82f6; padding-left: 16px;">
               <p style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;">Best regards,</p>

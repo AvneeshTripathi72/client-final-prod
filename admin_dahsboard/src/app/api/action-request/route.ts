@@ -86,19 +86,38 @@ export async function GET(req: Request) {
             if (action === 'confirm' || action === 'approve') {
               subject = 'Your Magnevents Booking is Confirmed!';
               clientMessage = `Great news! Your booking request${artistName} has been approved and confirmed by our team. We will reach out shortly with the final contract and next steps.`;
-              if (booking.event_type === 'Artist Registration') {
+            let subject = '';
+            let actionColor = '#3b82f6';
+            let actionLabel = 'Updated';
+
+            if (action === 'approve') {
+              subject = 'Good News! Your Magnevents Request is Approved';
+              clientMessage = `Great news! We have reviewed your request and it has been approved. Our team will be in touch shortly to proceed with the next steps for your event.`;
+              actionColor = '#10b981';
+              actionLabel = 'Request Approved';
+              if (booking && booking.event_type === 'Artist Registration') {
                 subject = 'Welcome to Magnevents!';
                 clientMessage = `Your artist registration has been reviewed and approved by our team. Welcome aboard!`;
+                actionLabel = 'Registration Approved';
               }
-            } else if (action === 'more_info') {
-              subject = 'Magnevents - Action Required for your Request';
-              clientMessage = `Thank you for reaching out to Magnevents! We are reviewing your request, but we need a few more details to proceed. One of our specialists will call you shortly to discuss your specific needs.`;
+            } else if (action === 'confirm') {
+              subject = 'Confirmation: Your Magnevents Booking';
+              clientMessage = `Your booking has been fully confirmed! We are excited to be part of your upcoming event. You will receive further details from our coordination team soon.`;
+              actionColor = '#059669';
+              actionLabel = 'Booking Confirmed';
             } else if (action === 'unavailable') {
-              subject = 'Update regarding your Magnevents Booking';
-              clientMessage = `Thank you for your interest! Unfortunately, the requested artist is unavailable on your selected dates. However, we have several amazing alternative artists that fit your vibe and budget. Let us know when is a good time to call you to discuss options!`;
+              subject = 'Update on your Magnevents Request: Artist Unavailable';
+              clientMessage = `Thank you for choosing Magnevents. Unfortunately, the requested artist is unavailable for your specified date. Our team can help you find excellent alternative options if you'd like to explore them.`;
+              actionColor = '#f59e0b';
+              actionLabel = 'Artist Unavailable';
             } else if (action === 'reject') {
               subject = 'Update regarding your Magnevents Request';
               clientMessage = `Thank you for reaching out to Magnevents. Unfortunately, we are unable to fulfill your request at this time. We apologize for the inconvenience and wish you the best for your event.`;
+              actionColor = '#ef4444';
+              actionLabel = 'Request Rejected';
+            } else if (action === 'more_info') {
+              subject = 'Magnevents - Action Required for your Request';
+              clientMessage = `Thank you for reaching out to Magnevents! We are reviewing your request, but we need a few more details to proceed. One of our specialists will call you shortly to discuss your specific needs.`;
             }
 
             let contextHtml = '';
@@ -157,6 +176,12 @@ export async function GET(req: Request) {
                     <h2 style="margin-top: 0; font-size: 24px; color: #0f172a; font-weight: 800; letter-spacing: -0.5px;">Hello ${booking ? booking.client_name : 'there'},</h2>
                     <p style="font-size: 16px; line-height: 1.7; color: #475569; margin-bottom: 32px; white-space: pre-wrap;">${clientMessage}</p>
                     
+                    <div style="text-align: center; margin: 32px 0;">
+                      <a href="https://magnevents.in/track" style="display: inline-block; background-color: ${actionColor}; color: #ffffff; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                        Status: ${actionLabel}
+                      </a>
+                    </div>
+
                     <div style="margin-top: 40px; border-left: 4px solid #3b82f6; padding-left: 16px;">
                       <p style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0;">Best regards,</p>
                       <p style="font-size: 16px; font-weight: 700; color: #3b82f6; margin: 4px 0 0 0;">The Magnevents Team</p>
