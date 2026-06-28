@@ -25,21 +25,21 @@ export async function POST(req) {
         let emailBody = '';
     const row = (label, value, isLink = false, href = '') => {
       if (!value || value === 'N/A') return '';
-      const displayValue = isLink ? `<a href="${href}" style="color: #2563eb; text-decoration: none; font-weight: 600; word-break: break-word;">${value}</a>` : `<span style="color: #0f172a; font-weight: 500; word-break: break-word;">${value}</span>`;
+      const displayValue = isLink ? `<a href="${href}" style="color: #3b82f6; text-decoration: none; font-weight: 600; word-break: break-word;">${value}</a>` : `<span style="color: #0f172a; font-weight: 600; word-break: break-word; font-size: 15px;">${value}</span>`;
       return `<tr>
-        <td style="padding: 10px 0; width: 35%; max-width: 130px; color: #64748b; font-weight: 600; font-size: 13px; vertical-align: top; border-bottom: 1px solid #f1f5f9;">${label}</td>
-        <td style="padding: 10px 0; vertical-align: top; font-size: 14px; border-bottom: 1px solid #f1f5f9;">${displayValue}</td>
+        <td style="padding: 14px 0; width: 35%; max-width: 140px; color: #64748b; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; vertical-align: top; border-bottom: 1px dashed #e2e8f0;">${label}</td>
+        <td style="padding: 14px 0; vertical-align: top; border-bottom: 1px dashed #e2e8f0;">${displayValue}</td>
       </tr>`;
     };
 
     const buildSection = (title, contentHTML) => {
       if (!contentHTML || contentHTML.trim() === '') return '';
       return `
-        <div style="margin-bottom: 24px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-          <div style="background-color: #f8fafc; padding: 14px 20px; border-bottom: 1px solid #e2e8f0;">
-            <h4 style="font-size: 13px; font-weight: 800; color: #334155; text-transform: uppercase; letter-spacing: 1px; margin: 0;">${title}</h4>
+        <div style="margin-bottom: 32px; background-color: #ffffff; border: 1px solid #f1f5f9; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02), 0 2px 4px -1px rgba(0,0,0,0.02);">
+          <div style="background: linear-gradient(to right, #f8fafc, #f1f5f9); padding: 16px 24px; border-bottom: 1px solid #f1f5f9; border-top-left-radius: 16px; border-top-right-radius: 16px;">
+            <h4 style="font-size: 13px; font-weight: 800; color: #1e293b; text-transform: uppercase; letter-spacing: 1px; margin: 0;">${title}</h4>
           </div>
-          <div style="padding: 10px 20px;">
+          <div style="padding: 16px 24px;">
             <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
               ${contentHTML}
             </table>
@@ -221,16 +221,16 @@ export async function POST(req) {
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
       </head>
-      <body style="background-color: #f1f5f9; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 20px 10px; -webkit-font-smoothing: antialiased;">
-        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.01); border: 1px solid #e2e8f0;">
+      <body style="background-color: #f8fafc; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 40px 10px; -webkit-font-smoothing: antialiased;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.01); border: 1px solid #e2e8f0;">
           
-          <div style="background-color: #020617; padding: 40px 20px; text-align: center;">
-            <h1 style="color: #ffffff; font-size: 26px; font-weight: 900; margin: 0; letter-spacing: -0.5px;">MAGNEVENTS</h1>
-            <p style="color: #94a3b8; font-size: 13px; margin: 8px 0 0 0; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;">${subjectPrefix}</p>
+          <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 48px 20px; text-align: center; border-top-left-radius: 24px; border-top-right-radius: 24px;">
+            <h1 style="color: #ffffff; font-size: 28px; font-weight: 900; margin: 0; letter-spacing: -0.5px;">MAGNEVENTS</h1>
+            <p style="color: #94a3b8; font-size: 14px; margin: 12px 0 0 0; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;">${subjectPrefix}</p>
           </div>
 
-          <div style="padding: 30px 20px;">
-            <h2 style="margin-top: 0; font-size: 20px; color: #0f172a; font-weight: 800; margin-bottom: 24px; text-align: center;">You have a new inquiry!</h2>
+          <div style="padding: 40px 24px; background-color: #fcfcfd;">
+            <h2 style="margin-top: 0; font-size: 22px; color: #0f172a; font-weight: 800; margin-bottom: 32px; text-align: center;">You have a new inquiry!</h2>
             ${contentSections}
           </div>
     `;
@@ -281,18 +281,18 @@ export async function POST(req) {
       }
 
       htmlBody += `
-        <div style="background-color: #f8fafc; padding: 30px 20px; border-top: 1px solid #e2e8f0;">
-          <div style="text-align: center; margin-bottom: 24px;">
-            <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px; font-weight: 800;">Quick Actions</h3>
-            <p style="font-size: 13px; color: #64748b; margin: 0; line-height: 1.5;">Click a button below to review and instantly respond to the client from the dashboard.</p>
+        <div style="background-color: #f8fafc; padding: 40px 24px; border-top: 1px solid #e2e8f0; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;">
+          <div style="text-align: center; margin-bottom: 32px;">
+            <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 20px; font-weight: 900; letter-spacing: -0.5px;">Quick Actions</h3>
+            <p style="font-size: 14px; color: #64748b; margin: 0; line-height: 1.6;">Review and respond to the client instantly.</p>
           </div>
           
           <div style="max-width: 320px; margin: 0 auto;">
             ${buttonsHtml}
           </div>
           
-          <div style="margin-top: 32px; text-align: center;">
-            <a href="${previewLink}" style="display: inline-block; background-color: #ffffff; color: #475569; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px; border: 1px solid #cbd5e1; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">Open Request in Dashboard</a>
+          <div style="margin-top: 40px; text-align: center;">
+            <a href="${previewLink}" style="display: inline-block; background-color: #ffffff; color: #0f172a; padding: 14px 28px; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 14px; border: 1px solid #cbd5e1; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">Open Request in Dashboard</a>
           </div>
         </div>
       `;
