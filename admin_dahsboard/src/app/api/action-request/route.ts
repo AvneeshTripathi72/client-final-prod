@@ -46,7 +46,8 @@ export async function GET(req: Request) {
       } else {
         let newStatus = 'cancelled';
         if (action === 'confirm' || action === 'approve') newStatus = 'confirmed';
-        else if (action === 'more_info' || action === 'unavailable') newStatus = 'pending';
+        else if (action === 'more_info') newStatus = 'pending';
+        // 'unavailable' and 'reject' will fall through to 'cancelled'
 
         const { error: err } = await supabase
           .from('bookings')
@@ -182,16 +183,38 @@ export async function GET(req: Request) {
               </html>
             `;
 
-            await transporter.sendMail({
-              from: process.env.EMAIL_USER,
-              to: booking.client_email,
-              subject: subject,
-              html: htmlBody,
-            });
-            console.log(`Client email sent successfully for action: ${action}`);
-          } catch (mailErr) {
-            console.error("Failed to send client email:", mailErr);
-          }
+            let emailStatus = 'sent';
+            try {
+              await transporter.sendMail({
+                from: process.env.EMAIL_USER,
+                to: booking.client_email,
+                subject: subject,
+                html: htmlBody,
+              });
+              console.log(`Client email sent successfully for action: ${action}`);
+            } catch (mailErr) {
+              console.error("Failed to send client email:", mailErr);
+              emailStatus = 'failed';
+            }
+            
+            // Log email to database
+            try {
+              const { createClient } = require('@supabase/supabase-js');
+              const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+              const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+              const serverSupabase = createClient(supabaseUrl, supabaseKey);
+
+              await serverSupabase.from('emails').insert([{
+                booking_id: booking.id,
+                recipient_email: booking.client_email,
+                subject: subject,
+                body: htmlBody,
+                email_type: action,
+                status: emailStatus
+              }]);
+            } catch (dbErr) {
+              console.error("Failed to log email to database:", dbErr);
+            }
         }
       }
     } else {

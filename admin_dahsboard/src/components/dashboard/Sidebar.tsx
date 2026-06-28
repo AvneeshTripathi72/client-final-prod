@@ -18,7 +18,8 @@ import {
   ChevronDown,
   X,
   Server,
-  GitPullRequest
+  GitPullRequest,
+  Mail
 } from 'lucide-react';
 import NextImage from 'next/image';
 
@@ -47,6 +48,7 @@ export const navItems = [
     ]
   },
   { name: 'Bookings', href: '/dashboard/bookings', icon: CalendarCheck },
+  { name: 'Emails', href: '/dashboard/emails', icon: Mail },
   { name: 'API', href: '/dashboard/api', icon: Server },
   { name: 'Browse', href: '/dashboard/browse', icon: Eye },
   { name: 'Admins', href: '/dashboard/admins', icon: ShieldAlert },

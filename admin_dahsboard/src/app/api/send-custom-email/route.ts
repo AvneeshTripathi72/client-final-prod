@@ -10,15 +10,21 @@ export async function POST(req: Request) {
       return new NextResponse('Missing required parameters', { status: 400 });
     }
 
+    // Create a server-side client with service role to bypass RLS if possible
+    const { createClient } = require('@supabase/supabase-js');
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+    const serverSupabase = createClient(supabaseUrl, supabaseKey);
+
     // Fetch booking details for context
-    const { data: booking, error: fetchErr } = await supabase
+    const { data: booking, error: fetchErr } = await serverSupabase
       .from('bookings')
       .select('*, artists(name)')
       .eq('id', bookingId)
       .single();
 
     // Update booking status
-    const { error: err } = await supabase
+    const { error: err } = await serverSupabase
       .from('bookings')
       .update({ status: newStatus })
       .eq('id', bookingId);
@@ -129,12 +135,42 @@ export async function POST(req: Request) {
       </html>
     `;
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to,
-      subject,
-      html: htmlBody,
-    });
+    let emailStatus = 'sent';
+    try {
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to,
+        subject,
+        html: htmlBody,
+      });
+    } catch (mailErr) {
+      console.error("Failed to send custom email:", mailErr);
+      emailStatus = 'failed';
+    }
+    
+    // Log email to database
+    try {
+      let logType = 'custom';
+      if (subject.toLowerCase().includes('reject')) logType = 'reject';
+      else if (subject.toLowerCase().includes('unavailable')) logType = 'unavailable';
+      else if (newStatus === 'cancelled') logType = 'reject';
+      else if (newStatus === 'confirmed') logType = 'approve';
+
+      await serverSupabase.from('emails').insert([{
+        booking_id: bookingId,
+        recipient_email: to,
+        subject: subject,
+        body: htmlBody,
+        email_type: logType,
+        status: emailStatus
+      }]);
+    } catch (dbErr) {
+      console.error("Failed to log email to database:", dbErr);
+    }
+
+    if (emailStatus === 'failed') {
+       return new NextResponse('Failed to send email via SMTP', { status: 500 });
+    }
 
     return NextResponse.json({ success: true });
   } catch (err: any) {

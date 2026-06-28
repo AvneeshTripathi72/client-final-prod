@@ -87,6 +87,7 @@ function ClientRequestsContent() {
   const [emailActionStatus, setEmailActionStatus] = useState('pending');
   const [sendingEmail, setSendingEmail] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const ITEMS_PER_PAGE = 10;
   const { toast } = useToast();
@@ -167,6 +168,7 @@ function ClientRequestsContent() {
         } else if (actionType === 'unavailable') {
           subject = 'Update regarding your Magnevents Booking';
           msg = `Thank you for your interest! Unfortunately, the requested artist is unavailable on your selected dates. However, we have several amazing alternative artists that fit your vibe and budget. Let us know when is a good time to call you to discuss options!`;
+          newActionStatus = 'cancelled';
         } else if (actionType === 'reject') {
           subject = 'Update regarding your Magnevents Request';
           msg = `Thank you for reaching out to Magnevents. Unfortunately, we are unable to fulfill your request at this time. We apologize for the inconvenience and wish you the best for your event.`;
@@ -266,12 +268,26 @@ function ClientRequestsContent() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this request?')) return;
+  const handleDeleteSingle = async () => {
+    if (!selectedRequest) return;
     try {
-      const { error } = await (supabase.from('bookings') as any).delete().eq('id', id);
+      const { error } = await (supabase.from('bookings') as any).delete().eq('id', selectedRequest.id);
       if (error) throw error;
       toast({ title: 'Deleted', description: 'Request has been removed.' });
+      setDeleteModalOpen(false);
+      setDetailOpen(false);
+      fetchRequests();
+    } catch (error: any) {
+      toast({ variant: 'destructive', title: 'Error', description: error.message });
+    }
+  };
+
+  const handleDeleteAll = async () => {
+    try {
+      const { error } = await (supabase.from('bookings') as any).delete().eq('booking_source', 'client');
+      if (error) throw error;
+      toast({ title: 'All Deleted', description: 'All client requests have been removed.' });
+      setDeleteModalOpen(false);
       setDetailOpen(false);
       fetchRequests();
     } catch (error: any) {
@@ -517,7 +533,7 @@ function ClientRequestsContent() {
                       Archive / Cancel
                     </button>
                     <button
-                      onClick={() => handleDelete(selectedRequest.id)}
+                      onClick={() => setDeleteModalOpen(true)}
                       className="ml-auto p-3 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-rose-600 hover:border-rose-200 transition-all"
                     >
                       <Trash2 size={18} />
@@ -526,6 +542,31 @@ function ClientRequestsContent() {
               </div>
             </>
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
+        <DialogContent className="max-w-md rounded-[32px] border-none shadow-2xl p-0 overflow-hidden">
+          <div className="bg-slate-900 p-8 text-white relative text-center">
+            <div className="mx-auto w-16 h-16 bg-rose-500/20 rounded-full flex items-center justify-center mb-4">
+              <Trash2 size={32} className="text-rose-500" />
+            </div>
+            <DialogTitle className="text-2xl font-black mb-2">Delete Options</DialogTitle>
+            <DialogDescription className="text-slate-300 font-medium">
+              Would you like to delete just this request or clear all client requests?
+            </DialogDescription>
+          </div>
+          <div className="p-8 bg-slate-50 flex flex-col gap-3">
+            <button onClick={handleDeleteSingle} className="w-full h-11 rounded-xl bg-rose-600 text-white font-bold text-xs uppercase tracking-widest hover:bg-rose-700 transition-all flex items-center justify-center gap-2">
+              <Trash2 size={16} /> Delete This Request
+            </button>
+            <button onClick={() => { if(confirm('Are you absolutely sure you want to delete ALL client requests? This cannot be undone.')) handleDeleteAll(); }} className="w-full h-11 rounded-xl bg-black text-white font-bold text-xs uppercase tracking-widest hover:bg-slate-800 transition-all flex items-center justify-center gap-2">
+              <AlertCircle size={16} /> Delete All Requests
+            </button>
+            <button onClick={() => setDeleteModalOpen(false)} className="mt-2 w-full h-11 rounded-xl bg-white border border-slate-200 text-slate-500 font-bold text-xs uppercase tracking-widest hover:bg-slate-100 transition-all">
+              Cancel
+            </button>
+          </div>
         </DialogContent>
       </Dialog>
 
