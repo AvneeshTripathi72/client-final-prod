@@ -128,6 +128,14 @@ export async function POST(req) {
         const { data: artistData } = await supabase.from('artists').select('*').eq('id', bookingData.fk_artist_id).single();
         if (artistData) dbArtistInfo = artistData;
       }
+      
+      // Fallback: If cover_image_url is missing, grab the first image from artist_images
+      if (dbArtistInfo && !dbArtistInfo.cover_image_url) {
+        const { data: artistImages } = await supabase.from('artist_images').select('image_url').eq('artist_id', dbArtistInfo.id).limit(1);
+        if (artistImages && artistImages.length > 0) {
+          dbArtistInfo.cover_image_url = artistImages[0].image_url;
+        }
+      }
 
     } catch (dbErr) {
       console.error("Failed to connect to Supabase:", dbErr);
