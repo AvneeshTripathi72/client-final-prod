@@ -105,14 +105,14 @@ export async function POST(req) {
       };
 
       if (data.selectedArtist && data.selectedArtist.id) {
-        bookingData.fk_artist_id = data.selectedArtist.id;
+        bookingData.artist_id = data.selectedArtist.id;
       }
 
-      if (!bookingData.fk_artist_id && artistName) {
+      if (!bookingData.artist_id && artistName) {
         const { data: artistDataList } = await supabase.from('artists').select('*').or(`name.ilike.${artistName},alias.ilike.${artistName}`).limit(1);
         if (artistDataList && artistDataList.length > 0) {
           dbArtistInfo = artistDataList[0];
-          bookingData.fk_artist_id = dbArtistInfo.id;
+          bookingData.artist_id = dbArtistInfo.id;
         }
       }
 
@@ -124,8 +124,8 @@ export async function POST(req) {
         bookingId = insertedData.id;
       }
       
-      if (!dbArtistInfo && bookingData.fk_artist_id) {
-        const { data: artistData } = await supabase.from('artists').select('*').eq('id', bookingData.fk_artist_id).single();
+      if (!dbArtistInfo && bookingData.artist_id) {
+        const { data: artistData } = await supabase.from('artists').select('*').eq('id', bookingData.artist_id).single();
         if (artistData) dbArtistInfo = artistData;
       }
       
