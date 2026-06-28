@@ -259,6 +259,7 @@ export function CreateArtistModal({ open, onOpenChange, onSuccess, initialData }
         successful_bookings: parseInt(values.successful_bookings || '0'),
         available_bookings: parseInt(values.available_bookings || '0'),
         video_url: values.video_urls?.filter(Boolean).join(', ') || null,
+        cover_image_url: values.cover_image_url || null,
       };
 
       // Duplicate Check Logic (Application Level) - ONLY check phone_no
