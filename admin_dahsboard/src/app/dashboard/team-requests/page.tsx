@@ -385,7 +385,7 @@ export default function TeamRequestsPage() {
   return (
     <div className="space-y-8 pb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
       
-      <div className="flex justify-between items-end">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 sm:gap-0">
         <div className="section-header">
           <span className="section-label">Workflow Management</span>
           <h1 className="section-title text-slate-900">Admin Approvals</h1>
@@ -394,7 +394,7 @@ export default function TeamRequestsPage() {
         
         <button
           onClick={() => setIsCreateOpen(true)}
-          className="flex items-center gap-2 h-11 px-6 rounded-xl bg-[#5B5AF7] hover:bg-[#4338CA] text-white font-bold text-xs uppercase tracking-widest transition-all shadow-sm shadow-indigo-200"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 h-11 px-6 rounded-xl bg-[#5B5AF7] hover:bg-[#4338CA] text-white font-bold text-xs uppercase tracking-widest transition-all shadow-sm shadow-indigo-200"
         >
           <Plus size={16} strokeWidth={2.5} /> Create Request
         </button>

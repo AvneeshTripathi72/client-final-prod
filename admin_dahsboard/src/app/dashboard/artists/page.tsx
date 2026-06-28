@@ -416,7 +416,7 @@ export default function ArtistManagement() {
 
   return (
     <div className="space-y-8 pb-12">
-      <div className="flex justify-between items-end">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 sm:gap-0">
         <div className="section-header">
           <span className="section-label">Management</span>
           <h1 className="section-title text-slate-900">
@@ -425,7 +425,7 @@ export default function ArtistManagement() {
           <p className="text-body mt-1 max-w-2xl font-medium">Manage and view all registered talent profiles.</p>
         </div>
         <button
-          className="h-11 px-6 rounded-xl bg-slate-900 text-white shadow-lg shadow-slate-200/50 hover:bg-slate-800 hover:scale-[1.02] active:scale-[0.98] transition-all font-bold text-[12px] uppercase tracking-wider flex items-center justify-center gap-2"
+          className="w-full sm:w-auto h-11 px-6 rounded-xl bg-slate-900 text-white shadow-lg shadow-slate-200/50 hover:bg-slate-800 hover:scale-[1.02] active:scale-[0.98] transition-all font-bold text-[12px] uppercase tracking-wider flex items-center justify-center gap-2"
           onClick={() => { setEditingArtist(null); setIsModalOpen(true); }}
         >
           <Plus size={16} strokeWidth={3} />
@@ -443,7 +443,7 @@ export default function ArtistManagement() {
       <div className="space-y-6">
         <ArtistFilters onFilterChange={setFilters} />
         
-        <div className="flex bg-slate-100 p-1.5 rounded-2xl w-fit shadow-inner">
+        <div className="flex bg-slate-100 p-1.5 rounded-2xl w-fit max-w-full overflow-x-auto shadow-inner scrollbar-hide">
           <button 
             className={`px-8 py-3 rounded-xl text-[13px] font-black transition-all flex items-center gap-2 ${activeTab === 'all' ? 'bg-white text-slate-800 shadow-md scale-[1.02]' : 'text-slate-500 hover:text-slate-700 hover:bg-white/50'}`}
             onClick={() => { setActiveTab('all'); setCurrentPage(1); setExpandedGroupId(null); }}

@@ -50,11 +50,19 @@ export async function POST(req) {
 
     let bookingId = null;
     let dbArtistInfo = null;
+    let dbUserProfile = null;
     // 1. Insert ALL requests into Supabase to track them and enable buttons
     try {
       const { createClient } = require('@supabase/supabase-js');
       const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL || '', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '');
       
+      if (data.email) {
+        const { data: profileData } = await supabase.from('profiles').select('*').eq('email', data.email).maybeSingle();
+        if (profileData) {
+          dbUserProfile = profileData;
+        }
+      }
+
       let numericBudget = 0;
       if (data.budget) {
         if (data.budget.includes('5k_10k')) numericBudget = 10000;
@@ -117,6 +125,32 @@ export async function POST(req) {
 
     let contentSections = '';
 
+    const renderDbUserProfile = () => {
+      if (dbUserProfile) {
+        const adminUrl = process.env.NEXT_PUBLIC_ADMIN_URL || 'https://admin.magnevents.in';
+        const profileLink = `${adminUrl}/dashboard/admins/${dbUserProfile.id}`;
+        
+        let profileDetails = '';
+        const keys = Object.keys(dbUserProfile);
+        for (const key of keys) {
+            if (['id', 'avatar_url', 'created_at', 'updated_at'].includes(key)) continue;
+            if (dbUserProfile[key] === null || dbUserProfile[key] === undefined || dbUserProfile[key] === '') continue;
+            
+            const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            profileDetails += row(label, String(dbUserProfile[key]));
+        }
+        
+        return buildSection('🔍 Registered User Profile Details', 
+          profileDetails +
+          `<tr><td colspan="2" style="padding: 16px 0 10px 0; text-align: center;"><a href="${profileLink}" target="_blank" style="display: inline-block; background-color: #2563eb; color: #ffffff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);">Tap to Open User Profile</a></td></tr>`
+        );
+      } else {
+         return buildSection('🔍 Registered User Status', 
+          `<tr><td style="padding: 10px 0; color: #64748b; font-size: 14px; text-align: center; font-style: italic;">This user is not registered in the database.</td></tr>`
+        );
+      }
+    };
+
     if (isRegister) {
       emailBody = `New Artist Registration from ${data.name || 'Unknown'}\nPhone: ${data.phone || 'N/A'}\nEmail: ${data.email || 'N/A'}`;
       contentSections += buildSection('👤 Artist Details', 
@@ -125,6 +159,7 @@ export async function POST(req) {
         row('Phone', data.phone, true, `tel:${data.phone}`) +
         row('Category', data.category)
       );
+      contentSections += renderDbUserProfile();
       contentSections += buildSection('🔗 Portfolio & Socials', row('Link', data.portfolio, true, data.portfolio));
       contentSections += buildSection('📝 Bio & Experience', `<tr><td style="padding: 8px 0; color: #0f172a;">${data.bio || 'No bio provided.'}</td></tr>`);
     } else {
@@ -134,6 +169,8 @@ export async function POST(req) {
         row('Email', data.email, true, `mailto:${data.email}`) +
         row('Phone', data.phone, true, `tel:${data.phone}`)
       );
+      
+      contentSections += renderDbUserProfile();
 
       contentSections += buildSection('📅 Event Details', 
         row('Event Type', data.eventType) +
@@ -145,26 +182,33 @@ export async function POST(req) {
 
       contentSections += buildSection('📝 Additional Message', `<tr><td style="padding: 16px; background-color: #f8fafc; border-radius: 8px; font-style: italic; color: #475569; border: 1px solid #e2e8f0;">"${data.message || 'No additional message provided.'}"</td></tr>`);
 
+      const renderArtistDetails = (a) => {
+        const adminUrl = process.env.NEXT_PUBLIC_ADMIN_URL || 'https://admin.magnevents.in';
+        let profileLink = '';
+        if (a.id) {
+          profileLink = `${adminUrl}/dashboard/artists?id=${a.id}`;
+        }
+        
+        let details = '';
+        const keys = Object.keys(a);
+        for (const key of keys) {
+            if (['id', 'created_at', 'updated_at', 'artist_images', 'images'].includes(key)) continue;
+            if (a[key] === null || a[key] === undefined || a[key] === '') continue;
+            
+            const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            details += row(label, String(a[key]));
+        }
+        
+        if (profileLink) {
+           details += `<tr><td colspan="2" style="padding: 16px 0 10px 0; text-align: center;"><a href="${profileLink}" target="_blank" style="display: inline-block; background-color: #0284c7; color: #ffffff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px; box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.2);">Tap to Open Full Artist Profile</a></td></tr>`;
+        }
+        return buildSection('✨ Requested Artist Details', details);
+      };
+
       if (dbArtistInfo) {
-        const a = dbArtistInfo;
-        const price = a.priceMin && a.priceMax ? `₹${a.priceMin} - ₹${a.priceMax}` : (a.priceMin ? `Starting at ₹${a.priceMin}` : '');
-        contentSections += buildSection('✨ Requested Artist Details', 
-          row('Artist Name', a.name) +
-          row('Category', a.subCategory || a.category) +
-          row('Location', [a.city, a.state].filter(Boolean).join(', ') || a.location) +
-          row('Languages', a.languages) +
-          row('Price Range', price)
-        );
+        contentSections += renderArtistDetails(dbArtistInfo);
       } else if (data.selectedArtist && typeof data.selectedArtist === 'object') {
-        const a = data.selectedArtist;
-        const price = a.priceMin && a.priceMax ? `₹${a.priceMin} - ₹${a.priceMax}` : (a.priceMin ? `Starting at ₹${a.priceMin}` : '');
-        contentSections += buildSection('✨ Requested Artist Details', 
-          row('Artist Name', a.name) +
-          row('Category', a.subCategory || a.category) +
-          row('Location', [a.city, a.state].filter(Boolean).join(', ') || a.location) +
-          row('Languages', a.languages) +
-          row('Price Range', price)
-        );
+        contentSections += renderArtistDetails(data.selectedArtist);
       } else if (artistName) {
         contentSections += buildSection('✨ Requested Artist Details', row('Artist Name', artistName));
       }
@@ -215,19 +259,19 @@ export async function POST(req) {
       const adminUrl = process.env.NEXT_PUBLIC_ADMIN_URL || 'https://admin.magnevents.in';
       const btnBase = "display: block; width: 100%; box-sizing: border-box; color: #ffffff; padding: 14px 16px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 14px; margin-bottom: 12px; text-align: center; border: 1px solid rgba(0,0,0,0.1);";
       
-      const confirmLink = `${adminUrl}/api/action-request?id=${bookingId}&type=client_request&action=confirm`;
-      const approveLink = `${adminUrl}/api/action-request?id=${bookingId}&type=client_request&action=approve`;
+      const confirmLink = `${adminUrl}/dashboard/requests?reply=${bookingId}&action=confirm`;
+      const approveLink = `${adminUrl}/dashboard/requests?reply=${bookingId}&action=approve`;
       const moreInfoLink = `${adminUrl}/dashboard/requests?reply=${bookingId}&action=more_info`;
-      const unavailableLink = `${adminUrl}/api/action-request?id=${bookingId}&type=client_request&action=unavailable`;
-      const rejectLink = `${adminUrl}/api/action-request?id=${bookingId}&type=client_request&action=reject`;
+      const unavailableLink = `${adminUrl}/dashboard/requests?reply=${bookingId}&action=unavailable`;
+      const rejectLink = `${adminUrl}/dashboard/requests?reply=${bookingId}&action=reject`;
       const customReplyLink = `${adminUrl}/dashboard/requests?reply=${bookingId}&action=custom`;
-      const previewLink = `${adminUrl}/dashboard/requests`;
+      const previewLink = `${adminUrl}/dashboard/requests?reply=${bookingId}`;
 
       htmlBody += `
         <div style="background-color: #f8fafc; padding: 30px 20px; border-top: 1px solid #e2e8f0;">
           <div style="text-align: center; margin-bottom: 24px;">
             <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px; font-weight: 800;">Quick Actions</h3>
-            <p style="font-size: 13px; color: #64748b; margin: 0; line-height: 1.5;">Click a button below to instantly respond to the client. Responses are logged automatically.</p>
+            <p style="font-size: 13px; color: #64748b; margin: 0; line-height: 1.5;">Click a button below to review and instantly respond to the client from the dashboard.</p>
           </div>
           
           <div style="max-width: 320px; margin: 0 auto;">
@@ -237,7 +281,7 @@ export async function POST(req) {
             <div style="height: 1px; background-color: #e2e8f0; margin: 20px 0;"></div>
             
             <a href="${moreInfoLink}" style="${btnBase} background-color: #2563eb; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);">📞 Request More Info</a>
-            <a href="${customReplyLink}" style="${btnBase} background-color: #7c3aed; box-shadow: 0 4px 6px -1px rgba(124, 58, 237, 0.2);">✍️ Custom Reply (Dashboard)</a>
+            <a href="${customReplyLink}" style="${btnBase} background-color: #7c3aed; box-shadow: 0 4px 6px -1px rgba(124, 58, 237, 0.2);">✍️ Custom Reply</a>
             
             <div style="height: 1px; background-color: #e2e8f0; margin: 20px 0;"></div>
             
@@ -246,7 +290,7 @@ export async function POST(req) {
           </div>
           
           <div style="margin-top: 32px; text-align: center;">
-            <a href="${previewLink}" style="display: inline-block; background-color: #ffffff; color: #475569; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px; border: 1px solid #cbd5e1; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">View All Requests in Dashboard</a>
+            <a href="${previewLink}" style="display: inline-block; background-color: #ffffff; color: #475569; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px; border: 1px solid #cbd5e1; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">Open Request in Dashboard</a>
           </div>
         </div>
       `;

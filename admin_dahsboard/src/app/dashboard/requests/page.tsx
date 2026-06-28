@@ -145,7 +145,7 @@ function ClientRequestsContent() {
         let newActionStatus = 'pending';
         const artistName = req.artists?.name ? ` for ${req.artists.name}` : '';
 
-        if (actionType === 'confirm') {
+        if (actionType === 'confirm' || actionType === 'approve') {
           subject = 'Your Magnevents Booking is Confirmed!';
           msg = `Great news! Your booking request${artistName} has been approved and confirmed by our team. We will reach out shortly with the final contract and next steps.`;
           newActionStatus = 'confirmed';
@@ -360,8 +360,8 @@ function ClientRequestsContent() {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-10 sm:px-12 sm:border-x sm:border-slate-100">
-                    <div className="min-w-[220px]">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-10 sm:px-12 sm:border-x sm:border-slate-100">
+                    <div className="w-full sm:min-w-[220px]">
                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Artist</p>
                        <p className="text-[16px] font-black text-slate-900 truncate mb-1.5 tracking-tight">{request.artists?.name || 'Any Artist'}</p>
                        <div className="flex items-center gap-2">
@@ -386,9 +386,9 @@ function ClientRequestsContent() {
                           </div>
                        </div>
                     </div>
-                    <div className="min-w-[140px]">
+                    <div className="w-full sm:min-w-[140px]">
                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Budget Evaluation</p>
-                       <div className="flex items-center gap-3">
+                       <div className="flex flex-wrap sm:flex-nowrap items-center gap-3">
                          <span className="text-[16px] font-black text-slate-900 tracking-tight">₹{request.budget?.toLocaleString()}</span>
                          {request.artists && (
                             (() => {
