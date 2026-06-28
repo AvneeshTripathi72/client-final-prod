@@ -187,8 +187,6 @@ export async function POST(req: Request) {
 
       await serverSupabase.from('emails')
         .update({
-          subject: subject,
-          body: htmlBody,
           email_type: logType,
           status: emailStatus,
           sent_at: new Date().toISOString()

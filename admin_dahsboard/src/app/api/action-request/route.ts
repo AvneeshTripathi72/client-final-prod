@@ -233,8 +233,6 @@ export async function GET(req: Request) {
             try {
               await supabase.from('emails')
                 .update({
-                  subject: subject,
-                  body: htmlBody,
                   email_type: action,
                   status: emailStatus,
                   sent_at: new Date().toISOString()
