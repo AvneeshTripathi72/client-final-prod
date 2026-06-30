@@ -128,7 +128,7 @@ export default function TrackRequestPage() {
                       <Search className="h-8 w-8 text-slate-500" />
                     </div>
                     <h3 className="text-xl font-bold text-white mb-2">No Requests Found</h3>
-                    <p className="text-slate-400">We couldn't find any booking requests associated with <strong className="text-slate-300">{email}</strong>.</p>
+                    <p className="text-slate-400">We couldn&apos;t find any booking requests associated with <strong className="text-slate-300">{email}</strong>.</p>
                   </div>
                 ) : (
                   <div className="space-y-6">

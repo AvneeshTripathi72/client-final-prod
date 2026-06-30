@@ -385,8 +385,8 @@ export async function POST(req) {
     }
     }; // End of processRequestInBackground
 
-    // Execute background process without awaiting it
-    processRequestInBackground().catch(console.error);
+    // Execute background process
+    await processRequestInBackground();
 
     return new Response(JSON.stringify({ success: true, message: 'Request processed successfully!' }), {
       status: 200,
