@@ -3720,6 +3720,10 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.1em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
 }
 
 .hp-feat-name-v2 {
