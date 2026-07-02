@@ -392,9 +392,10 @@ body.modal-open .booking-bottom-nav-spacer {
 
 /* Card Styles */
 .hp-feat-card-v2 {
-  background: #111;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 32px;
+  background: rgba(30, 30, 30, 0.4);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
   overflow: hidden;
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   display: flex;
@@ -403,9 +404,9 @@ body.modal-open .booking-bottom-nav-spacer {
 }
 
 .hp-feat-card-v2:hover {
-  border-color: #FFE032;
+  border-color: rgba(255, 224, 50, 0.5);
   transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 224, 50, 0.15);
 }
 
 .hp-feat-img-wrap-v2 {
@@ -442,15 +443,20 @@ body.modal-open .booking-bottom-nav-spacer {
 }
 
 .hp-feat-genre-v2 {
-  font-size: 11px;
+  font-size: 10px;
   color: #FFE032;
-  font-weight: 800;
+  background: rgba(255, 224, 50, 0.1);
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 224, 50, 0.2);
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: block;
+  display: inline-block;
+  max-width: 100%;
 }
 
 .hp-feat-name-v2 {
