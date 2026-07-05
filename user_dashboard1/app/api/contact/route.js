@@ -385,8 +385,8 @@ export async function POST(req) {
     }
     }; // End of processRequestInBackground
 
-    // Execute background process without awaiting so the user gets instant feedback
-    processRequestInBackground().catch(err => console.error("Background task error:", err));
+    // Execute process and await it so Vercel doesn't kill the serverless function prematurely
+    await processRequestInBackground();
 
     return new Response(JSON.stringify({ success: true, message: 'Request processed successfully!' }), {
       status: 200,
