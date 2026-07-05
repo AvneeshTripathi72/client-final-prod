@@ -85,36 +85,48 @@ const ArtistCard = forwardRef(({ artist, onBook }, ref) => {
           />
           <div className="modern-overlay-gradient"></div>
         </div>
-        <div className="modern-info-overlay">
-          <div className="modern-badges-container" style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '8px' }}>
+        <div className="modern-info-overlay" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.6) 50%, transparent 100%)', padding: '24px 20px 20px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', height: '100%', borderBottomLeftRadius: '24px', borderBottomRightRadius: '24px' }}>
+          <div className="modern-badges-container" style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
             {genres.length > 0 && (
-              <div className="modern-genres-wrapper" style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
                 {genres.slice(0, 2).map((g, idx) => (
-                  <span key={`g-${idx}`} className="modern-genre-badge">{g}</span>
+                  <span key={`g-${idx}`} style={{ background: '#FFE032', color: '#1a1a1a', padding: '4px 10px', borderRadius: '12px', fontSize: '10px', fontWeight: '800', letterSpacing: '0.05em', textTransform: 'uppercase', boxShadow: '0 2px 10px rgba(255, 224, 50, 0.2)' }}>{g}</span>
                 ))}
-                {genres.length > 2 && <span className="modern-genre-badge outline">+{genres.length - 2}</span>}
+                {genres.length > 2 && <span style={{ background: 'rgba(255, 224, 50, 0.1)', color: '#FFE032', border: '1px solid rgba(255, 224, 50, 0.5)', padding: '3px 8px', borderRadius: '12px', fontSize: '10px', fontWeight: '800' }}>+{genres.length - 2}</span>}
               </div>
             )}
+            
             {languages.length > 0 && (
-              <div className="modern-langs-wrapper" style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                {languages.slice(0, 2).map((l, idx) => (
-                  <span key={`l-${idx}`} className="modern-genre-badge" style={{ backgroundColor: 'rgba(255,255,255,0.15)', borderColor: 'rgba(255,255,255,0.3)', color: '#eee' }}>🗣️ {l}</span>
+              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center', marginTop: '2px' }}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style={{ width: '14px', height: '14px', color: '#94a3b8' }}>
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9H5.5a1.5 1.5 0 000 3H7v-3zm3 0H8.5v3H10V9zm3 0h-1.5v3H13V9z" clipRule="evenodd" />
+                </svg>
+                {languages.slice(0, 3).map((l, idx) => (
+                  <span key={`l-${idx}`} style={{ color: '#cbd5e1', fontSize: '11px', fontWeight: '600', letterSpacing: '0.02em', background: 'rgba(255,255,255,0.08)', padding: '2px 8px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.1)' }}>{l}</span>
                 ))}
-                {languages.length > 2 && <span className="modern-genre-badge outline" style={{ borderColor: 'rgba(255,255,255,0.3)', color: '#eee' }}>+{languages.length - 2}</span>}
+                {languages.length > 3 && <span style={{ color: '#94a3b8', fontSize: '10px', fontWeight: '500' }}>+{languages.length - 3}</span>}
               </div>
             )}
           </div>
-          <h3 className="modern-artist-name">{artist.name}</h3>
-          <span className="modern-artist-loc">{location}</span>
+          
+          <h3 className="modern-artist-name" style={{ fontSize: '24px', fontWeight: '900', margin: '0 0 6px 0', color: '#ffffff', letterSpacing: '-0.02em', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>{artist.name}</h3>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '16px' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" style={{ width: '14px', height: '14px', color: '#cbd5e1' }}>
+              <path fillRule="evenodd" d="M9.69 18.933l.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 00.281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 103 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 002.273 1.765 11.842 11.842 0 00.976.544l.062.029.018.008.006.003zM10 11.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" clipRule="evenodd" />
+            </svg>
+            <span style={{ color: '#cbd5e1', fontSize: '13px', fontWeight: '500' }}>{location}</span>
+          </div>
 
-          <div className="modern-artist-rating flex items-center">
-            <Stars count={Math.round(Number(rating))} />
-            <span className="modern-score-text">{rating}</span>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px' }}>
+            <div className="flex items-center gap-1.5">
+              <Stars count={Math.round(Number(rating))} />
+              <span style={{ color: '#ffffff', fontWeight: '800', fontSize: '14px' }}>{rating}</span>
+            </div>
             {mounted && bookings > 0 && (
-              <>
-                <span className="text-white/20 mx-2 text-xs">•</span>
-                <span className="text-white/70 text-[10px] font-bold uppercase tracking-wider">{bookings} Bookings</span>
-              </>
+              <div style={{ background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(5, 150, 105, 0.4) 100%)', color: '#34d399', padding: '6px 12px', borderRadius: '20px', fontSize: '11px', fontWeight: '800', letterSpacing: '0.05em', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px', border: '1px solid rgba(16, 185, 129, 0.3)', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.15)' }}>
+                 🔥 {bookings} Bookings
+              </div>
             )}
           </div>
         </div>
