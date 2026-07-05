@@ -112,8 +112,8 @@ export default function BottomNav() {
           </button>
         </div>
 
-        {/* Slot 4: Profile */}
-        <Tab path="/profile" icon={(color) => <ProfileIcon color={color} />} label="Profile" isActive={active('/profile')} />
+        {/* Slot 4: Blog */}
+        <Tab path="/blog-post" icon={(color) => <AboutIcon color={color} />} label="Blog" isActive={active('/blog-post')} />
         
         {/* Slot 5: Pricing */}
         <Tab
