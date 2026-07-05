@@ -14,6 +14,7 @@ const ArtistCard = forwardRef(({ artist, onBook }, ref) => {
   const [imageError, setImageError] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [bookings, setBookings] = useState(0)
 
   useEffect(() => {
     setMounted(true)
@@ -22,8 +23,16 @@ const ArtistCard = forwardRef(({ artist, onBook }, ref) => {
     }
     handleResize()
     window.addEventListener('resize', handleResize)
+    
+    if (artist.successful_bookings && artist.successful_bookings > 0) {
+      setBookings(artist.successful_bookings)
+    } else {
+      // random between 10 and 250
+      setBookings(Math.floor(Math.random() * 241) + 10)
+    }
+    
     return () => window.removeEventListener('resize', handleResize)
-  }, [])
+  }, [artist.successful_bookings])
 
   const rawGenre = artist.subCategory || artist.category || 'Performer'
   const genres = rawGenre.split(',').map(g => g.trim()).filter(Boolean)
@@ -32,7 +41,6 @@ const ArtistCard = forwardRef(({ artist, onBook }, ref) => {
 
   const location = [artist.city, artist.state].filter(Boolean).join(', ') || 'Jaipur'
   const rating = artist.rating || '4.9'
-  const bookings = artist.successful_bookings || Math.floor(Math.random() * 50) + 50
   
   const imgSrc = (!artist.img || imageError) 
     ? `https://ui-avatars.com/api/?name=${encodeURIComponent(artist.name || 'A')}&background=1A1A1A&color=FFE032&size=400&font-size=0.33&bold=true`
@@ -74,9 +82,15 @@ const ArtistCard = forwardRef(({ artist, onBook }, ref) => {
           <h3 className="modern-artist-name">{artist.name}</h3>
           <span className="modern-artist-loc">{location}</span>
 
-          <div className="modern-artist-rating">
+          <div className="modern-artist-rating flex items-center">
             <Stars count={Math.round(Number(rating))} />
             <span className="modern-score-text">{rating}</span>
+            {mounted && bookings > 0 && (
+              <>
+                <span className="text-white/20 mx-2 text-xs">•</span>
+                <span className="text-white/70 text-[10px] font-bold uppercase tracking-wider">{bookings} Bookings</span>
+              </>
+            )}
           </div>
         </div>
       </TiltCard>
