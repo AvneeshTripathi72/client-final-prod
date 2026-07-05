@@ -272,7 +272,7 @@ export const INFO_CARDS = [
     subtitle: "Real Stories. Unforgettable Events.",
     icon: "💬",
     link: "/testimonials",
-    points: ["Soulful Sufi Nights", "Perfect Wedding Vibe", "Zero Stress Booking"],
+    points: ["Honest customer service", "Perfect Artist matching the event's need.", "No stress after booking."],
     accent: "pink"
   },
   {

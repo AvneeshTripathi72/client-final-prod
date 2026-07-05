@@ -155,214 +155,206 @@ export default function ServicesPage() {
   // Remove loading block, render immediately
 
   return (
-    <>
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#020617', color: '#fff', flexDirection: 'column' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem' }}>Services</h1>
-        <p style={{ color: '#94a3b8' }}>This page is currently under construction.</p>
-      </div>
-      {/* 
-      <div className="v4-services-wrapper">
+    <div className="v4-services-wrapper">
+      
+      {/* =========================================
+          SECTION 1: FULL SCREEN HERO
+          ========================================= */}
+      <section className="v4-hero-section">
+        {!heroVideo?.includes('youtube') ? (
+          <video src={heroVideo} autoPlay muted loop playsInline className="v4-hero-media" />
+        ) : (
+          <iframe
+            src={`https://www.youtube.com/embed/${getYoutubeId(heroVideo)}?autoplay=1&mute=1&loop=1&playlist=${getYoutubeId(heroVideo)}&controls=0`}
+            className="v4-hero-media"
+            style={{ pointerEvents: 'none', transform: 'scale(1.35)' }}
+          />
+        )}
+        <div className="v4-hero-overlay" />
+        <div className="v4-hero-glow" />
         
-        {/* =========================================
-            SECTION 1: FULL SCREEN HERO
-            ========================================= *\/}
-        <section className="v4-hero-section">
-          {!heroVideo?.includes('youtube') ? (
-            <video src={heroVideo} autoPlay muted loop playsInline className="v4-hero-media" />
-          ) : (
-            <iframe
-              src={`https://www.youtube.com/embed/${getYoutubeId(heroVideo)}?autoplay=1&mute=1&loop=1&playlist=${getYoutubeId(heroVideo)}&controls=0`}
-              className="v4-hero-media"
-              style={{ pointerEvents: 'none', transform: 'scale(1.35)' }}
-            />
-          )}
-          <div className="v4-hero-overlay" />
-          <div className="v4-hero-glow" />
-          
-          <motion.div 
-            className="v4-hero-content"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <div className="v4-badge">
-              <StarIcon /> PREMIUM LIVE ENTERTAINMENT
-            </div>
-            <h1 className="v4-hero-title">
-              Book Premium Artists<br/>For Every Event
-            </h1>
-            <p className="v4-hero-subtitle">
-              Live Singers • DJs • Bands • Anchors
-            </p>
-            <button className="v4-btn-primary">
-              Book Now
-            </button>
-          </motion.div>
-        </section>
-
-        {/* =========================================
-            SECTION 3: CATEGORY VIDEOS
-            ========================================= *\/}
-        <section className="v4-videos-section">
-          {categories.map((cat, idx) => {
-            const catVideos = videos.filter(v => v.category_id === cat.id);
-            if (catVideos.length === 0) return null;
-
-            return (
-              <motion.div 
-                key={cat.id} 
-                id={`cat-${cat.id}`} 
-                className="v4-category-row"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-100px" }}
-                transition={{ duration: 0.8 }}
-              >
-                <div className="v4-row-header">
-                  <h2 className="v4-row-title">🎤 {cat.title}</h2>
-                  <p className="v4-row-subtitle">Watch Top Performances</p>
-                </div>
-                <div className="v4-videos-scroll">
-                  {catVideos.map(video => (
-                    <VideoCard key={video.id} video={video} onSelect={setSelectedVideo} />
-                  ))}
-                </div>
-              </motion.div>
-            );
-          })}
-        </section>
-
-        {/* =========================================
-            SECTION 4: ALL VIDEOS (MASONRY)
-            ========================================= *\/}
-        <section className="v4-all-videos-section">
-          <motion.div 
-            className="v4-row-header"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="v4-row-title">📺 ALL VIDEOS</h2>
-            <p className="v4-row-subtitle">Explore our full library of premium entertainment.</p>
-          </motion.div>
-          
-          <div className="v4-masonry-grid">
-            {videos.map((video, idx) => (
-              <motion.div 
-                key={video.id} 
-                className="v4-masonry-item"
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.5, delay: (idx % 3) * 0.1 }}
-              >
-                <VideoCard video={video} onSelect={setSelectedVideo} />
-              </motion.div>
-            ))}
+        <motion.div 
+          className="v4-hero-content"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <div className="v4-badge">
+            <StarIcon /> PREMIUM LIVE ENTERTAINMENT
           </div>
-        </section>
+          <h1 className="v4-hero-title">
+            Book Premium Artists<br/>For Every Event
+          </h1>
+          <p className="v4-hero-subtitle">
+            Live Singers • DJs • Bands • Anchors
+          </p>
+          <button className="v4-btn-primary">
+            Book Now
+          </button>
+        </motion.div>
+      </section>
 
-        {/* =========================================
-            VIDEO PREVIEW MODAL
-            ========================================= *\/}
-        <AnimatePresence>
-          {selectedVideo && (
+      {/* =========================================
+          SECTION 3: CATEGORY VIDEOS
+          ========================================= */}
+      <section className="v4-videos-section">
+        {categories.map((cat, idx) => {
+          const catVideos = videos.filter(v => v.category_id === cat.id);
+          if (catVideos.length === 0) return null;
+
+          return (
             <motion.div 
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              key={cat.id} 
+              id={`cat-${cat.id}`} 
+              className="v4-category-row"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8 }}
             >
-              <motion.div 
-                className="relative w-full max-w-5xl bg-[#0F1117] rounded-3xl overflow-hidden shadow-2xl border border-white/10"
-                initial={{ scale: 0.9, y: 50 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.9, y: 50 }}
-              >
-                <button 
-                  className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/50 hover:bg-[#FF3D5E] rounded-full flex items-center justify-center text-white transition-colors text-xl font-bold"
-                  onClick={() => setSelectedVideo(null)}
-                >
-                  ✕
-                </button>
-                
-                <div className="aspect-video w-full bg-black">
-                  {getYoutubeId(selectedVideo.video_url) ? (
-                    <iframe 
-                      src={`https://www.youtube.com/embed/${getYoutubeId(selectedVideo.video_url)}?autoplay=1`} 
-                      className="w-full h-full"
-                      allow="autoplay; fullscreen"
-                    />
-                  ) : (
-                    <video src={selectedVideo.video_url} controls autoPlay className="w-full h-full object-contain" />
-                  )}
-                </div>
+              <div className="v4-row-header">
+                <h2 className="v4-row-title">🎤 {cat.title}</h2>
+                <p className="v4-row-subtitle">Watch Top Performances</p>
+              </div>
+              <div className="v4-videos-scroll">
+                {catVideos.map(video => (
+                  <VideoCard key={video.id} video={video} onSelect={setSelectedVideo} />
+                ))}
+              </div>
+            </motion.div>
+          );
+        })}
+      </section>
 
-                <div className="p-6 sm:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 bg-[#0F1117] border-t border-white/10 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-rose-500/10 to-transparent pointer-events-none"></div>
-                  <div className="relative z-10">
-                    <h2 className="text-3xl sm:text-4xl font-black text-white mb-1 tracking-tight">{
-                      (() => {
-                        try {
-                          const parsed = JSON.parse(selectedVideo.user_name);
-                          return parsed.name || selectedVideo.user_name;
-                        } catch (e) {
-                          return selectedVideo.user_name || "Featured Performance";
-                        }
-                      })()
-                    }</h2>
-                    {(() => {
-                      let typeText = "";
+      {/* =========================================
+          SECTION 4: ALL VIDEOS (MASONRY)
+          ========================================= */}
+      <section className="v4-all-videos-section">
+        <motion.div 
+          className="v4-row-header"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="v4-row-title">📺 ALL VIDEOS</h2>
+          <p className="v4-row-subtitle">Explore our full library of premium entertainment.</p>
+        </motion.div>
+        
+        <div className="v4-masonry-grid">
+          {videos.map((video, idx) => (
+            <motion.div 
+              key={video.id} 
+              className="v4-masonry-item"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, delay: (idx % 3) * 0.1 }}
+            >
+              <VideoCard video={video} onSelect={setSelectedVideo} />
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* =========================================
+          VIDEO PREVIEW MODAL
+          ========================================= */}
+      <AnimatePresence>
+        {selectedVideo && (
+          <motion.div 
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div 
+              className="relative w-full max-w-5xl bg-[#0F1117] rounded-3xl overflow-hidden shadow-2xl border border-white/10"
+              initial={{ scale: 0.9, y: 50 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 50 }}
+            >
+              <button 
+                className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/50 hover:bg-[#FF3D5E] rounded-full flex items-center justify-center text-white transition-colors text-xl font-bold"
+                onClick={() => setSelectedVideo(null)}
+              >
+                ✕
+              </button>
+              
+              <div className="aspect-video w-full bg-black">
+                {getYoutubeId(selectedVideo.video_url) ? (
+                  <iframe 
+                    src={`https://www.youtube.com/embed/${getYoutubeId(selectedVideo.video_url)}?autoplay=1`} 
+                    className="w-full h-full"
+                    allow="autoplay; fullscreen"
+                  />
+                ) : (
+                  <video src={selectedVideo.video_url} controls autoPlay className="w-full h-full object-contain" />
+                )}
+              </div>
+
+              <div className="p-6 sm:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 bg-[#0F1117] border-t border-white/10 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-rose-500/10 to-transparent pointer-events-none"></div>
+                <div className="relative z-10">
+                  <h2 className="text-3xl sm:text-4xl font-black text-white mb-1 tracking-tight">{
+                    (() => {
                       try {
-                        if (selectedVideo.user_name && selectedVideo.user_name.startsWith('{')) {
-                          const parsed = JSON.parse(selectedVideo.user_name);
-                          if (parsed.type) typeText = parsed.type;
-                        }
-                      } catch (e) {}
-                      
-                      return typeText ? (
-                        <div className="text-[#FFD166] text-[11px] sm:text-xs uppercase tracking-[0.2em] font-extrabold bg-[#FFD166]/10 inline-block px-3 py-1.5 rounded-md border border-[#FFD166]/20 mt-2">
-                          {typeText}
-                        </div>
-                      ) : (
-                        <p className="text-[#FF3D5E] text-sm uppercase tracking-widest font-bold mt-2">Premium Live Entertainment</p>
-                      );
-                    })()}
-                  </div>
-                  <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto relative z-10">
-                    <button className="h-14 px-10 bg-gradient-to-r from-[#FF3D5E] to-[#FF758C] hover:scale-105 text-white font-black rounded-full transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,61,94,0.4)] text-lg w-full sm:w-auto">
-                      Book {
-                        (() => {
-                          try {
-                            return JSON.parse(selectedVideo.user_name).name;
-                          } catch(e) {
-                            return selectedVideo.user_name || 'Featured Artist';
-                          }
-                        })()
+                        const parsed = JSON.parse(selectedVideo.user_name);
+                        return parsed.name || selectedVideo.user_name;
+                      } catch (e) {
+                        return selectedVideo.user_name || "Featured Performance";
                       }
-                    </button>
-                    <Link href={`/artist/${encodeURIComponent(
+                    })()
+                  }</h2>
+                  {(() => {
+                    let typeText = "";
+                    try {
+                      if (selectedVideo.user_name && selectedVideo.user_name.startsWith('{')) {
+                        const parsed = JSON.parse(selectedVideo.user_name);
+                        if (parsed.type) typeText = parsed.type;
+                      }
+                    } catch (e) {}
+                    
+                    return typeText ? (
+                      <div className="text-[#FFD166] text-[11px] sm:text-xs uppercase tracking-[0.2em] font-extrabold bg-[#FFD166]/10 inline-block px-3 py-1.5 rounded-md border border-[#FFD166]/20 mt-2">
+                        {typeText}
+                      </div>
+                    ) : (
+                      <p className="text-[#FF3D5E] text-sm uppercase tracking-widest font-bold mt-2">Premium Live Entertainment</p>
+                    );
+                  })()}
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto relative z-10">
+                  <button className="h-14 px-10 bg-gradient-to-r from-[#FF3D5E] to-[#FF758C] hover:scale-105 text-white font-black rounded-full transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,61,94,0.4)] text-lg w-full sm:w-auto">
+                    Book {
                       (() => {
                         try {
                           return JSON.parse(selectedVideo.user_name).name;
                         } catch(e) {
-                          return selectedVideo.user_name || 'Artist';
+                          return selectedVideo.user_name || 'Featured Artist';
                         }
                       })()
-                    )}`} target={isMobile ? "_self" : "_blank"} className="w-full sm:w-auto">
-                      <button className="h-14 px-10 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold rounded-full transition-all w-full sm:w-auto flex items-center justify-center whitespace-nowrap">
-                        View Profile
-                      </button>
-                    </Link>
-                  </div>
+                    }
+                  </button>
+                  <Link href={`/artist/${encodeURIComponent(
+                    (() => {
+                      try {
+                        return JSON.parse(selectedVideo.user_name).name;
+                      } catch(e) {
+                        return selectedVideo.user_name || 'Artist';
+                      }
+                    })()
+                  )}`} target={isMobile ? "_self" : "_blank"} className="w-full sm:w-auto">
+                    <button className="h-14 px-10 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold rounded-full transition-all w-full sm:w-auto flex items-center justify-center whitespace-nowrap">
+                      View Profile
+                    </button>
+                  </Link>
                 </div>
-              </motion.div>
+              </div>
             </motion.div>
-          )}
-        </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      </div>
-      */}
-    </>
+    </div>
   );
 }
