@@ -159,7 +159,6 @@ export const NAV_LINKS = [
   },
   { label: 'Pricing', path: '/pricing' },
   { label: 'Services', path: '/services' },
-  { label: 'Profile', path: '/profile' },
   { label: 'Blog Post', path: '/blog-post' },
 ]
 
