@@ -528,8 +528,13 @@
     padding-bottom: 140px; /* Increased to clear WhatsApp icon and BottomNav */
   }
 
+  .hero-bg-image {
+    height: 120vw; /* Creates a portrait aspect ratio for mobile */
+    background-position: center 15%; /* Focus more on the face/upper body */
+  }
+
   .hero-content {
-    padding: 180px 20px 30px 20px;
+    padding: calc(120vw - 220px) 20px 30px 20px; /* Push content to bottom of portrait image */
   }
   
   .artist-name {
