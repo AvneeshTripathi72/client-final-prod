@@ -21,7 +21,8 @@ import {
   GitPullRequest,
   Mail,
   Activity,
-  Terminal
+  Terminal,
+  ClipboardList
 } from 'lucide-react';
 import NextImage from 'next/image';
 
@@ -48,6 +49,7 @@ export const navSections = [
   {
     title: 'Content Management',
     items: [
+      { name: 'Custom Forms', href: '/dashboard/forms', icon: ClipboardList },
       {
         name: 'Edit',
         icon: PencilLine,
