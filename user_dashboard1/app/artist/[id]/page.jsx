@@ -100,9 +100,53 @@ export default function ArtistProfilePage({ params }) {
 
   if (loading) {
     return (
-      <div className="artist-profile-wrapper" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-        <div style={{ animation: 'pulse 1.5s infinite', color: '#E7286A', fontWeight: 'bold' }}>Loading Profile...</div>
-      </div>
+      <main className="artist-profile-wrapper">
+        <style>{`
+          @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+          }
+          .skeleton-box {
+            background: linear-gradient(90deg, #1A1D24 25%, #2A2E39 50%, #1A1D24 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+          }
+          @media (max-width: 768px) {
+            .skeleton-hero-bg { height: 120vw !important; }
+            .skeleton-stats { display: none !important; }
+          }
+        `}</style>
+        <div className="artist-container">
+          <section className="artist-hero-card" style={{ background: '#0F1117' }}>
+            <div className="skeleton-box skeleton-hero-bg" style={{ width: '100%', height: '600px', position: 'absolute', top: 0, left: 0 }} />
+            <div className="hero-gradient-overlay" />
+            
+            <div className="hero-content">
+              <div className="hero-text-area" style={{ zIndex: 4, width: '100%', maxWidth: '600px' }}>
+                <div className="artist-badges">
+                  <div className="skeleton-box" style={{ width: '100px', height: '24px', borderRadius: '100px' }} />
+                  <div className="skeleton-box" style={{ width: '80px', height: '24px', borderRadius: '100px' }} />
+                </div>
+                
+                <div className="skeleton-box" style={{ width: '80%', height: 'clamp(48px, 6vw, 84px)', marginBottom: '24px', borderRadius: '12px' }} />
+                
+                <div className="artist-genres">
+                  <div className="skeleton-box" style={{ width: '120px', height: '26px', borderRadius: '100px' }} />
+                  <div className="skeleton-box" style={{ width: '90px', height: '26px', borderRadius: '100px' }} />
+                </div>
+
+                <div className="hero-actions">
+                  <div className="skeleton-box" style={{ width: '160px', height: '48px', borderRadius: '100px' }} />
+                  <div className="skeleton-box" style={{ width: '140px', height: '48px', borderRadius: '100px' }} />
+                </div>
+              </div>
+
+              <div className="skeleton-box skeleton-stats" style={{ width: '320px', height: '120px', borderRadius: '24px', zIndex: 4 }} />
+            </div>
+          </section>
+        </div>
+      </main>
     );
   }
 
