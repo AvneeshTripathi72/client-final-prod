@@ -268,7 +268,7 @@ export default function ArtistProfilePage({ params }) {
               subtitle="Captured luxury moments from exclusive events."
             />
             <motion.div 
-              className="masonry-gallery"
+              className="flex-gallery"
               variants={staggerContainer}
               initial="hidden"
               whileInView="visible"
@@ -277,12 +277,12 @@ export default function ArtistProfilePage({ params }) {
               {artist.artist_images.map((img, idx) => (
                 <motion.div 
                   key={idx} 
-                  className="masonry-item" 
+                  className="flex-gallery-item" 
                   variants={fadeInUp}
                   onClick={() => setSelectedImage(img.image_url)}
                 >
                   <img src={img.image_url} alt={`${name} performance ${idx + 1}`} loading="lazy" />
-                  <div className="masonry-item-overlay">
+                  <div className="flex-gallery-item-overlay">
                     <div className="zoom-icon-wrapper">
                       <ZoomIn size={24} />
                     </div>

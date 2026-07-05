@@ -349,68 +349,84 @@
   font-weight: 400;
 }
 
-/* Premium Pinterest Gallery */
-.masonry-gallery {
-  column-count: 3;
-  column-gap: 30px;
+/* Premium Justified Gallery */
+.flex-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
 }
 
-.masonry-item {
-  width: 100%;
-  break-inside: avoid;
-  margin-bottom: 30px;
+.flex-gallery-item {
+  height: 380px;
+  flex-grow: 1;
+  flex-basis: 300px;
   border-radius: 24px;
   overflow: hidden;
   position: relative;
-  display: inline-block;
   cursor: pointer;
-  background: #111;
+  background: #000;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.05);
 }
 
-.masonry-item img {
-  width: 100%;
-  height: auto;
-  display: block;
-  object-fit: cover;
-  transition: transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
-}
-
-.masonry-item-overlay {
+.flex-gallery-item::after {
+  content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(231, 40, 106, 0.8) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+  border-radius: 24px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.flex-gallery-item img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 1.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+  filter: brightness(0.9) saturate(1.1);
+}
+
+.flex-gallery-item-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(231, 40, 106, 0.85) 0%, rgba(231, 40, 106, 0.1) 50%, transparent 100%);
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: all 0.4s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2;
+  backdrop-filter: blur(2px);
 }
 
-.masonry-item:hover img {
-  transform: scale(1.05);
+.flex-gallery-item:hover img {
+  transform: scale(1.08);
+  filter: brightness(1.1) saturate(1.2);
 }
 
-.masonry-item:hover .masonry-item-overlay {
+.flex-gallery-item:hover .flex-gallery-item-overlay {
   opacity: 1;
 }
 
 .zoom-icon-wrapper {
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
-  width: 60px;
-  height: 60px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
-  transform: translateY(20px);
-  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform: translateY(30px) scale(0.8);
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-.masonry-item:hover .zoom-icon-wrapper {
-  transform: translateY(0);
+.flex-gallery-item:hover .zoom-icon-wrapper {
+  transform: translateY(0) scale(1);
 }
 
 /* Video Containers */
