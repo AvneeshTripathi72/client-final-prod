@@ -76,7 +76,7 @@ const ArtistCard = forwardRef(({ artist, onBook }, ref) => {
 
           <div className="modern-artist-rating">
             <Stars count={Math.round(Number(rating))} />
-            <span className="modern-score-text">{rating} · {bookings} bks</span>
+            <span className="modern-score-text">{rating}</span>
           </div>
         </div>
       </TiltCard>
