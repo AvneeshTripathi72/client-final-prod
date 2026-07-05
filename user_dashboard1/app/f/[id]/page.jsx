@@ -79,23 +79,22 @@ export default function ClientFormPage({ params }) {
     }
 
     setSubmitting(true);
-    try {
-      const { error: submitError } = await supabase
-        .from('custom_form_responses')
-        .insert([{
-          form_id: id,
-          client_email: email,
-          response_data: formData
-        }]);
+    // Fire and forget the database insert to make submission instant
+    supabase
+      .from('custom_form_responses')
+      .insert([{
+        form_id: id,
+        client_email: email,
+        response_data: formData
+      }])
+      .then(({ error: submitError }) => {
+        if (submitError) console.error("Background submission error:", submitError);
+      })
+      .catch(err => console.error("Unexpected error:", err));
 
-      if (submitError) throw submitError;
-      setSubmitted(true);
-    } catch (err) {
-      console.error(err);
-      alert("An error occurred while submitting. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
+    // Instantly show success state
+    setSubmitted(true);
+    setSubmitting(false);
   };
 
   if (loading) {
