@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { ArtistFilters, ArtistFilterState, INITIAL_FILTER_STATE } from '@/components/artists/ArtistFilters';
 import { Button } from '@/components/ui/button';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
-import { Plus, Loader2, Mic2, Star, Info, ChevronLeft, ChevronRight, Pencil, Eye, EyeOff, Trash2, Image as ImageIcon, Share2, PlayCircle, MapPin, Music, User, ChevronDown, Layers, Calendar } from 'lucide-react';
+import { Plus, Loader2, Mic2, Star, Info, ChevronLeft, ChevronRight, Pencil, Eye, EyeOff, Trash2, Image as ImageIcon, Share2, PlayCircle, MapPin, Music, User, ChevronDown, Layers, Calendar, Download } from 'lucide-react';
 import { CreateArtistModal } from '@/components/artists/CreateArtistModal';
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';

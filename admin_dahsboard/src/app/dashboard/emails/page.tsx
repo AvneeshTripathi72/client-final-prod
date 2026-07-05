@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Mail, Search, RefreshCw, Eye, Calendar, Clock, X, Trash2, AlertCircle } from 'lucide-react';
+import { Loader2, Mail, Search, RefreshCw, Eye, Calendar, Clock, X, Trash2, AlertCircle, Download } from 'lucide-react';
 import { format } from 'date-fns';
 import {
   Dialog,

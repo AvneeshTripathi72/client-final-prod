@@ -30,7 +30,8 @@ import {
   Clock,
   Star,
   Trophy,
-  Music
+  Music,
+  Download
 } from 'lucide-react';
 import {
   Dialog,
