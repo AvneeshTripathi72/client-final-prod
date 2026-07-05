@@ -34,10 +34,23 @@ const ArtistCard = forwardRef(({ artist, onBook }, ref) => {
     return () => window.removeEventListener('resize', handleResize)
   }, [artist.successful_bookings])
 
-  const rawGenre = artist.subCategory || artist.category || 'Performer'
-  const genres = rawGenre.split(',').map(g => g.trim()).filter(Boolean)
-  const displayGenres = genres.slice(0, 1)
-  const hasMore = genres.length > 1
+  let genres = []
+  if (Array.isArray(artist.sub_categories)) {
+    genres = artist.sub_categories.filter(Boolean)
+  } else if (typeof artist.sub_category === 'string') {
+    genres = artist.sub_category.split(',').map(g => g.trim()).filter(Boolean)
+  }
+  if (genres.length === 0) {
+    const rawGenre = artist.subCategory || artist.category || 'Performer'
+    genres = rawGenre.split(',').map(g => g.trim()).filter(Boolean)
+  }
+
+  let languages = []
+  if (Array.isArray(artist.languages)) {
+    languages = artist.languages.filter(Boolean)
+  } else if (typeof artist.performing_language === 'string') {
+    languages = artist.performing_language.split(',').map(l => l.trim()).filter(Boolean)
+  }
 
   const location = [artist.city, artist.state].filter(Boolean).join(', ') || 'Jaipur'
   const rating = artist.rating || '4.9'
@@ -73,11 +86,23 @@ const ArtistCard = forwardRef(({ artist, onBook }, ref) => {
           <div className="modern-overlay-gradient"></div>
         </div>
         <div className="modern-info-overlay">
-          <div className="modern-genres-wrapper">
-            {displayGenres.map((g, idx) => (
-              <span key={idx} className="modern-genre-badge">{g}</span>
-            ))}
-            {hasMore && <span className="modern-genre-badge outline">+{genres.length - 1}</span>}
+          <div className="modern-badges-container" style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '8px' }}>
+            {genres.length > 0 && (
+              <div className="modern-genres-wrapper" style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                {genres.slice(0, 2).map((g, idx) => (
+                  <span key={`g-${idx}`} className="modern-genre-badge">{g}</span>
+                ))}
+                {genres.length > 2 && <span className="modern-genre-badge outline">+{genres.length - 2}</span>}
+              </div>
+            )}
+            {languages.length > 0 && (
+              <div className="modern-langs-wrapper" style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                {languages.slice(0, 2).map((l, idx) => (
+                  <span key={`l-${idx}`} className="modern-genre-badge" style={{ backgroundColor: 'rgba(255,255,255,0.15)', borderColor: 'rgba(255,255,255,0.3)', color: '#eee' }}>🗣️ {l}</span>
+                ))}
+                {languages.length > 2 && <span className="modern-genre-badge outline" style={{ borderColor: 'rgba(255,255,255,0.3)', color: '#eee' }}>+{languages.length - 2}</span>}
+              </div>
+            )}
           </div>
           <h3 className="modern-artist-name">{artist.name}</h3>
           <span className="modern-artist-loc">{location}</span>
