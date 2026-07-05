@@ -52,7 +52,7 @@ const ArtistCard = forwardRef(({ artist, onBook }, ref) => {
         <TiltCard 
           className="modern-artist-card"
         >
-        <div className="modern-img-wrap">
+        <div className="modern-img-wrap relative">
           <Image
             src={imgSrc}
             alt={artist.name}

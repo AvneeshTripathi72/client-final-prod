@@ -1,16 +1,17 @@
 "use client"
 
 import { useRouter, usePathname } from 'next/navigation'
-import { HomeIcon, ServicesIcon, AboutIcon, ContactIcon, RegisterIcon, ArtistsIcon, PricingIcon } from '@/app/components/icons/NavigationIcons'
+import Link from 'next/link'
+import { HomeIcon, ServicesIcon, AboutIcon, ContactIcon, RegisterIcon, ArtistsIcon, PricingIcon, ProfileIcon } from '@/app/components/icons/NavigationIcons'
 import { useScrollDirection } from '@/app/hooks/useScrollDirection'
 
-function Tab({ path, icon, label, onNavigate, isActive }) {
+function Tab({ path, icon, label, isActive }) {
   const iconColor = isActive ? '#FFE032' : '#8a8f98'
 
   return (
-    <button
+    <Link
+      href={path}
       className={`booking-tab-btn ${isActive ? 'is-active' : ''}`}
-      onClick={() => onNavigate(path)}
       style={{
         flex: 1,
         border: 'none',
@@ -26,11 +27,12 @@ function Tab({ path, icon, label, onNavigate, isActive }) {
         WebkitTapHighlightColor: 'transparent',
         transition: 'all 200ms ease',
         opacity: isActive ? 1 : 0.7,
+        textDecoration: 'none'
       }}
     >
       {icon(iconColor)}
       <span className="booking-tab-label" style={{ fontSize: '10px', fontWeight: isActive ? 700 : 500, letterSpacing: '0.04em', textTransform: 'uppercase' }}>{label}</span>
-    </button>
+    </Link>
   )
 }
 
@@ -65,10 +67,10 @@ export default function BottomNav() {
         transition: 'transform 0.4s cubic-bezier(0.23, 1, 0.32, 1)',
       }}>
         {/* Slot 1: Home */}
-        <Tab path="/" icon={(color) => <HomeIcon color={color} />} label="Home" onNavigate={(p) => router.push(p)} isActive={active('/')} />
+        <Tab path="/" icon={(color) => <HomeIcon color={color} />} label="Home" isActive={active('/')} />
         
         {/* Slot 2: Artists */}
-        <Tab path="/artists" icon={(color) => <ArtistsIcon color={color} />} label="Artists" onNavigate={(p) => router.push(p)} isActive={active('/artists')} />
+        <Tab path="/artists" icon={(color) => <ArtistsIcon color={color} />} label="Artists" isActive={active('/artists')} />
         
         {/* Slot 3: Center Elevated Register FAB */}
         <div style={{
@@ -110,15 +112,14 @@ export default function BottomNav() {
           </button>
         </div>
 
-        {/* Slot 4: Blog */}
-        <Tab path="/blog-post" icon={(color) => <AboutIcon color={color} />} label="Blog" onNavigate={(p) => router.push(p)} isActive={active('/blog-post')} />
+        {/* Slot 4: Profile */}
+        <Tab path="/profile" icon={(color) => <ProfileIcon color={color} />} label="Profile" isActive={active('/profile')} />
         
         {/* Slot 5: Pricing */}
         <Tab
           path="/pricing"
           icon={(color) => <PricingIcon color={color} />}
           label="Pricing"
-          onNavigate={(p) => router.push(p)}
           isActive={active('/pricing')}
         />
       </div>

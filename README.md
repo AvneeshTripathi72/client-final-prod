@@ -29,11 +29,13 @@ client-final-prod/
 ## 🎨 Tech Stack & Framework Design
 
 ### User Experience Portal (`user_dashboard1`)
+
 * **Core:** Next.js, React, ES6 Javascript.
 * **Styling System:** Vanilla CSS designed with **glassmorphism**, floating glow parameters, HSL tailored color schemes, custom animations, and responsive breakpoints.
 * **Database & Integrations:** Supabase Realtime Client, PostgreSQL database schemas, dynamic email/contact routing hooks.
 
 ### Content Management System (`admin_dahsboard`)
+
 * **Core:** Next.js, React, TypeScript.
 * **Styling System:** TailwindCSS unified with **shadcn/ui** components.
 * **Management Features:** Real-time database sync for category sorting, direct video gallery management, price plan modifiers, and blog CMS templates.
@@ -43,11 +45,13 @@ client-final-prod/
 ## 🚀 Key Features
 
 ### 💻 Elite Responsive Design
+
 * **Header CTA Pill System:** The desktop navigation CTA buttons scale down on mobile viewports into compact, space-optimized pill buttons positioned perfectly alongside the brand logo and hamburger toggler.
 * **Interactive Accordion Footer:** Modern visual headers on mobile collapse cleanly with gold-trimmed expand chevrons to minimize vertical scrolling and maximize visual appeal.
 * **Responsive Title Typography:** Automatic title viewport clamping dynamically resizes massive header texts (from `84px` down to `26px`) to ensure absolute readability on smaller viewports.
 
 ### 📝 CMS & Media Management
+
 * **Advanced Blog System:** Dynamic database-backed editorial pages that pull content in real-time, falling back cleanly to premium predefined presets if empty.
 * **Drag-and-Drop Form Interactivity:** Fluid drag-and-drop file inputs on the artist registry portals for instant uploads.
 * **Services Interactive Gallery:** Multi-category video playlists featuring lazy-loading YouTube/Vimeo links with glassmorphic book overlays.
@@ -57,11 +61,13 @@ client-final-prod/
 ## 🛠️ Local Development & Quick Start
 
 ### Prerequisites
+
 Make sure you have [Node.js](https://nodejs.org/) (v18+) and [npm](https://www.npmjs.com/) installed on your machine.
 
 ---
 
 ### Setup 1: Client Portal (`user_dashboard1`)
+
 1. Open a terminal and navigate to the directory:
    ```bash
    cd user_dashboard1
@@ -78,11 +84,13 @@ Make sure you have [Node.js](https://nodejs.org/) (v18+) and [npm](https://www.n
    ```bash
    npm run dev
    ```
+
    *The client portal will be available at: **`http://localhost:3000`***
 
 ---
 
 ### Setup 2: Admin Dashboard (`admin_dahsboard`)
+
 1. Open a second terminal window and navigate to the directory:
    ```bash
    cd admin_dahsboard
@@ -99,6 +107,7 @@ Make sure you have [Node.js](https://nodejs.org/) (v18+) and [npm](https://www.n
    ```bash
    npm run dev -- -p 9002
    ```
+
    *The admin portal will be available at: **`http://localhost:9002`***
 
 ---

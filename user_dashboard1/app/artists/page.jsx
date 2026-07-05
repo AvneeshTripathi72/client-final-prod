@@ -47,6 +47,7 @@ export default function ArtistsPage() {
       if (data) {
         const formattedArtists = data.map(artist => ({
           id: artist.id,
+          artist_no: artist.artist_no,
           name: artist.alias || artist.name,
           category: artist.category,
           subCategory: artist.sub_category,

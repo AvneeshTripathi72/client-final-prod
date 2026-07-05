@@ -18,7 +18,15 @@ function FeaturedArtistsSection() {
   const [pauseFeatured, setPauseFeatured] = useState(false)
   const [selectedArtist, setSelectedArtist] = useState(null)
   const [showDetails, setShowDetails] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const featuredRef = useRef(null)
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -206,7 +214,7 @@ function FeaturedArtistsSection() {
               viewport={{ once: true, margin: '-20px' }}
               transition={{ duration: 0.45, delay: (i % 3) * 0.1 }}
             >
-              <Link href={`/artist/${encodeURIComponent(artist.name)}`} target="_blank" style={{ textDecoration: 'none', display: 'flex', width: '100%', height: '100%' }}>
+              <Link href={`/artist/${encodeURIComponent(artist.name)}`} target={isMobile ? "_self" : "_blank"} style={{ textDecoration: 'none', display: 'flex', width: '100%', height: '100%' }}>
                 <TiltCard 
                   className="hp-feat-card-v2"
                   style={{ cursor: 'pointer', width: '100%', display: 'flex', flexDirection: 'column' }}

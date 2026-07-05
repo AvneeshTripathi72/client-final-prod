@@ -104,8 +104,8 @@ export default function ContactModal() {
     
     if (phoneVal) {
       const digits = phoneVal.replace(/\D/g, '')
-      if (digits.length !== 10) {
-        setFormError('Phone number must be exactly 10 digits.')
+      if (digits.length < 10 || digits.length > 15) {
+        setFormError('Please enter a valid phone number (10-15 digits).')
         return
       }
     }

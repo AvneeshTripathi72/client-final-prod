@@ -103,8 +103,13 @@ export default function ServicesPage() {
   const [pageSettings, setPageSettings] = useState(null);
   const [categories, setCategories] = useState([]);
   const [videos, setVideos] = useState([]);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
     const fetchData = async () => {
       try {
         const { data: settingsData } = await supabase
@@ -132,6 +137,8 @@ export default function ServicesPage() {
       }
     };
     fetchData();
+
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   // Determine Hero Video
@@ -336,7 +343,7 @@ export default function ServicesPage() {
                         return selectedVideo.user_name || 'Artist';
                       }
                     })()
-                  )}`} target="_blank" className="w-full sm:w-auto">
+                  )}`} target={isMobile ? "_self" : "_blank"} className="w-full sm:w-auto">
                     <button className="h-14 px-10 bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold rounded-full transition-all w-full sm:w-auto flex items-center justify-center whitespace-nowrap">
                       View Profile
                     </button>

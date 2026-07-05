@@ -203,6 +203,10 @@ export default function MobilePanel({ isOpen, onClose, isLight, pathname, onOpen
               <p>To install: Tap the share button <span style={{fontSize: '16px'}}>📤</span> in Safari & select <strong>&ldquo;Add to Home Screen&rdquo;</strong> <span style={{fontSize: '16px'}}>📲</span>!</p>
             </div>
           )}
+
+          <div style={{ textAlign: 'center', marginTop: '32px', fontSize: '12px', color: '#8a8f98', letterSpacing: '0.05em' }}>
+            v1.0.0
+          </div>
         </div>
       </aside>
       {isOpen && <button type="button" className="lux-mobile-backdrop" aria-label="Close menu" onClick={onClose} />}

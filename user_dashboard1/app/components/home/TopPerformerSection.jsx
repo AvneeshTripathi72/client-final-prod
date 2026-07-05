@@ -15,6 +15,14 @@ function TopPerformerSection() {
   const [artist, setArtist] = useState(ARTIST_OF_MONTH);
   const [loading, setLoading] = useState(true);
   const [showDetails, setShowDetails] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
 
@@ -155,7 +163,7 @@ function TopPerformerSection() {
                 >
                   Book Now
                 </button>
-                <Link href={`/artist/${encodeURIComponent(artist.name)}`} target="_blank" style={{ flex: 1, textDecoration: 'none', display: 'flex' }}>
+                <Link href={`/artist/${encodeURIComponent(artist.name)}`} target={isMobile ? "_self" : "_blank"} style={{ flex: 1, textDecoration: 'none', display: 'flex' }}>
                   <button
                     className="hp-btn"
                     style={{ 
