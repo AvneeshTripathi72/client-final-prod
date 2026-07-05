@@ -18,9 +18,9 @@ export async function POST(req) {
     const isCallRequest = data.type === 'call_request';
     const artistName = typeof data.selectedArtist === 'object' && data.selectedArtist !== null ? data.selectedArtist.name : (data.selectedArtist || '');
 
-    let subjectPrefix = "New Booking Inquiry";
-    if (isRegister) subjectPrefix = "Artist Registration";
-    else if (isCallRequest) subjectPrefix = "Call Request";
+    let subjectPrefix = "Client Booking Requests";
+    if (isRegister) subjectPrefix = "New Artist Applications";
+    else if (isCallRequest) subjectPrefix = "Event Inquiries";
 
         let emailBody = '';
     const row = (label, value, isLink = false, href = '') => {
