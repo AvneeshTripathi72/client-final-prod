@@ -308,27 +308,12 @@ export default function ArtistProfilePage({ params }) {
 
       {selectedImage && typeof document !== 'undefined' && createPortal(
         <div 
-          style={{
-            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
-            backgroundColor: 'rgba(0,0,0,0.95)', zIndex: 2147483647,
-            display: 'flex', justifyContent: 'center', alignItems: 'center',
-            padding: '20px', cursor: 'zoom-out'
-          }}
+          className="lightbox-overlay"
           onClick={() => setSelectedImage(null)}
         >
           <button 
-            style={{ 
-              position: 'absolute', top: '30px', right: '30px', 
-              background: '#fff', border: 'none', 
-              color: '#000', width: '44px', height: '44px', borderRadius: '50%',
-              fontSize: '32px', cursor: 'pointer', zIndex: 2147483647,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.5)', transition: 'transform 0.2s ease',
-              paddingBottom: '4px'
-            }}
+            className="lightbox-close"
             onClick={(e) => { e.stopPropagation(); setSelectedImage(null); }}
-            onMouseOver={(e) => { e.currentTarget.style.transform = 'scale(1.1)'; }}
-            onMouseOut={(e) => { e.currentTarget.style.transform = 'scale(1)'; }}
             aria-label="Close"
           >
             &times;
@@ -336,21 +321,12 @@ export default function ArtistProfilePage({ params }) {
           
           {artist?.artist_images && artist.artist_images.findIndex((img) => img.image_url === selectedImage) > 0 && (
             <button
-              style={{
-                position: 'absolute', left: '30px', top: '50%', transform: 'translateY(-50%)',
-                background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
-                color: '#fff', width: '50px', height: '50px', borderRadius: '50%',
-                cursor: 'pointer', zIndex: 2147483647,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                backdropFilter: 'blur(4px)', transition: 'all 0.2s ease'
-              }}
+              className="lightbox-prev"
               onClick={(e) => {
                 e.stopPropagation();
                 const idx = artist.artist_images.findIndex((img) => img.image_url === selectedImage);
                 if (idx > 0) setSelectedImage(artist.artist_images[idx - 1].image_url);
               }}
-              onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.2)'; e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)'; }}
-              onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.transform = 'translateY(-50%) scale(1)'; }}
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
             </button>
@@ -359,27 +335,18 @@ export default function ArtistProfilePage({ params }) {
           <img 
             src={selectedImage} 
             alt="Expanded view" 
-            style={{ maxWidth: '90%', maxHeight: '90vh', objectFit: 'contain', borderRadius: '12px', boxShadow: '0 10px 40px rgba(0,0,0,0.5)', cursor: 'default' }} 
+            className="lightbox-image"
             onClick={(e) => e.stopPropagation()} 
           />
           
           {artist?.artist_images && artist.artist_images.findIndex((img) => img.image_url === selectedImage) < artist.artist_images.length - 1 && (
             <button
-              style={{
-                position: 'absolute', right: '30px', top: '50%', transform: 'translateY(-50%)',
-                background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
-                color: '#fff', width: '50px', height: '50px', borderRadius: '50%',
-                cursor: 'pointer', zIndex: 2147483647,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                backdropFilter: 'blur(4px)', transition: 'all 0.2s ease'
-              }}
+              className="lightbox-next"
               onClick={(e) => {
                 e.stopPropagation();
                 const idx = artist.artist_images.findIndex((img) => img.image_url === selectedImage);
                 if (idx < artist.artist_images.length - 1) setSelectedImage(artist.artist_images[idx + 1].image_url);
               }}
-              onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.2)'; e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)'; }}
-              onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.transform = 'translateY(-50%) scale(1)'; }}
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </button>
