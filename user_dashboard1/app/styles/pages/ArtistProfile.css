@@ -15,13 +15,12 @@
 .artist-profile-wrapper::before {
   content: '';
   position: absolute;
-  top: -20vh;
+  top: -10vh;
   left: -10vw;
   width: 120vw;
-  height: 80vh;
-  background: radial-gradient(circle at 50% 20%, rgba(139, 10, 50, 0.15) 0%, transparent 60%),
-              radial-gradient(circle at 80% 50%, rgba(224, 191, 184, 0.05) 0%, transparent 50%);
-  filter: blur(100px);
+  height: 60vh;
+  background: radial-gradient(circle at 50% 0%, rgba(231, 40, 106, 0.15) 0%, transparent 70%);
+  filter: blur(80px);
   z-index: 0;
   pointer-events: none;
 }
@@ -31,10 +30,10 @@
   content: '';
   position: fixed;
   inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: 100;
-  opacity: 0.6;
+  opacity: 0.3;
 }
 
 .artist-container {
@@ -62,7 +61,7 @@
   width: 100%;
   height: 100%;
   background-size: cover;
-  background-position: center 20%;
+  background-position: center 30%; /* Better face visibility */
   position: absolute;
   top: 0;
   left: 0;
@@ -73,7 +72,7 @@
 .hero-gradient-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(5,5,5,0) 0%, rgba(5,5,5,0.4) 40%, #050505 100%);
+  background: linear-gradient(180deg, rgba(5,5,5,0) 0%, rgba(5,5,5,0.6) 50%, #050505 100%);
   z-index: 2;
 }
 
@@ -137,23 +136,23 @@
 
 .genre-pill {
   font-size: 12px;
-  color: #E0BFB8; /* Rose Gold */
-  background: rgba(224, 191, 184, 0.05);
-  border: 1px solid rgba(224, 191, 184, 0.2);
+  color: #E7286A; /* Vibrant Brand Pink */
+  background: rgba(231, 40, 106, 0.08);
+  border: 1px solid rgba(231, 40, 106, 0.3);
   padding: 10px 24px;
   border-radius: 100px;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  font-weight: 600;
+  font-weight: 700;
   backdrop-filter: blur(10px);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .genre-pill:hover {
-  background: rgba(224, 191, 184, 0.15);
-  border-color: rgba(224, 191, 184, 0.5);
+  background: rgba(231, 40, 106, 0.2);
+  border-color: rgba(231, 40, 106, 0.6);
   transform: translateY(-2px) scale(1.05) rotate(1deg);
-  box-shadow: 0 10px 20px rgba(139, 10, 50, 0.3);
+  box-shadow: 0 10px 20px rgba(231, 40, 106, 0.3);
 }
 
 /* Action Buttons */
@@ -254,7 +253,7 @@
 .section-subtitle {
   font-family: 'Inter', sans-serif;
   font-size: 14px;
-  color: #E0BFB8;
+  color: rgba(255, 255, 255, 0.6);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   margin-top: 12px;
@@ -265,10 +264,10 @@
 .animated-underline {
   height: 2px;
   width: 100px;
-  background: linear-gradient(90deg, #8B0A32, #E0BFB8, transparent);
+  background: linear-gradient(90deg, #E7286A, #FFD166, transparent);
   margin-top: 24px;
   border-radius: 2px;
-  box-shadow: 0 0 15px rgba(139, 10, 50, 0.5);
+  box-shadow: 0 0 15px rgba(231, 40, 106, 0.5);
   margin-left: 56px;
 }
 
@@ -312,7 +311,7 @@
 }
 
 .stat-value-lux.accent {
-  background: linear-gradient(90deg, #E0BFB8, #ffffff);
+  background: linear-gradient(90deg, #E7286A, #FFD166);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -334,7 +333,7 @@
   left: 40px;
   font-family: 'Playfair Display', serif;
   font-size: 180px;
-  color: rgba(224, 191, 184, 0.05);
+  color: rgba(231, 40, 106, 0.05);
   line-height: 1;
   pointer-events: none;
 }
@@ -379,7 +378,7 @@
 .masonry-item-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(139, 10, 50, 0.8) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+  background: linear-gradient(to top, rgba(231, 40, 106, 0.8) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
   opacity: 0;
   transition: opacity 0.4s ease;
   display: flex;

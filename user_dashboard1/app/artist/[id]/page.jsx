@@ -129,7 +129,7 @@ export default function ArtistProfilePage({ params }) {
         <motion.div 
           animate={{ scale: [0.9, 1.1, 0.9], opacity: [0.5, 1, 0.5] }} 
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          style={{ fontFamily: 'Playfair Display', fontSize: '24px', color: '#E0BFB8', letterSpacing: '0.2em', textTransform: 'uppercase' }}
+          style={{ fontFamily: 'Playfair Display', fontSize: '24px', color: '#E7286A', letterSpacing: '0.2em', textTransform: 'uppercase' }}
         >
           Curating Profile...
         </motion.div>
@@ -229,7 +229,7 @@ export default function ArtistProfilePage({ params }) {
             <span className="stat-label-lux">Rating</span>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
               <span className="stat-value-lux">{(artist.rating || 5.0).toFixed(1)}</span>
-              <span style={{ color: '#E0BFB8' }}>★★★★★</span>
+              <span style={{ color: '#FFD166' }}>★★★★★</span>
             </div>
           </div>
           <div className="stat-block">
