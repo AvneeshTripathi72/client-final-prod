@@ -15,9 +15,11 @@ export const ARTIST_OF_MONTH = {
 }
 
 export const HERO_SPOTLIGHT_SLIDES = [
-  '/assets/lux-hero-bg.webp',
-  '/assets/lux-live-band-concert.webp',
-  '/assets/lux-wedding-celebration.webp',
+  '/heroSec/1.webp',
+  '/heroSec/2.webp',
+  '/heroSec/3.webp',
+  '/heroSec/4.webp',
+  '/heroSec/5.webp',
 ]
 
 export const ARTIST_CATEGORIES = [
