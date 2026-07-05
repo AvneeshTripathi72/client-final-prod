@@ -89,7 +89,7 @@ function CategoriesSection() {
                     </div>
                     <div className="hp-cat-info">
                       <span className="hp-cat-label-v2">{cat.label.toUpperCase()}</span>
-                      <span className="hp-cat-sub-label">Top Talent</span>
+                      <span className="hp-cat-sub-label">{cat.startingPrice || 'Top Talent'}</span>
                     </div>
                   </Link>
                 ))}

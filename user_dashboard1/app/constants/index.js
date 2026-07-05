@@ -23,14 +23,13 @@ export const HERO_SPOTLIGHT_SLIDES = [
 ]
 
 export const ARTIST_CATEGORIES = [
-  { label: 'Singer',       image: '/assets/lux-singer-session.webp', query: 'Singer' },
-  { label: 'Music Band',   image: '/assets/lux-live-band-concert.webp', query: 'Band' },
-  { label: 'DJ',           image: '/assets/lux-percussion-dj-thumb.webp', query: 'Dj' },
-  { label: 'Musician',     image: '/assets/male-singer-acoustic.webp', query: 'Musician' },
-  { label: 'Comedian',     image: '/assets/standup-comedian.webp', query: 'Comedian' },
-  { label: 'Anchor',       image: '/assets/wedding-anchor-stage.webp', query: 'Emcee' },
-  { label: 'Dancer',       image: '/assets/lux-wedding-celebration.webp', query: 'Dancer' },
-  { label: 'Magician',     image: '/assets/lux-hero-artist.webp', query: 'Magician' },
+  { label: 'Singer',       image: '/assets/lux-singer-session.webp', query: 'Singer', startingPrice: 'Starting 3999/-' },
+  { label: 'Music Band',   image: '/assets/lux-live-band-concert.webp', query: 'Band', startingPrice: 'Starting 14999/-' },
+  { label: 'DJ',           image: '/assets/lux-percussion-dj-thumb.webp', query: 'Dj', startingPrice: 'Starting 9999/-' },
+  { label: 'Comedian',     image: '/assets/standup-comedian.webp', query: 'Comedian', startingPrice: 'Top Talent' },
+  { label: 'Anchor',       image: '/assets/wedding-anchor-stage.webp', query: 'Emcee', startingPrice: 'Top Talent' },
+  { label: 'Dancer',       image: '/assets/lux-wedding-celebration.webp', query: 'Dancer', startingPrice: 'Top Talent' },
+  { label: 'Magician',     image: '/assets/lux-hero-artist.webp', query: 'Magician', startingPrice: 'Top Talent' },
 ]
 
 export const FEATURED_ARTISTS = [
