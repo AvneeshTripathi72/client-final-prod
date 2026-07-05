@@ -431,15 +431,15 @@ function ClientRequestsContent() {
               
               if (sortBy === 'created_at') {
                 const dateStr = request.created_at ? format(new Date(request.created_at), 'MMM d, yyyy') : 'Unknown Date';
-                const prevDateStr = index > 0 && paginatedRequests[index - 1].created_at 
-                  ? format(new Date(paginatedRequests[index - 1].created_at), 'MMM d, yyyy') 
+                const prevDateStr = index > 0 && paginatedRequests[index - 1]?.created_at 
+                  ? format(new Date(paginatedRequests[index - 1]?.created_at as string), 'MMM d, yyyy') 
                   : null;
                 showHeader = dateStr !== prevDateStr;
                 headerText = dateStr;
               } else if (sortBy === 'event_date') {
                 const dateStr = request.event_date ? format(new Date(request.event_date), 'MMM d, yyyy') : 'TBD';
-                const prevDateStr = index > 0 && paginatedRequests[index - 1].event_date 
-                  ? format(new Date(paginatedRequests[index - 1].event_date), 'MMM d, yyyy') 
+                const prevDateStr = index > 0 && paginatedRequests[index - 1]?.event_date 
+                  ? format(new Date(paginatedRequests[index - 1]?.event_date as string), 'MMM d, yyyy') 
                   : null;
                 showHeader = dateStr !== prevDateStr;
                 headerText = dateStr;
