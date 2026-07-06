@@ -61,7 +61,9 @@ export async function GET() {
   const counts = {
     users: 0,
     artists: 0,
-    bookings: 0
+    bookings: 0,
+    pageViews: 0,
+    uniqueVisitors: 0
   };
 
   try {
@@ -70,16 +72,28 @@ export async function GET() {
     const [
       { count: usersCount },
       { count: artistsCount },
-      { count: bookingsCount }
+      { count: bookingsCount },
+      { count: pageViewsCount },
+      { count: uniqueVisitorsCount }
     ] = await Promise.all([
       supabase.from('profiles').select('*', { count: 'exact', head: true }),
       supabase.from('artists').select('*', { count: 'exact', head: true }),
-      supabase.from('bookings').select('*', { count: 'exact', head: true })
+      supabase.from('bookings').select('*', { count: 'exact', head: true }),
+      supabase.from('analytics').select('*', { count: 'exact', head: true }).eq('type', 'page_view'),
+      supabase.from('analytics').select('session_id', { head: true, count: 'exact' }).not('session_id', 'is', null)
+      // Note: Supabase doesn't easily return count(distinct session_id) via head: true, 
+      // but we will use the raw count or we can just fetch the sessions and count in js
     ]);
+
+
+    const { data: analyticsData } = await supabase.from('analytics').select('session_id');
+    const uniqueSessions = new Set(analyticsData?.map(a => a.session_id).filter(Boolean));
 
     counts.users = usersCount || 0;
     counts.artists = artistsCount || 0;
     counts.bookings = bookingsCount || 0;
+    counts.pageViews = pageViewsCount || 0;
+    counts.uniqueVisitors = uniqueSessions.size || 0;
 
     const dbEnd = performance.now();
     if (error) throw error;

@@ -93,6 +93,8 @@ export function useHealthSimulation(refreshIntervalMs: number) {
       let usersCount = 0;
       let artistsCount = 0;
       let bookingsCount = 0;
+      let pageViewsCount = 0;
+      let uniqueVisitorsCount = 0;
 
       try {
         const res = await fetch('/api/admin/health');
@@ -119,6 +121,8 @@ export function useHealthSimulation(refreshIntervalMs: number) {
           usersCount = json.counts.users || 0;
           artistsCount = json.counts.artists || 0;
           bookingsCount = json.counts.bookings || 0;
+          pageViewsCount = json.counts.pageViews || 0;
+          uniqueVisitorsCount = json.counts.uniqueVisitors || 0;
         }
         
       } catch (err) {
@@ -150,8 +154,8 @@ export function useHealthSimulation(refreshIntervalMs: number) {
         overall: { title: 'System Status', value: realDbStatus === 'error' || realStorageStatus === 'error' ? 'Degraded' : 'Operational', status: realDbStatus === 'error' || realStorageStatus === 'error' ? 'warning' : 'healthy', trend: '100% Uptime', isPositive: true, history: [] },
         db: { title: 'Database Health', value: realDbStatus === 'error' ? 'Error' : 'Healthy', status: realDbStatus as any, trend: `${currentDbLatency}ms`, isPositive: realDbStatus !== 'error', history: generateSparkline(currentDbLatency, 10) },
         storage: { title: 'Cloud Storage', value: realStorageStatus === 'error' ? 'Error' : 'Healthy', status: realStorageStatus as any, trend: `${currentStorageLatency}ms`, isPositive: realStorageStatus !== 'error', history: generateSparkline(currentStorageLatency, 30) },
-        cpu: { title: 'System CPU', value: `${cpuUsage.toFixed(1)}%`, status: cpuUsage > 80 ? 'warning' : 'healthy', trend: 'Live', isPositive: cpuUsage < 50, history: generateSparkline(cpuUsage, 5) },
-        mem: { title: 'System Memory', value: `${memUsage.toFixed(1)}%`, status: memUsage > 85 ? 'warning' : 'healthy', trend: 'Live', isPositive: memUsage < 85, history: generateSparkline(memUsage, 2) },
+        pageViews: { title: 'Total Page Views', value: pageViewsCount.toLocaleString(), status: 'healthy', trend: 'Live Hits', isPositive: true, history: generateSparkline(pageViewsCount, 0) },
+        visitors: { title: 'Unique Visitors', value: uniqueVisitorsCount.toLocaleString(), status: 'healthy', trend: 'Live Hits', isPositive: true, history: generateSparkline(uniqueVisitorsCount, 0) },
         users: { title: 'Total Users', value: usersCount.toLocaleString(), status: 'healthy', trend: 'Profiles', isPositive: true, history: generateSparkline(usersCount, 0) },
         artists: { title: 'Total Artists', value: artistsCount.toLocaleString(), status: 'healthy', trend: 'Registered', isPositive: true, history: generateSparkline(artistsCount, 0) },
         bookings: { title: 'Total Bookings', value: bookingsCount.toLocaleString(), status: 'healthy', trend: 'All Time', isPositive: true, history: generateSparkline(bookingsCount, 0) }

@@ -58,7 +58,21 @@ export async function POST(req) {
       const { createClient } = require('@supabase/supabase-js');
       const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL || '', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '');
       
-      if (data.email) {
+      // Track API hit asynchronously
+      const reqUrl = new URL(req.url);
+      const origin = reqUrl.origin;
+      fetch(`${origin}/api/analytics`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          path: '/api/contact',
+          type: 'api_call',
+          userAgent: req.headers.get('user-agent') || 'unknown',
+          sessionId: 'api-call'
+        })
+      }).catch(() => {});
+
+      if (!data.name || !data.email) {
         const { data: profileData } = await supabase.from('profiles').select('*').eq('email', data.email).maybeSingle();
         if (profileData) {
           dbUserProfile = profileData;
