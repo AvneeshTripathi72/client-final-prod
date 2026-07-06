@@ -207,12 +207,16 @@ export default function ArtistProfilePage({ params }) {
                 </div>
                 <div className="stat-sublabel">Rating</div>
               </div>
-              <div className="stat-divider" />
-              <div className="stat-item">
-                <div className="stat-value">{artist.successful_bookings || 0}</div>
-                <div style={{ height: '14px' }} />
-                <div className="stat-sublabel">SHOWS</div>
-              </div>
+              {artist.successful_bookings > 0 && (
+                <>
+                  <div className="stat-divider" />
+                  <div className="stat-item">
+                    <div className="stat-value">{artist.successful_bookings}</div>
+                    <div style={{ height: '14px' }} />
+                    <div className="stat-sublabel">SHOWS</div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </section>

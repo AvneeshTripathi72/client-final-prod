@@ -30,7 +30,6 @@ export default function ContactSection() {
 
     setIsSubmitting(true);
     try {
-      // Fire and forget so the UI is instantly responsive
       fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -39,7 +38,6 @@ export default function ContactSection() {
         console.error("Failed to send contact inquiry:", error);
       });
       
-      // Show success immediately
       setTimeout(() => {
         setSubmitted(true);
         setIsSubmitting(false);
@@ -47,7 +45,7 @@ export default function ContactSection() {
         if (emailRef.current) emailRef.current.value = '';
         if (phoneRef.current) phoneRef.current.value = '';
         setTimeout(() => setSubmitted(false), 3000);
-      }, 300); // tiny delay so button animation plays
+      }, 300);
     } catch (error) {
       console.error("Unexpected error:", error);
       setIsSubmitting(false);

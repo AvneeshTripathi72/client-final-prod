@@ -147,10 +147,12 @@ function TopPerformerSection() {
                     <strong>{artist.rating}/5</strong>
                   </div>
                 </div>
-                <div className="hp-aom-stat-row">
-                  <span>Total Bookings</span>
-                  <strong>{artist.bookings}</strong>
-                </div>
+                {artist.bookings > 0 && (
+                  <div className="hp-aom-stat-row">
+                    <span>Total Bookings</span>
+                    <strong>{artist.bookings}</strong>
+                  </div>
+                )}
               </div>
 
               <div style={{ display: 'flex', gap: '15px' }}>
