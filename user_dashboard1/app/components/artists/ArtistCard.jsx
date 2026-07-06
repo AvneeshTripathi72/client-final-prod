@@ -93,10 +93,13 @@ const ArtistCard = forwardRef(({ artist, onBook }, ref) => {
           <h3 className="modern-artist-name" style={{ fontSize: '24px', fontWeight: '900', margin: '0 0 6px 0', color: '#ffffff', letterSpacing: '-0.02em', textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>{artist.name}</h3>
 
           <div className="modern-badges-container" style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', overflow: 'hidden', alignItems: 'center', marginBottom: '16px' }}>
-            {allTags.slice(0, 3).map((tag, idx) => (
-              <span key={`tag-${idx}`} style={{ background: 'rgba(255,255,255,0.15)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.3)', padding: '2px 8px', borderRadius: '8px', fontSize: '9px', fontWeight: '800', letterSpacing: '0.05em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>{tag}</span>
-            ))}
-            {allTags.length > 3 && <span style={{ background: 'rgba(255,255,255,0.15)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.3)', padding: '1px 6px', borderRadius: '8px', fontSize: '9px', fontWeight: '800', whiteSpace: 'nowrap' }}>+{allTags.length - 3}</span>}
+            {allTags.slice(0, 6).map((tag, idx) => {
+              const shortTag = tag.length > 12 ? tag.substring(0, 10) + '..' : tag;
+              return (
+                <span key={`tag-${idx}`} title={tag} style={{ background: 'rgba(255,255,255,0.15)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.3)', padding: '2px 8px', borderRadius: '8px', fontSize: '9px', fontWeight: '800', letterSpacing: '0.05em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>{shortTag}</span>
+              );
+            })}
+            {allTags.length > 6 && <span style={{ background: 'rgba(255,255,255,0.15)', color: '#ffffff', border: '1px solid rgba(255,255,255,0.3)', padding: '1px 6px', borderRadius: '8px', fontSize: '9px', fontWeight: '800', whiteSpace: 'nowrap' }}>+{allTags.length - 6}</span>}
           </div>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '16px' }}>
