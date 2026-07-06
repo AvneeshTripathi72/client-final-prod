@@ -44,8 +44,22 @@ function FeaturedArtistsSection() {
           return;
         }
 
+        const formatArtistData = (artists) => artists.map(artist => ({
+          id: artist.id,
+          artist_no: artist.artist_no,
+          name: artist.alias || artist.name,
+          category: artist.category,
+          subCategory: artist.sub_category,
+          city: artist.city,
+          state: artist.state,
+          languages: artist.performing_language,
+          successful_bookings: artist.successful_bookings,
+          rating: artist.rating,
+          img: artist.artist_images?.[0]?.image_url || null,
+        }));
+
         if (data && data.length > 0) {
-          setFeaturedArtists(data);
+          setFeaturedArtists(formatArtistData(data));
         } else {
           const { data: anyData, error: anyError } = await supabase
             .from('artists')
@@ -54,7 +68,7 @@ function FeaturedArtistsSection() {
             .limit(6);
             
           if (anyData && anyData.length > 0) {
-            setFeaturedArtists(anyData);
+            setFeaturedArtists(formatArtistData(anyData));
           } else {
             setFeaturedArtists(FEATURED_ARTISTS.slice(0, 15));
           }
