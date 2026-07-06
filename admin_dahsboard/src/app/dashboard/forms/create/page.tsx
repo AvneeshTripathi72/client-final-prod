@@ -243,7 +243,11 @@ export default function CreateFormPage() {
                   </>
                 ) : (
                   <div className="w-full p-2 h-full flex items-center justify-center">
-                    <ImageUploader onUploadComplete={(url) => setCoverImage(url)} />
+                    <ImageUploader 
+                      images={coverImage ? [coverImage] : []} 
+                      onChange={(urls) => setCoverImage(urls[0] || '')} 
+                      maxImages={1} 
+                    />
                   </div>
                 )}
               </div>
