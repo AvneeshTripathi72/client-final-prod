@@ -7,6 +7,7 @@ import { motion } from 'framer-motion'
 import FadeSection from '@/app/components/common/FadeSection'
 import TiltCard from '@/app/components/common/TiltCard'
 import Stars from '@/app/components/common/Stars'
+import ArtistCard from '@/app/components/artists/ArtistCard'
 import { FEATURED_ARTISTS } from '@/app/constants'
 import { supabase } from '@/app/lib/supabase'
 import { useRouter } from 'next/navigation'
@@ -44,16 +45,7 @@ function FeaturedArtistsSection() {
         }
 
         if (data && data.length > 0) {
-          let parsedArtists = data.map(artist => ({
-            name: artist.alias || artist.name,
-            genre: artist.sub_category || artist.category || 'Performer',
-            bookings: artist.successful_bookings || 0,
-            rating: artist.rating || '0.0',
-            image: artist.artist_images?.[0]?.image_url || '/assets/lux-singer-session.webp',
-            city: artist.city || 'India'
-          }));
-          
-          setFeaturedArtists(parsedArtists);
+          setFeaturedArtists(data);
         } else {
           const { data: anyData, error: anyError } = await supabase
             .from('artists')
@@ -62,15 +54,7 @@ function FeaturedArtistsSection() {
             .limit(6);
             
           if (anyData && anyData.length > 0) {
-            let parsedAny = anyData.map(artist => ({
-              name: artist.alias || artist.name,
-              genre: artist.sub_category || artist.category || 'Performer',
-              bookings: artist.successful_bookings || 0,
-              rating: artist.rating || '0.0',
-              image: artist.artist_images?.[0]?.image_url || '/assets/lux-singer-session.webp',
-              city: artist.city || 'India'
-            }));
-            setFeaturedArtists(parsedAny);
+            setFeaturedArtists(anyData);
           } else {
             setFeaturedArtists(FEATURED_ARTISTS.slice(0, 15));
           }
@@ -206,7 +190,7 @@ function FeaturedArtistsSection() {
         ) : (
           featuredArtists.map((artist, i) => (
             <motion.div
-              key={artist.name}
+              key={artist.artist_no || artist.name}
               className="hp-feat-slide"
               data-featured-card
               initial={{ opacity: 0, scale: 0.98 }}
@@ -214,34 +198,7 @@ function FeaturedArtistsSection() {
               viewport={{ once: true, margin: '-20px' }}
               transition={{ duration: 0.45, delay: (i % 3) * 0.1 }}
             >
-              <Link href={`/artist/${encodeURIComponent(artist.name)}`} target={isMobile ? "_self" : "_blank"} style={{ textDecoration: 'none', display: 'flex', width: '100%', height: '100%' }}>
-                <TiltCard 
-                  className="hp-feat-card-v2"
-                  style={{ cursor: 'pointer', width: '100%', display: 'flex', flexDirection: 'column' }}
-                >
-                  <div className="hp-feat-img-wrap-v2">
-                    <Image
-                      src={artist.image}
-                      alt={artist.name}
-                      fill
-                      style={{ objectFit: 'cover' }}
-                      quality={100}
-                    />
-                  </div>
-                  <div className="hp-feat-info-v2">
-                    <div>
-                      <span className="hp-feat-genre-v2">{artist.genre}</span>
-                      <h3 className="hp-feat-name-v2">{artist.name}</h3>
-                      <span className="hp-feat-loc-v2">{artist.city || 'India'}</span>
-
-                      <div className="hp-feat-rating-v2">
-                        <Stars count={Math.round(Number(artist.rating))} />
-                        <span className="hp-feat-score-v2">{artist.rating} · {artist.bookings} bookings</span>
-                      </div>
-                    </div>
-                  </div>
-                </TiltCard>
-              </Link>
+              <ArtistCard artist={artist} />
             </motion.div>
           ))
         )}

@@ -143,7 +143,7 @@ function TopPerformerSection() {
                 <div className="hp-aom-stat-row">
                   <span>Star Rating</span>
                   <div className="hp-aom-rating">
-                    <Stars count={5} />
+                    <Stars count={Math.round(Number(artist.rating))} />
                     <strong>{artist.rating}/5</strong>
                   </div>
                 </div>
