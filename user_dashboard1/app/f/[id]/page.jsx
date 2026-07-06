@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-sync-scripts */
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -106,28 +107,36 @@ export default function ClientFormPage({ params }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#020617] flex items-center justify-center">
-        <div className="w-12 h-12 rounded-full border-4 border-indigo-500/30 border-t-indigo-500 animate-spin"></div>
-      </div>
+      <>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script dangerouslySetInnerHTML={{ __html: `tailwind.config = { corePlugins: { preflight: false } }` }}></script>
+        <div className="min-h-screen bg-[#020617] flex items-center justify-center">
+          <div className="w-12 h-12 rounded-full border-4 border-indigo-500/30 border-t-indigo-500 animate-spin"></div>
+        </div>
+      </>
     );
   }
 
   if (error || !form) {
     return (
-      <div className="min-h-screen bg-[#020617] flex flex-col items-center justify-center p-6 text-center">
-        <div className="bg-[#0f172a] p-8 rounded-3xl border border-white/5 max-w-md w-full shadow-2xl">
-          <div className="w-16 h-16 bg-rose-500/10 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-          </div>
+      <>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script dangerouslySetInnerHTML={{ __html: `tailwind.config = { corePlugins: { preflight: false } }` }}></script>
+        <div className="min-h-screen bg-[#020617] flex flex-col items-center justify-center p-6 text-center">
+          <div className="bg-[#0f172a] p-8 rounded-3xl border border-white/5 max-w-md w-full shadow-2xl">
+            <div className="w-16 h-16 bg-rose-500/10 text-rose-500 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
           <h1 className="text-2xl font-black text-white mb-2 tracking-tight">Form Not Found</h1>
           <p className="text-slate-400 mb-8">{error}</p>
-          <button onClick={() => router.push('/')} className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-xl w-full transition-all">
+          <button onClick={() => window.location.href = '/'} className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-8 rounded-xl w-full transition-all">
             Return to Home
           </button>
         </div>
       </div>
+      </>
     );
   }
 
@@ -151,13 +160,16 @@ export default function ClientFormPage({ params }) {
 
   if (submitted) {
     return (
-      <div className={`min-h-screen ${bgClass} flex flex-col items-center justify-center p-6 text-center relative overflow-hidden`}>
-        {!isLight && (
-          <>
-            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 mix-blend-overlay"></div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full blur-[100px]" style={{ backgroundColor: `${accentColor}33` }}></div>
-          </>
-        )}
+      <>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script dangerouslySetInnerHTML={{ __html: `tailwind.config = { corePlugins: { preflight: false } }` }}></script>
+        <div className={`min-h-screen ${bgClass} flex flex-col items-center justify-center p-6 text-center relative overflow-hidden`}>
+          {!isLight && (
+            <>
+              <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 mix-blend-overlay"></div>
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full blur-[100px]" style={{ backgroundColor: `${accentColor}33` }}></div>
+            </>
+          )}
         
         <div className={`${isLight ? 'bg-white border-slate-100 shadow-lg' : 'bg-[#0f172a]/80 backdrop-blur-xl border-white/10 shadow-2xl'} p-10 rounded-3xl border max-w-md w-full relative z-10`}>
           <div className="w-20 h-20 text-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg" style={{ background: `linear-gradient(to top right, ${accentColor}, ${accentColor}dd)` }}>
@@ -167,22 +179,26 @@ export default function ClientFormPage({ params }) {
           </div>
           <h1 className={`text-3xl font-black ${textTitleClass} mb-3 tracking-tight`}>Thank You!</h1>
           <p className={`${textDescClass} mb-8 leading-relaxed`}>Your responses have been successfully submitted to the Magnevents team. We will be in touch shortly.</p>
-          <button onClick={() => router.push('/')} className={`${isLight ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' : 'bg-white/5 text-white hover:bg-white/10 border border-white/10'} font-bold py-3 px-8 rounded-xl w-full transition-all`}>
+          <button onClick={() => window.location.href = '/'} className={`${isLight ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' : 'bg-white/5 text-white hover:bg-white/10 border border-white/10'} font-bold py-3 px-8 rounded-xl w-full transition-all`}>
             Return to Home
           </button>
         </div>
       </div>
+      </>
     );
   }
 
   return (
-    <div className={`min-h-screen ${bgClass} relative overflow-hidden`} style={{ selection: { backgroundColor: `${accentColor}4d` } }}>
-      {!isLight && (
-        <>
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 mix-blend-overlay"></div>
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] rounded-full blur-[120px] pointer-events-none" style={{ backgroundColor: `${accentColor}33` }}></div>
-        </>
-      )}
+    <>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script dangerouslySetInnerHTML={{ __html: `tailwind.config = { corePlugins: { preflight: false } }` }}></script>
+      <div className={`min-h-screen ${bgClass} relative overflow-hidden`} style={{ selection: { backgroundColor: `${accentColor}4d` } }}>
+        {!isLight && (
+          <>
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 mix-blend-overlay"></div>
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] rounded-full blur-[120px] pointer-events-none" style={{ backgroundColor: `${accentColor}33` }}></div>
+          </>
+        )}
 
       <div className="max-w-3xl mx-auto px-4 py-12 relative z-10">
         <div className="flex justify-center mb-10">
@@ -331,5 +347,6 @@ export default function ClientFormPage({ params }) {
         </div>
       </div>
     </div>
+    </>
   );
 }
