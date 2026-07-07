@@ -171,9 +171,9 @@ export default function RegisterModal() {
 
             {view === 'selection' && (
               <>
-                <div className="lux-modal-header" style={{ textAlign: 'center', marginBottom: '0px' }}>
-                  <p className="header-badge" style={{ margin: '0 auto 6px' }}>GET STARTED</p>
-                  <h3 style={{ fontFamily: 'var(--font-display)', color: '#fff', fontSize: '28px', fontWeight: '900', letterSpacing: '-0.02em', margin: '0 0 6px' }}>
+                <div className="lux-modal-header" style={{ textAlign: 'center', marginBottom: '0px', paddingTop: '28px' }}>
+                  <p className="header-badge" style={{ margin: '0 auto 8px' }}>GET STARTED</p>
+                  <h3 style={{ fontFamily: 'var(--font-display)', color: '#fff', fontSize: '28px', fontWeight: '900', letterSpacing: '-0.02em', margin: '0 0 8px' }}>
                     Choose Registration
                   </h3>
                   <p className="lux-modal-desc" style={{ maxWidth: '440px', margin: '0 auto', fontSize: '13px', lineHeight: '1.4' }}>
@@ -238,8 +238,8 @@ export default function RegisterModal() {
 
             {view === 'artist' && !submitted && (
               <>
-                <div className="lux-modal-header" style={{ marginBottom: '16px', position: 'relative' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div className="lux-modal-header" style={{ marginBottom: '16px', position: 'relative', paddingTop: '32px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                     <p className="header-badge" style={{ background: 'rgba(0, 212, 255, 0.1)', color: '#00d4ff', margin: 0 }}>JOIN THE ELITE</p>
                     <button 
                       onClick={() => copyToClipboard('/register/artist')}
@@ -332,8 +332,8 @@ export default function RegisterModal() {
 
             {view === 'event' && !submitted && (
               <>
-                <div className="lux-modal-header" style={{ marginBottom: '16px', position: 'relative' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div className="lux-modal-header" style={{ marginBottom: '16px', position: 'relative', paddingTop: '32px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                     <p className="header-badge" style={{ margin: 0 }}>DIRECT SUPPORT</p>
                     <button 
                       onClick={() => copyToClipboard('/register/event')}
