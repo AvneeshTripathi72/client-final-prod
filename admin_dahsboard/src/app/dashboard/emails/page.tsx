@@ -227,6 +227,7 @@ ${plainTextBody}`;
       case 'reject': return 'bg-rose-50 text-rose-600 border-rose-200';
       case 'unavailable': return 'bg-amber-50 text-amber-600 border-amber-200';
       case 'more_info': return 'bg-sky-50 text-sky-600 border-sky-200';
+      case 'artist_registration_inquiry': return 'bg-fuchsia-50 text-fuchsia-600 border-fuchsia-200';
       default: return 'bg-slate-50 text-slate-600 border-slate-200';
     }
   };
@@ -248,6 +249,7 @@ ${plainTextBody}`;
             >
               <option value="all">All Types</option>
               <option value="client_inquiry">Client Inquiry</option>
+              <option value="artist_registration_inquiry">Artist Registration</option>
               <option value="confirm">Confirmed</option>
               <option value="approve">Approved</option>
               <option value="reject">Rejected</option>
