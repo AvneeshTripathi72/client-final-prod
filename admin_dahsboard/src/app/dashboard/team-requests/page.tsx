@@ -260,8 +260,8 @@ export default function TeamRequestsPage() {
           video_url: values.video_urls?.filter(Boolean).join(', ') || null,
         };
 
-        const { data: artist, error: artistError } = await supabase
-          .from('artists')
+        const { data: artist, error: artistError } = await (supabase
+          .from('artists') as any)
           .insert([artistData])
           .select()
           .single();
@@ -282,14 +282,14 @@ export default function TeamRequestsPage() {
             artist_id: artist.id,
             image_url: url
           }));
-          const { error: imageError } = await supabase.from('artist_images').insert(imageEntries);
+          const { error: imageError } = await (supabase.from('artist_images') as any).insert(imageEntries);
           if (imageError) throw imageError;
         }
       }
 
       if (selectedRequest?.isPricingPlan) {
-        const { error } = await supabase
-          .from('pricing_plans')
+        const { error } = await (supabase
+          .from('pricing_plans') as any)
           .update({
             is_live: newStatus === 'approved',
             pending_approval: false
@@ -298,8 +298,8 @@ export default function TeamRequestsPage() {
 
         if (error) throw error;
       } else {
-        const { error } = await supabase
-          .from('duplicate_approvals')
+        const { error } = await (supabase
+          .from('duplicate_approvals') as any)
           .update({
             status: newStatus,
             approved_by: userName,
