@@ -1,6 +1,5 @@
 "use client";
 import { useConfirm } from '@/components/ui/ConfirmProvider';
-
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
