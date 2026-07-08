@@ -410,7 +410,7 @@ function ClientRequestsContent() {
       await exportToExcel(exportData, `Client_Requests_Today_${dateStr}`, 'Client Requests');
       setExportModalOpen(false);
       setExportMode('select');
-      toast({ title: 'Downloaded!', description: 'Today\\'s requests exported successfully.' });
+      toast({ title: 'Downloaded!', description: "Today's requests exported successfully." });
     } catch (err: any) {
       toast({ variant: 'destructive', title: 'Export Error', description: err.message });
     }

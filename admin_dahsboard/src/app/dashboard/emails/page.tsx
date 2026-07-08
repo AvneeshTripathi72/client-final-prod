@@ -179,7 +179,7 @@ ${plainTextBody}`;
       }));
       
       await exportToExcel(exportData, `Emails_${exportStartDate}_to_${exportEndDate}`, 'Emails');
-      toast({ title: 'Downloaded!', description: 'Emails exported successfully.' });
+      toast({ title: 'Downloaded!', description: "Today's emails exported successfully." });
       setExportModalOpen(false);
       setExportMode('select');
     } catch (err: any) {

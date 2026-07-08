@@ -20,6 +20,12 @@ import {
   FileText,
   Trash2
 } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 
 // We will fetch requests from Supabase now
 
@@ -405,7 +411,7 @@ export default function TeamRequestsPage() {
       await exportToExcel(exportData, `Admin_Approvals_Today_${dateStr}`, 'Admin Approvals');
       setExportModalOpen(false);
       setExportMode('select');
-      toast({ title: 'Downloaded!', description: 'Today\\'s approvals exported successfully.' });
+      toast({ title: 'Downloaded!', description: "Today's approvals exported successfully." });
     } catch (err: any) {
       toast({ variant: 'destructive', title: 'Export Error', description: err.message });
     }
@@ -935,8 +941,6 @@ export default function TeamRequestsPage() {
             </div>
           </div>
         </div>
-      )}
-
       )}
 
       {/* Export Modal */}

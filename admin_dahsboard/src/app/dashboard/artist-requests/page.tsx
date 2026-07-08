@@ -418,7 +418,7 @@ function ArtistRequestsContent() {
       await exportToExcel(exportData, `Artist_Requests_Today_${dateStr}`, 'Artist Requests');
       setExportModalOpen(false);
       setExportMode('select');
-      toast({ title: 'Downloaded!', description: 'Today\\'s requests exported successfully.' });
+      toast({ title: 'Downloaded!', description: "Today's requests exported successfully." });
     } catch (err: any) {
       toast({ variant: 'destructive', title: 'Export Error', description: err.message });
     }
@@ -832,6 +832,8 @@ function ArtistRequestsContent() {
             <button onClick={handleSendCustomEmail} disabled={sendingEmail} className="px-6 h-11 rounded-xl bg-indigo-600 text-white font-bold text-xs uppercase tracking-widest hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
               {sendingEmail ? <><Loader2 size={16} className="animate-spin" /> Sending...</> : <><Mail size={16} /> Yes, Send Email</>}
             </button>
+          </div>
+        </DialogContent>
       </Dialog>
 
       <Dialog open={exportModalOpen} onOpenChange={(open) => { setExportModalOpen(open); if(!open) setExportMode('select'); }}>
