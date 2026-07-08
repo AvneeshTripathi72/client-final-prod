@@ -30,6 +30,7 @@ function EmailsContent() {
   const [exportModalOpen, setExportModalOpen] = useState(false);
   const [exportStartDate, setExportStartDate] = useState('');
   const [exportEndDate, setExportEndDate] = useState('');
+  const [exportFilterType, setExportFilterType] = useState('all');
   const [selectedEmail, setSelectedEmail] = useState<any | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -143,12 +144,18 @@ ${plainTextBody}`;
       const end = new Date(exportEndDate);
       end.setHours(23, 59, 59, 999);
       
-      const { data, error } = await supabase
+      let query = supabase
         .from('emails')
         .select(`*, bookings(client_name)`)
         .gte('sent_at', start.toISOString())
         .lte('sent_at', end.toISOString())
         .order('sent_at', { ascending: false });
+        
+      if (exportFilterType !== 'all') {
+        query = query.eq('email_type', exportFilterType);
+      }
+      
+      const { data, error } = await query;
         
       if (error) throw error;
       
@@ -177,7 +184,7 @@ ${plainTextBody}`;
     }
   };
 
-  const handleExportDay = async (dateStr: string) => {
+  const handleExportDay = async (dateStr: string, typeFilter = 'all') => {
     try {
       const dateObj = new Date(dateStr);
       const start = new Date(dateObj);
@@ -185,12 +192,18 @@ ${plainTextBody}`;
       const end = new Date(dateObj);
       end.setHours(23, 59, 59, 999);
       
-      const { data, error } = await supabase
+      let query = supabase
         .from('emails')
         .select(`*, bookings(client_name)`)
         .gte('sent_at', start.toISOString())
         .lte('sent_at', end.toISOString())
         .order('sent_at', { ascending: false });
+        
+      if (typeFilter !== 'all') {
+        query = query.eq('email_type', typeFilter);
+      }
+      
+      const { data, error } = await query;
         
       if (error) throw error;
       
@@ -221,10 +234,16 @@ ${plainTextBody}`;
 
   const handleExportAllData = async () => {
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('emails')
         .select(`*, bookings(client_name)`)
         .order('sent_at', { ascending: false });
+        
+      if (exportFilterType !== 'all') {
+        query = query.eq('email_type', exportFilterType);
+      }
+      
+      const { data, error } = await query;
         
       if (error) throw error;
       if (!data || data.length === 0) {
@@ -254,7 +273,7 @@ ${plainTextBody}`;
 
   const handleExportTodayData = async () => {
     const todayStr = new Date().toISOString().split('T')[0];
-    await handleExportDay(todayStr);
+    await handleExportDay(todayStr, exportFilterType);
     setExportModalOpen(false);
   };
 
@@ -357,7 +376,7 @@ ${plainTextBody}`;
                         {dateStr}
                       </div>
                       <button 
-                        onClick={() => handleExportDay(dateStr)}
+                        onClick={() => handleExportDay(dateStr, filterType)}
                         className="flex items-center gap-1.5 px-3 py-1 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:text-emerald-600 transition-colors text-[10px] shadow-sm text-slate-500"
                       >
                         <Download size={12} />
@@ -524,6 +543,24 @@ ${plainTextBody}`;
                 onChange={e => setExportEndDate(e.target.value)}
                 className="w-full h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700"
               />
+            </div>
+            <div className="flex flex-col gap-2 mb-4">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Email Type Filter</label>
+              <select
+                value={exportFilterType}
+                onChange={(e) => setExportFilterType(e.target.value)}
+                className="w-full h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 outline-none"
+              >
+                <option value="all">All Types</option>
+                <option value="client_inquiry">Client Inquiry</option>
+                <option value="artist_registration_inquiry">Artist Registration</option>
+                <option value="confirm">Confirmed</option>
+                <option value="approve">Approved</option>
+                <option value="reject">Rejected</option>
+                <option value="unavailable">Unavailable</option>
+                <option value="more_info">More Info</option>
+                <option value="custom">Custom</option>
+              </select>
             </div>
             <button 
               onClick={handleExportRange}
