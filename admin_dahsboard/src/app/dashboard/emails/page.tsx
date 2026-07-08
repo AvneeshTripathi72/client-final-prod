@@ -27,7 +27,9 @@ function EmailsContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
   const [filterType, setFilterType] = useState('all');
-  const [filterDate, setFilterDate] = useState('');
+  const [exportModalOpen, setExportModalOpen] = useState(false);
+  const [exportStartDate, setExportStartDate] = useState('');
+  const [exportEndDate, setExportEndDate] = useState('');
   const [selectedEmail, setSelectedEmail] = useState<any | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -43,14 +45,6 @@ function EmailsContent() {
 
       if (filterType !== 'all') {
         query = query.eq('email_type', filterType);
-      }
-
-      if (filterDate) {
-        const startOfDay = new Date(filterDate);
-        startOfDay.setHours(0, 0, 0, 0);
-        const endOfDay = new Date(filterDate);
-        endOfDay.setHours(23, 59, 59, 999);
-        query = query.gte('sent_at', startOfDay.toISOString()).lte('sent_at', endOfDay.toISOString());
       }
 
       if (searchQuery) {
@@ -70,7 +64,7 @@ function EmailsContent() {
     } finally {
       setLoading(false);
     }
-  }, [searchQuery, sortOrder, filterType, filterDate, toast]);
+  }, [searchQuery, sortOrder, filterType, toast]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -138,6 +132,54 @@ ${plainTextBody}`;
     toast({ title: 'Downloaded!', description: 'Email details downloaded successfully.' });
   };
 
+  const handleExportRange = async () => {
+    try {
+      if (!exportStartDate || !exportEndDate) {
+        toast({ variant: 'destructive', title: 'Error', description: 'Please select both start and end dates.' });
+        return;
+      }
+      const start = new Date(exportStartDate);
+      start.setHours(0, 0, 0, 0);
+      const end = new Date(exportEndDate);
+      end.setHours(23, 59, 59, 999);
+      
+      const { data, error } = await supabase
+        .from('emails')
+        .select(`*, bookings(client_name)`)
+        .gte('sent_at', start.toISOString())
+        .lte('sent_at', end.toISOString())
+        .order('sent_at', { ascending: false });
+        
+      if (error) throw error;
+      
+      if (!data || data.length === 0) {
+        toast({ variant: 'destructive', title: 'No Data', description: 'No emails found in this date range.' });
+        return;
+      }
+
+      const XLSX = await import('xlsx');
+      const exportData = data.map((e: any, index: number) => ({
+        'S.No': index + 1,
+        'Subject': e.subject || 'N/A',
+        'Recipient': e.recipient_email || 'N/A',
+        'Client': e.bookings?.client_name || 'N/A',
+        'Type': e.email_type || 'N/A',
+        'Status': e.status || 'N/A',
+        'Sent At': e.sent_at ? new Date(e.sent_at).toLocaleString('en-IN') : 'N/A',
+        'Email Body': e.body ? e.body.replace(/<[^>]*>?/gm, '').substring(0, 32000) : 'N/A',
+      }));
+      
+      const ws = XLSX.utils.json_to_sheet(exportData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Emails');
+      XLSX.writeFile(wb, `Emails_${exportStartDate}_to_${exportEndDate}.xlsx`);
+      toast({ title: 'Downloaded!', description: 'Emails exported successfully.' });
+      setExportModalOpen(false);
+    } catch (err: any) {
+      toast({ variant: 'destructive', title: 'Export Error', description: err.message });
+    }
+  };
+
   const getEmailTypeColor = (type: string) => {
     switch (type) {
       case 'custom': return 'bg-indigo-50 text-indigo-600 border-indigo-200';
@@ -186,55 +228,8 @@ ${plainTextBody}`;
               <option value="asc">Oldest First</option>
             </select>
           </div>
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-xl shadow-sm">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Date:</span>
-            <input
-              type="date"
-              value={filterDate}
-              onChange={(e) => setFilterDate(e.target.value)}
-              className="text-xs font-bold text-slate-700 bg-transparent border-none p-0 focus:ring-0 cursor-pointer outline-none"
-            />
-            {filterDate && (
-              <button onClick={() => setFilterDate('')} className="text-slate-400 hover:text-rose-500 ml-1">
-                <X size={14} />
-              </button>
-            )}
-          </div>
           <button
-            onClick={fetchEmails}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all shadow-sm"
-          >
-            <RefreshCw size={16} />
-            Refresh
-          </button>
-          <button
-            onClick={async () => {
-              try {
-                if (!emails || emails.length === 0) {
-                  toast({ variant: 'destructive', title: 'No Data', description: 'No emails to export.' });
-                  return;
-                }
-                const XLSX = await import('xlsx');
-                const exportData = emails.map((e: any, index: number) => ({
-                  'S.No': index + 1,
-                  'Subject': e.subject || 'N/A',
-                  'Recipient': e.recipient_email || 'N/A',
-                  'Client': e.bookings?.client_name || 'N/A',
-                  'Type': e.email_type || 'N/A',
-                  'Status': e.status || 'N/A',
-                  'Sent At': e.sent_at ? new Date(e.sent_at).toLocaleString('en-IN') : 'N/A',
-                  'Email Body': e.body ? e.body.replace(/<[^>]*>?/gm, '').substring(0, 32000) : 'N/A',
-                }));
-                const ws = XLSX.utils.json_to_sheet(exportData);
-                const wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, 'Emails');
-                const today = new Date().toISOString().split('T')[0];
-                XLSX.writeFile(wb, `TalentTrack_Emails_${today}.xlsx`);
-                toast({ title: 'Downloaded!', description: 'Emails exported as XLS file.' });
-              } catch (error: any) {
-                toast({ variant: 'destructive', title: 'Export Error', description: error.message });
-              }
-            }}
+            onClick={() => setExportModalOpen(true)}
             className="group h-9 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 border border-emerald-400 text-white text-[11px] font-black uppercase tracking-[0.1em] hover:shadow-lg hover:shadow-emerald-200/50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 shadow-sm"
           >
             Export XLS
@@ -405,6 +400,52 @@ ${plainTextBody}`;
               <AlertCircle size={16} /> Clear All Logs
             </button>
             <button onClick={() => setDeleteModalOpen(false)} className="mt-2 w-full h-11 rounded-xl bg-white border border-slate-200 text-slate-500 font-bold text-xs uppercase tracking-widest hover:bg-slate-100 transition-all">
+              Cancel
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={exportModalOpen} onOpenChange={setExportModalOpen}>
+        <DialogContent className="max-w-md rounded-[32px] border-none shadow-2xl p-0 overflow-hidden">
+          <div className="bg-emerald-600 p-8 text-white relative text-center">
+            <div className="mx-auto w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mb-4">
+              <Download size={32} className="text-white" />
+            </div>
+            <DialogTitle className="text-2xl font-black mb-2">Export Emails</DialogTitle>
+            <DialogDescription className="text-emerald-100 font-medium">
+              Select a date range to download email details.
+            </DialogDescription>
+          </div>
+          <div className="p-8 bg-slate-50 flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Start Date</label>
+              <input 
+                type="date" 
+                value={exportStartDate} 
+                onChange={e => setExportStartDate(e.target.value)}
+                className="w-full h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700"
+              />
+            </div>
+            <div className="flex flex-col gap-2 mb-2">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">End Date</label>
+              <input 
+                type="date" 
+                value={exportEndDate} 
+                onChange={e => setExportEndDate(e.target.value)}
+                className="w-full h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700"
+              />
+            </div>
+            <button 
+              onClick={handleExportRange}
+              className="w-full h-11 rounded-xl bg-emerald-600 text-white font-bold text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25"
+            >
+              <Download size={16} /> Download XLS
+            </button>
+            <button 
+              onClick={() => setExportModalOpen(false)} 
+              className="mt-1 w-full h-11 rounded-xl bg-white border border-slate-200 text-slate-500 font-bold text-xs uppercase tracking-widest hover:bg-slate-100 transition-all"
+            >
               Cancel
             </button>
           </div>

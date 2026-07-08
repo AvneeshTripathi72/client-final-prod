@@ -90,7 +90,8 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [expandedMenus, setExpandedMenus] = useState<Record<string, boolean>>({});
-  const [pendingRequestsCount, setPendingRequestsCount] = useState(0);
+  const [pendingClientCount, setPendingClientCount] = useState(0);
+  const [pendingArtistCount, setPendingArtistCount] = useState(0);
 
   useEffect(() => {
     setExpandedMenus(prev => ({
@@ -135,14 +136,21 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
 
     const fetchPendingCount = async () => {
       try {
-        const { count, error } = await (supabase
+        const { data, error } = await (supabase
           .from('bookings') as any)
-          .select('*', { count: 'exact', head: true })
+          .select('event_type')
           .eq('booking_source', 'client')
           .eq('status', 'pending');
           
-        if (!error && count !== null) {
-          setPendingRequestsCount(count);
+        if (!error && data) {
+          let clientCount = 0;
+          let artistCount = 0;
+          data.forEach((b: any) => {
+            if (b.event_type === 'Artist Registration') artistCount++;
+            else clientCount++;
+          });
+          setPendingClientCount(clientCount);
+          setPendingArtistCount(artistCount);
         }
       } catch (err) {
         console.error(err);
@@ -243,9 +251,9 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
                               {item.name}
                             </span>
                           </div>
-                          {item.name === 'Requests' && pendingRequestsCount > 0 && !isOpen && (
+                          {item.name === 'Requests' && (pendingClientCount + pendingArtistCount) > 0 && !isOpen && (
                             <span className="bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg border border-rose-400 animate-pulse mr-2">
-                              {pendingRequestsCount}
+                              {pendingClientCount + pendingArtistCount}
                             </span>
                           )}
                           <ChevronDown
@@ -285,9 +293,14 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
                                     )} />
                                     {displayName}
                                   </div>
-                                  {sub.name === 'Client Requests' && pendingRequestsCount > 0 && (
+                                  {sub.name === 'Client Requests' && pendingClientCount > 0 && (
                                     <span className="bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-lg border border-rose-400 animate-pulse">
-                                      {pendingRequestsCount}
+                                      {pendingClientCount}
+                                    </span>
+                                  )}
+                                  {sub.name === 'Artist Requests' && pendingArtistCount > 0 && (
+                                    <span className="bg-rose-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow-lg border border-rose-400 animate-pulse">
+                                      {pendingArtistCount}
                                     </span>
                                   )}
                                 </Link>
