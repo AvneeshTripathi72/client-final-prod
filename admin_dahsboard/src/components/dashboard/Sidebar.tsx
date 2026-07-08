@@ -101,7 +101,8 @@ export function Sidebar({ onClose, userRole = 'admin' }: { onClose?: () => void;
               pathname.startsWith('/dashboard/slider') ||
               pathname.startsWith('/dashboard/service-videos'),
       'Requests': pathname.startsWith('/dashboard/requests') ||
-                  pathname.startsWith('/dashboard/team-requests'),
+                  pathname.startsWith('/dashboard/team-requests') ||
+                  pathname.startsWith('/dashboard/artist-requests'),
       'Developer Options': pathname.startsWith('/dashboard/api') ||
                            pathname.startsWith('/dashboard/health')
     }));
