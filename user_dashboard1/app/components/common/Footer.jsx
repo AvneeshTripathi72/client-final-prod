@@ -110,7 +110,7 @@ export default function Footer() {
             'singer for home party', 'live band for wedding', 'singer near me', 'singers for wedding',
             'singer at home', 'singer for house party in gurgaon', 'local singers near me'
           ].map((kw, i) => (
-            <Link key={i} href={`/search?q=${encodeURIComponent(kw)}`} style={{ color: 'rgba(255,255,255,0.2)', fontSize: '10px', textDecoration: 'none', transition: 'color 0.2s ease' }} onMouseEnter={(e) => e.target.style.color = 'rgba(255,255,255,0.5)'} onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,0.2)'}>
+            <Link key={i} href="/artists" style={{ color: 'rgba(255,255,255,0.2)', fontSize: '10px', textDecoration: 'none', transition: 'color 0.2s ease' }} onMouseEnter={(e) => e.target.style.color = 'rgba(255,255,255,0.5)'} onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,0.2)'}>
               {kw}{i !== 25 ? ' |' : ''}
             </Link>
           ))}
