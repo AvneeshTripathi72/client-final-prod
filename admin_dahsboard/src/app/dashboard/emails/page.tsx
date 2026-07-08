@@ -27,6 +27,7 @@ function EmailsContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
   const [filterType, setFilterType] = useState('all');
+  const [filterDate, setFilterDate] = useState('');
   const [selectedEmail, setSelectedEmail] = useState<any | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -42,6 +43,14 @@ function EmailsContent() {
 
       if (filterType !== 'all') {
         query = query.eq('email_type', filterType);
+      }
+
+      if (filterDate) {
+        const startOfDay = new Date(filterDate);
+        startOfDay.setHours(0, 0, 0, 0);
+        const endOfDay = new Date(filterDate);
+        endOfDay.setHours(23, 59, 59, 999);
+        query = query.gte('sent_at', startOfDay.toISOString()).lte('sent_at', endOfDay.toISOString());
       }
 
       if (searchQuery) {
@@ -61,7 +70,7 @@ function EmailsContent() {
     } finally {
       setLoading(false);
     }
-  }, [searchQuery, sortOrder, filterType, toast]);
+  }, [searchQuery, sortOrder, filterType, filterDate, toast]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -95,6 +104,38 @@ function EmailsContent() {
     } catch (error: any) {
       toast({ variant: 'destructive', title: 'Error', description: error.message });
     }
+  };
+
+  const handleDownloadSingle = () => {
+    if (!selectedEmail) return;
+    
+    // Strip HTML to make it readable in text file
+    const plainTextBody = selectedEmail.body ? selectedEmail.body.replace(/<[^>]*>?/gm, '').replace(/\n\s*\n/g, '\n\n') : 'No Content';
+    
+    const content = `Subject: ${selectedEmail.subject}
+To: ${selectedEmail.recipient_email}
+Date: ${new Date(selectedEmail.sent_at).toLocaleString()}
+Type: ${selectedEmail.email_type}
+Status: ${selectedEmail.status || 'sent'}
+Client: ${selectedEmail.bookings?.client_name || 'N/A'}
+
+--------------------------------------------------
+EMAIL CONTENT
+--------------------------------------------------
+
+${plainTextBody}`;
+    
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Email_${selectedEmail.subject.substring(0,30).replace(/[^a-zA-Z0-9]/g, '_')}_${format(new Date(selectedEmail.sent_at), 'yyyyMMdd')}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast({ title: 'Downloaded!', description: 'Email details downloaded successfully.' });
   };
 
   const getEmailTypeColor = (type: string) => {
@@ -145,6 +186,20 @@ function EmailsContent() {
               <option value="asc">Oldest First</option>
             </select>
           </div>
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-200 rounded-xl shadow-sm">
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Date:</span>
+            <input
+              type="date"
+              value={filterDate}
+              onChange={(e) => setFilterDate(e.target.value)}
+              className="text-xs font-bold text-slate-700 bg-transparent border-none p-0 focus:ring-0 cursor-pointer outline-none"
+            />
+            {filterDate && (
+              <button onClick={() => setFilterDate('')} className="text-slate-400 hover:text-rose-500 ml-1">
+                <X size={14} />
+              </button>
+            )}
+          </div>
           <button
             onClick={fetchEmails}
             className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all shadow-sm"
@@ -168,6 +223,7 @@ function EmailsContent() {
                   'Type': e.email_type || 'N/A',
                   'Status': e.status || 'N/A',
                   'Sent At': e.sent_at ? new Date(e.sent_at).toLocaleString('en-IN') : 'N/A',
+                  'Email Body': e.body ? e.body.replace(/<[^>]*>?/gm, '').substring(0, 32000) : 'N/A',
                 }));
                 const ws = XLSX.utils.json_to_sheet(exportData);
                 const wb = XLSX.utils.book_new();
@@ -310,12 +366,20 @@ function EmailsContent() {
                 >
                   <Trash2 size={16} /> Delete
                 </button>
-                <button
-                  onClick={() => setModalOpen(false)}
-                  className="px-6 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition-colors shadow-sm"
-                >
-                  Close
-                </button>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleDownloadSingle}
+                    className="px-6 py-2 bg-emerald-600 border border-emerald-500 rounded-xl text-sm font-bold text-white hover:bg-emerald-700 transition-colors shadow-sm flex items-center gap-2"
+                  >
+                    <Download size={16} /> Download Details
+                  </button>
+                  <button
+                    onClick={() => setModalOpen(false)}
+                    className="px-6 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-100 transition-colors shadow-sm"
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
             </div>
           )}
