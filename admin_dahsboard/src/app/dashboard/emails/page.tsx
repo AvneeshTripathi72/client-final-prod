@@ -219,6 +219,45 @@ ${plainTextBody}`;
     }
   };
 
+  const handleExportAllData = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('emails')
+        .select(`*, bookings(client_name)`)
+        .order('sent_at', { ascending: false });
+        
+      if (error) throw error;
+      if (!data || data.length === 0) {
+        toast({ variant: 'destructive', title: 'No Data', description: 'No emails found.' });
+        return;
+      }
+
+      const { exportToExcel } = await import('@/lib/exportExcel');
+      const exportData = data.map((e: any, index: number) => ({
+        'S.No': index + 1,
+        'Subject': e.subject || 'N/A',
+        'Recipient': e.recipient_email || 'N/A',
+        'Client': e.bookings?.client_name || 'N/A',
+        'Type': e.email_type || 'N/A',
+        'Status': e.status || 'N/A',
+        'Sent At': e.sent_at ? new Date(e.sent_at).toLocaleString('en-IN') : 'N/A',
+        'Email Body': e.body ? e.body.replace(/<[^>]*>?/gm, '').substring(0, 32000) : 'N/A',
+      }));
+      
+      await exportToExcel(exportData, `All_Emails_${new Date().toISOString().split('T')[0]}`, `All_Emails`);
+      toast({ title: 'Downloaded!', description: `All emails exported successfully.` });
+      setExportModalOpen(false);
+    } catch (err: any) {
+      toast({ variant: 'destructive', title: 'Export Error', description: err.message });
+    }
+  };
+
+  const handleExportTodayData = async () => {
+    const todayStr = new Date().toISOString().split('T')[0];
+    await handleExportDay(todayStr);
+    setExportModalOpen(false);
+  };
+
   const getEmailTypeColor = (type: string) => {
     switch (type) {
       case 'custom': return 'bg-indigo-50 text-indigo-600 border-indigo-200';
@@ -490,8 +529,22 @@ ${plainTextBody}`;
               onClick={handleExportRange}
               className="w-full h-11 rounded-xl bg-emerald-600 text-white font-bold text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25"
             >
-              <Download size={16} /> Download XLS
+              <Download size={16} /> Download Range
             </button>
+            <div className="flex gap-4 w-full">
+              <button 
+                onClick={handleExportTodayData}
+                className="w-full h-11 rounded-xl bg-sky-600 text-white font-bold text-xs uppercase tracking-widest hover:bg-sky-700 transition-all flex items-center justify-center gap-2 shadow-sm"
+              >
+                Today's Data
+              </button>
+              <button 
+                onClick={handleExportAllData}
+                className="w-full h-11 rounded-xl bg-indigo-600 text-white font-bold text-xs uppercase tracking-widest hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 shadow-sm"
+              >
+                All Data
+              </button>
+            </div>
             <button 
               onClick={() => setExportModalOpen(false)} 
               className="mt-1 w-full h-11 rounded-xl bg-white border border-slate-200 text-slate-500 font-bold text-xs uppercase tracking-widest hover:bg-slate-100 transition-all"
