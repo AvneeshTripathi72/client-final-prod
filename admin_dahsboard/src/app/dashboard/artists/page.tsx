@@ -3,12 +3,12 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { ArtistFilters, ArtistFilterState, INITIAL_FILTER_STATE } from '@/components/artists/ArtistFilters';
 import { Button } from '@/components/ui/button';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
-import { Plus, Loader2, Mic2, Star, Info, ChevronLeft, ChevronRight, Pencil, Eye, EyeOff, Trash2, Image as ImageIcon, Share2, PlayCircle, MapPin, Music, User, ChevronDown, Layers, Calendar, Download } from 'lucide-react';
+import { Plus, Loader2, Mic2, Star, Info, ChevronLeft, ChevronRight, Pencil, Eye, EyeOff, Trash2, Image as ImageIcon, Share2, PlayCircle, MapPin, Music, User, ChevronDown, Layers, Calendar, CalendarCheck, Download } from 'lucide-react';
 import { CreateArtistModal } from '@/components/artists/CreateArtistModal';
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useRouter } from 'next/navigation';
 
 export default function ArtistManagement() {
@@ -21,6 +21,14 @@ export default function ArtistManagement() {
   const [filters, setFilters] = useState<ArtistFilterState>(INITIAL_FILTER_STATE);
   const [activeTab, setActiveTab] = useState<'all' | 'original' | 'duplicate' | 'date' | 'live' | 'hidden'>('all');
   const [expandedGroupId, setExpandedGroupId] = useState<string | null>(null);
+
+  // Export State
+  const [exportModalOpen, setExportModalOpen] = useState(false);
+  const [exportMode, setExportMode] = useState<'select' | 'range' | 'single' | 'today' | 'all'>('select');
+  const [exportStartDate, setExportStartDate] = useState('');
+  const [exportEndDate, setExportEndDate] = useState('');
+  const [exportSingleDate, setExportSingleDate] = useState('');
+  const [exportFilterType, setExportFilterType] = useState('all');
 
   const ITEMS_PER_PAGE = 10;
   const { toast } = useToast();
@@ -179,6 +187,204 @@ export default function ArtistManagement() {
       setLoading(false);
     }
   }, [filters, currentUser]);
+
+  const handleExportRange = async () => {
+    try {
+      if (!exportStartDate || !exportEndDate) {
+        toast({ variant: 'destructive', title: 'Error', description: 'Please select both start and end dates.' });
+        return;
+      }
+      const start = new Date(exportStartDate);
+      start.setHours(0, 0, 0, 0);
+      const end = new Date(exportEndDate);
+      end.setHours(23, 59, 59, 999);
+      
+      let query = (supabase.from('artists') as any)
+        .select('*')
+        .gte('created_at', start.toISOString())
+        .lte('created_at', end.toISOString())
+        .order('created_at', { ascending: false });
+
+      if (exportFilterType === 'live') query = query.eq('is_live', true);
+      else if (exportFilterType === 'hidden') query = query.eq('is_live', false);
+      
+      const { data, error } = await query;
+      if (error) throw error;
+      if (!data || data.length === 0) {
+        toast({ variant: 'destructive', title: 'No Data', description: 'No artists found in this range.' });
+        return;
+      }
+      const { exportToExcel } = await import('@/lib/exportExcel');
+      const exportData = data.map((a: any, index: number) => ({
+        'S.No': index + 1,
+        'Artist No': a.artist_no || 'N/A',
+        'Artist Name': a.name || 'N/A',
+        'Alias': a.alias || 'N/A',
+        'Category': a.category || 'N/A',
+        'Contact Person': a.contact_person || 'N/A',
+        'Phone No': a.phone_no || 'N/A',
+        'Email': a.email || 'N/A',
+        'City': a.city || 'N/A',
+        'State': a.state || 'N/A',
+        'Price Range': a.price_range || (a.price_min && a.price_max ? `${a.price_min}-${a.price_max}` : 'N/A'),
+        'Language': a.performing_language || 'N/A',
+        'Trending': a.is_trending ? 'Yes' : 'No',
+        'Artist of Month': a.is_artist_of_month ? 'Yes' : 'No',
+        'Status': a.is_live ? 'Live' : 'Hidden',
+        'Added On': a.created_at ? new Date(a.created_at).toLocaleString('en-IN') : 'N/A',
+      }));
+      await exportToExcel(exportData, `TalentTrack_Artists_${exportStartDate}_to_${exportEndDate}`, 'Artists');
+      setExportModalOpen(false);
+      setExportMode('select');
+      toast({ title: 'Downloaded!', description: 'Artists exported successfully.' });
+    } catch (err: any) {
+      toast({ variant: 'destructive', title: 'Export Error', description: err.message });
+    }
+  };
+
+  const handleExportTodayData = async () => {
+    try {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const endOfDay = new Date();
+      endOfDay.setHours(23, 59, 59, 999);
+
+      let query = (supabase.from('artists') as any)
+        .select('*')
+        .gte('created_at', today.toISOString())
+        .lte('created_at', endOfDay.toISOString())
+        .order('created_at', { ascending: false });
+
+      if (exportFilterType === 'live') query = query.eq('is_live', true);
+      else if (exportFilterType === 'hidden') query = query.eq('is_live', false);
+      
+      const { data, error } = await query;
+      if (error) throw error;
+      if (!data || data.length === 0) {
+        toast({ variant: 'destructive', title: 'No Data', description: "No artists found for today." });
+        return;
+      }
+      const { exportToExcel } = await import('@/lib/exportExcel');
+      const exportData = data.map((a: any, index: number) => ({
+        'S.No': index + 1,
+        'Artist No': a.artist_no || 'N/A',
+        'Artist Name': a.name || 'N/A',
+        'Alias': a.alias || 'N/A',
+        'Category': a.category || 'N/A',
+        'Contact Person': a.contact_person || 'N/A',
+        'Phone No': a.phone_no || 'N/A',
+        'Email': a.email || 'N/A',
+        'City': a.city || 'N/A',
+        'State': a.state || 'N/A',
+        'Price Range': a.price_range || (a.price_min && a.price_max ? `${a.price_min}-${a.price_max}` : 'N/A'),
+        'Language': a.performing_language || 'N/A',
+        'Trending': a.is_trending ? 'Yes' : 'No',
+        'Artist of Month': a.is_artist_of_month ? 'Yes' : 'No',
+        'Status': a.is_live ? 'Live' : 'Hidden',
+        'Added On': a.created_at ? new Date(a.created_at).toLocaleString('en-IN') : 'N/A',
+      }));
+      const dateStr = today.toISOString().split('T')[0];
+      await exportToExcel(exportData, `TalentTrack_Artists_Today_${dateStr}`, 'Artists');
+      setExportModalOpen(false);
+      setExportMode('select');
+      toast({ title: 'Downloaded!', description: "Today's artists exported successfully." });
+    } catch (err: any) {
+      toast({ variant: 'destructive', title: 'Export Error', description: err.message });
+    }
+  };
+
+  const handleExportAllData = async () => {
+    try {
+      let query = (supabase.from('artists') as any)
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (exportFilterType === 'live') query = query.eq('is_live', true);
+      else if (exportFilterType === 'hidden') query = query.eq('is_live', false);
+      
+      const { data, error } = await query;
+      if (error) throw error;
+      if (!data || data.length === 0) {
+        toast({ variant: 'destructive', title: 'No Data', description: 'No artists to export.' });
+        return;
+      }
+      const { exportToExcel } = await import('@/lib/exportExcel');
+      const exportData = data.map((a: any, index: number) => ({
+        'S.No': index + 1,
+        'Artist No': a.artist_no || 'N/A',
+        'Artist Name': a.name || 'N/A',
+        'Alias': a.alias || 'N/A',
+        'Category': a.category || 'N/A',
+        'Contact Person': a.contact_person || 'N/A',
+        'Phone No': a.phone_no || 'N/A',
+        'Email': a.email || 'N/A',
+        'City': a.city || 'N/A',
+        'State': a.state || 'N/A',
+        'Price Range': a.price_range || (a.price_min && a.price_max ? `${a.price_min}-${a.price_max}` : 'N/A'),
+        'Language': a.performing_language || 'N/A',
+        'Trending': a.is_trending ? 'Yes' : 'No',
+        'Artist of Month': a.is_artist_of_month ? 'Yes' : 'No',
+        'Status': a.is_live ? 'Live' : 'Hidden',
+        'Added On': a.created_at ? new Date(a.created_at).toLocaleString('en-IN') : 'N/A',
+      }));
+      await exportToExcel(exportData, `TalentTrack_Artists_All_Data`, 'Artists');
+      setExportModalOpen(false);
+      setExportMode('select');
+      toast({ title: 'Downloaded!', description: 'All artists exported successfully.' });
+    } catch (err: any) {
+      toast({ variant: 'destructive', title: 'Export Error', description: err.message });
+    }
+  };
+
+  const handleExportDay = async (dateStr: string) => {
+    try {
+      const start = new Date(dateStr);
+      start.setHours(0, 0, 0, 0);
+      const end = new Date(dateStr);
+      end.setHours(23, 59, 59, 999);
+      
+      let query = (supabase.from('artists') as any)
+        .select('*')
+        .gte('created_at', start.toISOString())
+        .lte('created_at', end.toISOString())
+        .order('created_at', { ascending: false });
+
+      if (exportFilterType === 'live') query = query.eq('is_live', true);
+      else if (exportFilterType === 'hidden') query = query.eq('is_live', false);
+      
+      const { data, error } = await query;
+      if (error) throw error;
+      if (!data || data.length === 0) {
+        toast({ variant: 'destructive', title: 'No Data', description: `No artists found for ${dateStr}.` });
+        return;
+      }
+      const { exportToExcel } = await import('@/lib/exportExcel');
+      const exportData = data.map((a: any, index: number) => ({
+        'S.No': index + 1,
+        'Artist No': a.artist_no || 'N/A',
+        'Artist Name': a.name || 'N/A',
+        'Alias': a.alias || 'N/A',
+        'Category': a.category || 'N/A',
+        'Contact Person': a.contact_person || 'N/A',
+        'Phone No': a.phone_no || 'N/A',
+        'Email': a.email || 'N/A',
+        'City': a.city || 'N/A',
+        'State': a.state || 'N/A',
+        'Price Range': a.price_range || (a.price_min && a.price_max ? `${a.price_min}-${a.price_max}` : 'N/A'),
+        'Language': a.performing_language || 'N/A',
+        'Trending': a.is_trending ? 'Yes' : 'No',
+        'Artist of Month': a.is_artist_of_month ? 'Yes' : 'No',
+        'Status': a.is_live ? 'Live' : 'Hidden',
+        'Added On': a.created_at ? new Date(a.created_at).toLocaleString('en-IN') : 'N/A',
+      }));
+      await exportToExcel(exportData, `TalentTrack_Artists_${dateStr}`, 'Artists');
+      setExportModalOpen(false);
+      setExportMode('select');
+      toast({ title: 'Downloaded!', description: `Artists for ${dateStr} exported successfully.` });
+    } catch (err: any) {
+      toast({ variant: 'destructive', title: 'Export Error', description: err.message });
+    }
+  };
 
   useEffect(() => {
     setCurrentPage(1);
@@ -510,38 +716,7 @@ export default function ArtistManagement() {
             Add Artist
           </button>
           <button
-            onClick={async () => {
-              try {
-                if (!artists || artists.length === 0) {
-                  toast({ variant: 'destructive', title: 'No Data', description: 'No artists to export.' });
-                  return;
-                }
-                const { exportToExcel } = await import('@/lib/exportExcel');
-                const exportData = artists.map((a: any, index: number) => ({
-                  'S.No': index + 1,
-                  'Artist No': a.artist_no || 'N/A',
-                  'Artist Name': a.name || 'N/A',
-                  'Alias': a.alias || 'N/A',
-                  'Category': a.category || 'N/A',
-                  'Contact Person': a.contact_person || 'N/A',
-                  'Phone No': a.phone_no || 'N/A',
-                  'Email': a.email || 'N/A',
-                  'City': a.city || 'N/A',
-                  'State': a.state || 'N/A',
-                  'Price Range': a.price_range || (a.price_min && a.price_max ? `${a.price_min}-${a.price_max}` : 'N/A'),
-                  'Language': a.performing_language || 'N/A',
-                  'Trending': a.is_trending ? 'Yes' : 'No',
-                  'Artist of Month': a.is_artist_of_month ? 'Yes' : 'No',
-                  'Status': a.is_live ? 'Live' : 'Hidden',
-                  'Added On': a.created_at ? new Date(a.created_at).toLocaleString('en-IN') : 'N/A',
-                }));
-                const today = new Date().toISOString().split('T')[0];
-                await exportToExcel(exportData, `TalentTrack_Artists_${today}`, 'Artists');
-                toast({ title: 'Downloaded!', description: 'Artists exported as XLS file.' });
-              } catch (error: any) {
-                toast({ variant: 'destructive', title: 'Export Error', description: error.message });
-              }
-            }}
+            onClick={() => { setExportMode('select'); setExportModalOpen(true); }}
             className="group flex-1 sm:flex-none h-11 px-6 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 border border-emerald-400 text-white text-[11px] font-black uppercase tracking-[0.2em] hover:shadow-lg hover:shadow-emerald-200/50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-3 shadow-sm"
           >
             <Download size={16} strokeWidth={3} className="text-white" />
@@ -858,6 +1033,191 @@ export default function ArtistManagement() {
           </div>
         </div>
       </div>
+      
+      {/* Export Modal */}
+      <Dialog open={exportModalOpen} onOpenChange={(open) => { setExportModalOpen(open); if(!open) setExportMode('select'); }}>
+        <DialogContent className="max-w-md w-full p-8 rounded-[24px] bg-white border border-slate-100 shadow-2xl">
+          <div className="flex flex-col items-center text-center">
+            <div className="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center mb-6">
+              <Download size={32} strokeWidth={2.5} className="text-emerald-500" />
+            </div>
+            <DialogTitle className="text-2xl font-black mb-2">Export Artists</DialogTitle>
+            <DialogDescription className="text-slate-500 font-medium mb-8">
+              {exportMode === 'select' ? 'Select how you want to export artist data.' : 'Select the dates to download artist details.'}
+            </DialogDescription>
+            
+            {exportMode === 'select' ? (
+              <div className="w-full space-y-3">
+                <button 
+                  onClick={() => setExportMode('single')}
+                  className="w-full h-14 rounded-xl border-2 border-slate-100 bg-white hover:border-emerald-200 hover:bg-emerald-50/50 transition-all flex items-center justify-between px-6 group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform">
+                      <Calendar size={16} strokeWidth={3} />
+                    </div>
+                    <span className="font-bold text-sm text-slate-700">Date Wise</span>
+                  </div>
+                  <ChevronRight size={18} className="text-slate-300 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all" strokeWidth={3} />
+                </button>
+                <button 
+                  onClick={() => setExportMode('range')}
+                  className="w-full h-14 rounded-xl border-2 border-slate-100 bg-white hover:border-emerald-200 hover:bg-emerald-50/50 transition-all flex items-center justify-between px-6 group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform">
+                      <CalendarCheck size={16} strokeWidth={3} />
+                    </div>
+                    <span className="font-bold text-sm text-slate-700">Range Wise</span>
+                  </div>
+                  <ChevronRight size={18} className="text-slate-300 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all" strokeWidth={3} />
+                </button>
+                <div className="flex gap-4 w-full">
+                  <button 
+                    onClick={() => setExportMode('today')}
+                    className="w-full h-11 rounded-xl bg-sky-600 text-white font-bold text-[10px] uppercase tracking-widest hover:bg-sky-700 transition-all flex items-center justify-center gap-2 shadow-sm"
+                  >
+                    Today's Data
+                  </button>
+                  <button 
+                    onClick={() => setExportMode('all')}
+                    className="w-full h-11 rounded-xl bg-indigo-600 text-white font-bold text-[10px] uppercase tracking-widest hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 shadow-sm"
+                  >
+                    All Data
+                  </button>
+                </div>
+              </div>
+            ) : exportMode === 'range' ? (
+              <>
+                <div className="flex flex-col gap-2">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest text-left">Start Date</label>
+                  <input 
+                    type="date" 
+                    value={exportStartDate} 
+                    onChange={e => setExportStartDate(e.target.value)}
+                    className="w-full h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700"
+                  />
+                </div>
+                <div className="flex flex-col gap-2 mb-2 w-full mt-2">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest text-left">End Date</label>
+                  <input 
+                    type="date" 
+                    value={exportEndDate} 
+                    onChange={e => setExportEndDate(e.target.value)}
+                    className="w-full h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700"
+                  />
+                </div>
+                <div className="flex flex-col gap-2 mb-4 w-full mt-2">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest text-left">Status Filter</label>
+                  <select
+                    value={exportFilterType}
+                    onChange={(e) => setExportFilterType(e.target.value)}
+                    className="w-full h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 outline-none"
+                  >
+                    <option value="all">All Artists</option>
+                    <option value="live">Live</option>
+                    <option value="hidden">Hidden</option>
+                  </select>
+                </div>
+                <button 
+                  onClick={handleExportRange}
+                  className="w-full h-11 rounded-xl bg-emerald-600 text-white font-bold text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25"
+                >
+                  <Download size={16} /> Download Range
+                </button>
+              </>
+            ) : exportMode === 'single' ? (
+              <>
+                <div className="flex flex-col gap-2 mb-2 w-full">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest text-left">Select Date</label>
+                  <input 
+                    type="date" 
+                    value={exportSingleDate} 
+                    onChange={e => setExportSingleDate(e.target.value)}
+                    className="w-full h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700"
+                  />
+                </div>
+                <div className="flex flex-col gap-2 mb-4 w-full mt-2">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest text-left">Status Filter</label>
+                  <select
+                    value={exportFilterType}
+                    onChange={(e) => setExportFilterType(e.target.value)}
+                    className="w-full h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 outline-none"
+                  >
+                    <option value="all">All Artists</option>
+                    <option value="live">Live</option>
+                    <option value="hidden">Hidden</option>
+                  </select>
+                </div>
+                <button 
+                  onClick={() => {
+                    if(!exportSingleDate) {
+                       toast({ variant: 'destructive', title: 'Error', description: 'Please select a date.' });
+                       return;
+                    }
+                    handleExportDay(exportSingleDate);
+                  }}
+                  className="w-full h-11 rounded-xl bg-emerald-600 text-white font-bold text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25 mt-2"
+                >
+                  <Download size={16} /> Download Date
+                </button>
+              </>
+            ) : exportMode === 'today' ? (
+              <>
+                <div className="flex flex-col gap-2 mb-4 w-full">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest text-left">Status Filter</label>
+                  <select
+                    value={exportFilterType}
+                    onChange={(e) => setExportFilterType(e.target.value)}
+                    className="w-full h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 outline-none"
+                  >
+                    <option value="all">All Artists</option>
+                    <option value="live">Live</option>
+                    <option value="hidden">Hidden</option>
+                  </select>
+                </div>
+                <button 
+                  onClick={handleExportTodayData}
+                  className="w-full h-11 rounded-xl bg-sky-600 text-white font-bold text-xs uppercase tracking-widest hover:bg-sky-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-sky-500/25 mt-2"
+                >
+                  <Download size={16} /> Download Today
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="flex flex-col gap-2 mb-4 w-full">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest text-left">Status Filter</label>
+                  <select
+                    value={exportFilterType}
+                    onChange={(e) => setExportFilterType(e.target.value)}
+                    className="w-full h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 outline-none"
+                  >
+                    <option value="all">All Artists</option>
+                    <option value="live">Live</option>
+                    <option value="hidden">Hidden</option>
+                  </select>
+                </div>
+                <button 
+                  onClick={handleExportAllData}
+                  className="w-full h-11 rounded-xl bg-indigo-600 text-white font-bold text-xs uppercase tracking-widest hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25 mt-2"
+                >
+                  <Download size={16} /> Download All
+                </button>
+              </>
+            )}
+
+            <button 
+              onClick={() => {
+                if (exportMode !== 'select') setExportMode('select');
+                else setExportModalOpen(false);
+              }} 
+              className="mt-3 w-full h-11 rounded-xl bg-white border border-slate-200 text-slate-500 font-bold text-xs uppercase tracking-widest hover:bg-slate-100 transition-all"
+            >
+              {exportMode === 'select' ? 'Cancel' : 'Back to Options'}
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
