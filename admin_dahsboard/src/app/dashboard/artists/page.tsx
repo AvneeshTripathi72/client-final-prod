@@ -1,5 +1,5 @@
-import { useConfirm } from '@/components/ui/ConfirmProvider';
 "use client";
+import { useConfirm } from '@/components/ui/ConfirmProvider';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { ArtistFilters, ArtistFilterState, INITIAL_FILTER_STATE } from '@/components/artists/ArtistFilters';
 import { Button } from '@/components/ui/button';
