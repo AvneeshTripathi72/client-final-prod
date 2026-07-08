@@ -96,6 +96,31 @@ const nextConfig = {
         destination: '/',
         permanent: true,
       },
+      {
+        source: '/live-musicians-for-hire-near-me',
+        destination: '/artists',
+        permanent: true,
+      },
+      {
+        source: '/blog-post/booking-singer-for-house-party',
+        destination: '/artists',
+        permanent: true,
+      },
+      {
+        source: '/search',
+        destination: '/artists',
+        permanent: true,
+      },
+      {
+        source: '/how-to-book-a-singrs-in-delhi',
+        destination: '/artists',
+        permanent: true,
+      },
+      {
+        source: '/how-to-book-a-singer-in-delhi',
+        destination: '/artists',
+        permanent: true,
+      },
     ]
   },
 }

@@ -14,13 +14,8 @@ export default async function sitemap() {
     '/how-to-book',
     '/testimonials',
     '/why-choose',
-    '/search',
     '/singers-in-delhi',
     '/book-top-singers',
-    '/book-singer-for-house-party',
-    '/live-musicians-for-hire-near-me',
-    '/how-to-book-a-singer-in-delhi',
-    '/blog-post/booking-singer-for-house-party',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date().toISOString(),
