@@ -56,10 +56,16 @@ export const metadata = {
     'singer for house party in gurgaon',
     'local singers near me'
   ],
-  manifest: '/manifest.json',
+  manifest: '/site.webmanifest',
   icons: {
-    icon: '/icon-192.png',
-    apple: '/icon-192.png',
+    icon: [
+      { url: '/favicon.ico', sizes: '32x32' },
+      { url: '/icon.png', type: 'image/png', sizes: '192x192' },
+      { url: '/icon-512.png', type: 'image/png', sizes: '512x512' }
+    ],
+    apple: [
+      { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' }
+    ]
   },
   appleWebApp: {
     capable: true,
