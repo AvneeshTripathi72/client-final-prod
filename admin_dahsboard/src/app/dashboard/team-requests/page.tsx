@@ -52,7 +52,7 @@ export default function TeamRequestsPage() {
 
   // Export State
   const [exportModalOpen, setExportModalOpen] = useState(false);
-  const [exportMode, setExportMode] = useState<'select' | 'range' | 'single'>('select');
+  const [exportMode, setExportMode] = useState<'select' | 'range' | 'single' | 'today' | 'all'>('select');
   const [exportStartDate, setExportStartDate] = useState('');
   const [exportEndDate, setExportEndDate] = useState('');
   const [exportSingleDate, setExportSingleDate] = useState('');
@@ -979,13 +979,13 @@ export default function TeamRequestsPage() {
 
                 <div className="flex gap-4 w-full">
                   <button 
-                    onClick={handleExportTodayData}
+                    onClick={() => setExportMode('today')}
                     className="w-full h-11 rounded-xl bg-sky-600 text-white font-bold text-[10px] uppercase tracking-widest hover:bg-sky-700 transition-all flex items-center justify-center gap-2 shadow-sm"
                   >
                     Today's Data
                   </button>
                   <button 
-                    onClick={handleExportAllData}
+                    onClick={() => setExportMode('all')}
                     className="w-full h-11 rounded-xl bg-indigo-600 text-white font-bold text-[10px] uppercase tracking-widest hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 shadow-sm"
                   >
                     All Data
@@ -1032,7 +1032,7 @@ export default function TeamRequestsPage() {
                   Download Range
                 </button>
               </>
-            ) : (
+            ) : exportMode === 'single' ? (
               <>
                 <div className="flex flex-col gap-2 mb-2">
                   <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Select Date</label>
@@ -1067,6 +1067,50 @@ export default function TeamRequestsPage() {
                   className="w-full h-11 rounded-xl bg-emerald-600 text-white font-bold text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/25"
                 >
                   Download Date
+                </button>
+              </>
+            ) : exportMode === 'today' ? (
+              <>
+                <div className="flex flex-col gap-2 mb-4">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Status Filter</label>
+                  <select
+                    value={exportFilterType}
+                    onChange={(e) => setExportFilterType(e.target.value)}
+                    className="w-full h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 outline-none"
+                  >
+                    <option value="all">All Statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                </div>
+                <button 
+                  onClick={handleExportTodayData}
+                  className="w-full h-11 rounded-xl bg-sky-600 text-white font-bold text-xs uppercase tracking-widest hover:bg-sky-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-sky-500/25"
+                >
+                  Download Today
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="flex flex-col gap-2 mb-4">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Status Filter</label>
+                  <select
+                    value={exportFilterType}
+                    onChange={(e) => setExportFilterType(e.target.value)}
+                    className="w-full h-11 rounded-xl border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 outline-none"
+                  >
+                    <option value="all">All Statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                  </select>
+                </div>
+                <button 
+                  onClick={handleExportAllData}
+                  className="w-full h-11 rounded-xl bg-indigo-600 text-white font-bold text-xs uppercase tracking-widest hover:bg-indigo-700 transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25"
+                >
+                  Download All
                 </button>
               </>
             )}
