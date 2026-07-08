@@ -76,7 +76,7 @@ function ArtistRequestsContent() {
   const [sendingEmail, setSendingEmail] = useState(false);
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
-  const ITEMS_PER_PAGE = 10;
+  const ITEMS_PER_PAGE = 50;
   const { toast } = useToast();
 
   const fetchRequests = useCallback(async (showLoading = true) => {
@@ -104,6 +104,7 @@ function ArtistRequestsContent() {
 
       if (error) throw error;
       setRequests(data || []);
+      setCurrentPage(1); // Reset page on new data fetch
     } catch (error: any) {
       toast({
         variant: 'destructive',
@@ -589,7 +590,7 @@ function ArtistRequestsContent() {
         </div>
       </div>
 
-      <div className="luxe-card overflow-hidden">
+      <div className="luxe-card overflow-hidden flex flex-col">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4">
              <Loader2 className="h-8 w-8 animate-spin text-sky-600" />
@@ -676,6 +677,28 @@ function ArtistRequestsContent() {
                 </div>
               );
             })}
+          </div>
+        )}
+        
+        {totalPages > 1 && (
+          <div className="flex items-center justify-between px-6 py-4 border-t border-slate-100 bg-slate-50 mt-4 rounded-b-xl">
+            <button
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              <ChevronLeft size={16} /> Previous
+            </button>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              Next <ChevronRight size={16} />
+            </button>
           </div>
         )}
       </div>

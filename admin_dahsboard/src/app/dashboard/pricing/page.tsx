@@ -68,7 +68,7 @@ export default function PricingManagement() {
 
   const handleApprove = async (id: string) => {
     try {
-      const { error } = await supabase.from('pricing_plans').update({ is_live: true, pending_approval: false }).eq('id', id);
+      const { error } = await (supabase.from('pricing_plans') as any).update({ is_live: true, pending_approval: false }).eq('id', id);
       if (error) throw error;
       toast({ title: 'Approved', description: 'Plan is now live.' });
       fetchPlans();
