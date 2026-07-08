@@ -732,7 +732,7 @@ function ArtistRequestsContent() {
                          </div>
                          <div>
                            <p className="text-[10px] font-bold text-slate-400 uppercase mb-1">Bio / Experience</p>
-                           <p className="text-xs text-slate-600 line-clamp-3">
+                           <p className="text-xs text-slate-600 whitespace-pre-wrap">
                              {selectedRequest.notes ? selectedRequest.notes.split('\n').find((l: string) => l.startsWith('Bio:'))?.split(': ')[1] || 'No bio provided' : 'No bio provided'}
                            </p>
                          </div>
