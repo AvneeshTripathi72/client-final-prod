@@ -155,24 +155,32 @@ function ArtistRequestsContent() {
         let newActionStatus = 'pending';
         const artistName = req.artists?.name ? ` for ${req.artists.name}` : '';
 
-        if (actionType === 'confirm' || actionType === 'approve') {
+        if (actionType === 'confirm' || actionType === 'approve' || actionType === 'approve_artist') {
           subject = 'Your Magnevents Booking is Confirmed!';
           msg = `Great news! Your booking request${artistName} has been approved and confirmed by our team. We will reach out shortly with the final contract and next steps.`;
           newActionStatus = 'confirmed';
-          if (req.event_type === 'Artist Registration') {
+          if (req.event_type === 'Artist Registration' || actionType === 'approve_artist') {
             subject = 'Welcome to Magnevents!';
             msg = `Your artist registration has been reviewed and approved by our team. Welcome aboard!`;
           }
-        } else if (actionType === 'more_info') {
+        } else if (actionType === 'more_info' || actionType === 'more_portfolio') {
           subject = 'Magnevents - Action Required for your Request';
           msg = `Thank you for reaching out to Magnevents! We are reviewing your request, but we need a few more details to proceed. One of our specialists will call you shortly to discuss your specific needs.`;
+          if (actionType === 'more_portfolio') {
+             subject = 'Action Required: More Portfolio Needed';
+             msg = `Thank you for applying to Magnevents! We are reviewing your artist registration but need a few more portfolio links or performance videos to proceed with your approval. Please reply to this email with your best work!`;
+          }
         } else if (actionType === 'unavailable') {
           subject = 'Update regarding your Magnevents Booking';
           msg = `Thank you for your interest! Unfortunately, the requested artist is unavailable on your selected dates. However, we have several amazing alternative artists that fit your vibe and budget. Let us know when is a good time to call you to discuss options!`;
-        } else if (actionType === 'reject') {
+        } else if (actionType === 'reject' || actionType === 'reject_artist') {
           subject = 'Update regarding your Magnevents Request';
           msg = `Thank you for reaching out to Magnevents. Unfortunately, we are unable to fulfill your request at this time. We apologize for the inconvenience and wish you the best for your event.`;
           newActionStatus = 'cancelled';
+          if (actionType === 'reject_artist') {
+             subject = 'Update regarding your Magnevents Registration';
+             msg = `Thank you for your interest in joining Magnevents. After careful review, we are unable to move forward with your registration at this time. We wish you the best in your artistic journey.`;
+          }
         } else if (actionType === 'custom') {
           subject = '';
           msg = '';
@@ -182,14 +190,14 @@ function ArtistRequestsContent() {
         setEmailMessage(msg);
         setEmailActionStatus(newActionStatus);
         
-        if (['approve', 'unavailable', 'reject'].includes(actionType)) {
+        if (['approve', 'approve_artist', 'unavailable', 'reject', 'reject_artist'].includes(actionType)) {
           setConfirmModalOpen(true);
         } else {
           setEmailModalOpen(true);
         }
 
         // Clean up the URL
-        router.replace('/dashboard/requests', { scroll: false });
+        router.replace('/dashboard/artist-requests', { scroll: false });
       }
     }
   }, [replyId, actionType, requests, router]);
