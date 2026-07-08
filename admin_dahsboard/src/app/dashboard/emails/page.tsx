@@ -16,7 +16,12 @@ import { cn } from '@/lib/utils';
 
 const formatExportData = (data: any[]) => {
   return data.map((e: any, index: number) => {
-    const bodyText = e.body ? e.body.replace(/<[^>]*>?/gm, '') : '';
+    // Replace <br> and <p> with newlines before stripping other HTML to preserve structure
+    let bodyText = e.body ? e.body.replace(/<br\s*\/?>/gi, '\n').replace(/<\/p>/gi, '\n\n') : '';
+    bodyText = bodyText.replace(/<[^>]*>?/gm, '');
+    
+    // Clean up excessive newlines for the Email Body column
+    const formattedEmailBody = bodyText.replace(/\n\s*\n/g, '\n\n').trim();
     
     let extractedName = '';
     let extractedPhone = '';
@@ -48,7 +53,8 @@ const formatExportData = (data: any[]) => {
     const priceMatch = bodyText.match(/Price[\s]+([^\n\r]+)/i);
     if (priceMatch) extractedPrice = priceMatch[1].trim();
     
-    const portfolioMatch = bodyText.match(/Portfolio[\s]+([^\n\r]+)/i);
+    // Use negative lookahead so we don't match the "Portfolio & Socials" header
+    const portfolioMatch = bodyText.match(/Portfolio(?!\s*&)\s+([^\n\r]+)/i);
     if (portfolioMatch) extractedPortfolio = portfolioMatch[1].trim();
     
     const bioMatch = bodyText.match(/Bio\s*&\s*Experience[\s]+([\s\S]*?)(?=\s*(?:ARTIST REVIEW|QUICK ACTIONS|This email was generated|Sent securely|$))/i);
@@ -93,7 +99,7 @@ const formatExportData = (data: any[]) => {
       'Extracted Requested Type': requestedType,
       'Extracted Budget': budget,
       'Extracted Message': message,
-      'Email Body': bodyText.substring(0, 32000) || 'N/A',
+      'Full Email Body': formattedEmailBody.substring(0, 32000) || 'N/A',
     };
   });
 };
@@ -178,7 +184,7 @@ function EmailsContent() {
 
   const handleDeleteAll = async () => {
     try {
-      const { error } = await supabase.from('emails').delete().neq('id', '00000000-0000-0000-0000-000000000000'); // hack to delete all since without a filter it might fail RLS or standard deletes sometimes
+      const { error } = await supabase.from('emails').delete().neq('id', '00000000-0000-0000-0000-000000000000'); 
       if (error) throw error;
       toast({ title: 'Cleared', description: 'All email logs have been deleted.' });
       setDeleteModalOpen(false);
