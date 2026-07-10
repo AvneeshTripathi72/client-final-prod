@@ -1,0 +1,134 @@
+.mobile-hp {
+  background: var(--hp-bg, #0d0b09);
+  color: var(--hp-ink, #ffffff);
+  overflow-x: hidden;
+  position: relative;
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+}
+
+.mobile-shell {
+  width: 100%;
+  padding: 0 16px;
+  margin: 0 auto;
+}
+
+.mobile-section-head {
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.mobile-eyebrow {
+  margin: 0 0 8px 0;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hp-brand, #FFE032);
+  font-weight: 700;
+}
+
+.mobile-section-head h2 {
+  margin: 0;
+  font-family: var(--font-display, "Playfair Display", serif);
+  font-size: 28px;
+  line-height: 1.2;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* 
+ * Optimizations for performance:
+ * - Removed gradients on text
+ * - Removed text-shadows and box-shadows
+ * - Removed blur effects and backdrop-filters
+ * - Zero animations
+ */
+
+.mobile-hero {
+  position: relative;
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 0 40px;
+}
+
+.mobile-hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: var(--hp-bg);
+}
+
+.mobile-hero-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.3;
+}
+
+.mobile-hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.mobile-hero-h1 {
+  margin: 0 0 16px 0;
+  font-family: var(--font-display);
+  font-size: 36px;
+  line-height: 1.1;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+.mobile-hero-sub {
+  margin: 0 0 24px 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #f3e5cf;
+}
+
+.mobile-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 16px 24px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  background: var(--hp-brand, #FFE032);
+  color: #000;
+  border: none;
+}
+
+.mobile-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.mobile-stat-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+
+.mobile-stat-card strong {
+  display: block;
+  font-size: 24px;
+  color: var(--brand-ruby, #ff4d4d);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.mobile-stat-card span {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
