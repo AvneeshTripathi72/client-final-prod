@@ -160,6 +160,13 @@ export default function ContactModal() {
 
     setSubmitted(true)
 
+    if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+      window.gtag('event', 'generate_lead', {
+        event_category: 'form',
+        event_label: 'contact_modal_submit'
+      });
+    }
+
     bookingService.submitRequest({ ...submissionData, formType }).catch(error => {
       console.error("Booking error:", error)
     })

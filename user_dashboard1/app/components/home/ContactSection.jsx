@@ -41,6 +41,14 @@ export default function ContactSection() {
       setTimeout(() => {
         setSubmitted(true);
         setIsSubmitting(false);
+
+        if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+          window.gtag('event', 'generate_lead', {
+            event_category: 'form',
+            event_label: 'contact_section_submit'
+          });
+        }
+
         if (nameRef.current) nameRef.current.value = '';
         if (emailRef.current) emailRef.current.value = '';
         if (phoneRef.current) phoneRef.current.value = '';

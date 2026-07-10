@@ -98,6 +98,13 @@ export default function ClientFormPage({ params }) {
       console.error("Unexpected error:", err);
     }
 
+    if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+      window.gtag('event', 'generate_lead', {
+        event_category: 'form',
+        event_label: 'custom_form_submit'
+      });
+    }
+
     // Show success state immediately
     setTimeout(() => {
       setSubmitted(true);
