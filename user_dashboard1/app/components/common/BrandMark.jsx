@@ -24,6 +24,7 @@ export default function BrandMark({ size = 'md', showTag = false, light = false,
           src="https://pub-1802bb19214743ffa99aa227f25e7ede.r2.dev/assets/logo.webp"
           alt="Magnevents"
           fill
+          unoptimized={true}
           style={{
             objectFit: 'contain',
             filter: 'invert(1) brightness(2)' 
