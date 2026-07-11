@@ -15,7 +15,7 @@ export default function MobileHomePage() {
     "@type": "Organization",
     "name": "Magnevents",
     "url": "https://www.magnevents.in",
-    "logo": "https://www.magnevents.in/icon-512.png",
+    "logo": "https://pub-1802bb19214743ffa99aa227f25e7ede.r2.dev/assets/logo.webp",
     "sameAs": [
       "https://www.instagram.com/magnevents.in?igsh=MXY2NmtjMm82bTFnaA==",
       "https://facebook.com/magnevents"

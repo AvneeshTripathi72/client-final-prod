@@ -75,7 +75,7 @@ export default async function BlogLayout({ children, params }) {
       "name": "Magnevents",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://www.magnevents.in/icon-512.png"
+        "url": "https://pub-1802bb19214743ffa99aa227f25e7ede.r2.dev/assets/logo.webp"
       }
     },
     "mainEntityOfPage": {
