@@ -40,7 +40,7 @@ export default function HeroSection() {
           >
             <Image
               src={src}
-              alt=""
+              alt={`Live musician and band performing at an event slide ${idx + 1}`}
               fill
               priority={idx === 0}
               loading={idx === 0 ? "eager" : "lazy"}
