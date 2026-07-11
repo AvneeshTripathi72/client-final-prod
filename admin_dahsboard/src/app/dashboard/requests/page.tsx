@@ -702,6 +702,16 @@ function ClientRequestsContent() {
                  )}
 
                  <div className="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
+                    {selectedRequest.client_phone && (
+                      <a
+                        href={`https://wa.me/${selectedRequest.client_phone.replace(/[^0-9]/g, '')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-6 h-11 rounded-xl bg-[#25D366] text-white font-bold text-xs uppercase tracking-widest hover:bg-[#20b858] transition-all flex items-center gap-2"
+                      >
+                        <Phone size={16} /> <span>WhatsApp</span>
+                      </a>
+                    )}
                     <button
                       onClick={() => {
                         setEmailSubject('Update on your Magnevents Request');

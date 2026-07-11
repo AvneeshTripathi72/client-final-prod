@@ -320,12 +320,18 @@ export async function POST(req) {
       const premiumBtnBase = "display: block; width: 100%; box-sizing: border-box; color: #ffffff; padding: 14px 16px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 15px; margin-bottom: 12px; text-align: center; border: 1px solid rgba(255,255,255,0.1);";
       
       let buttonsHtml = '';
+      const whatsappLink = data.phone ? `https://wa.me/${data.phone.replace(/[^0-9]/g, '')}` : '#';
+
       if (isRegister) {
         const approveArtistLink = `${adminUrl}/dashboard/artist-requests?reply=${bId}&action=approve_artist`;
         const morePortfolioLink = `${adminUrl}/dashboard/artist-requests?reply=${bId}&action=more_portfolio`;
         const rejectArtistLink = `${adminUrl}/dashboard/artist-requests?reply=${bId}&action=reject_artist`;
         
         buttonsHtml = `
+            <a href="${whatsappLink}" target="_blank" rel="noopener noreferrer" style="${premiumBtnBase} background-color: #25D366; box-shadow: 0 4px 6px -1px rgba(37, 211, 102, 0.2);">💬 Direct Connect on WhatsApp</a>
+            
+            <div style="height: 1px; background-color: rgba(255,255,255,0.05); margin: 24px 0;"></div>
+
             <a href="${approveArtistLink}" target="_blank" rel="noopener noreferrer" style="${premiumBtnBase} background-color: #7c3aed; box-shadow: 0 4px 6px -1px rgba(124, 58, 237, 0.2);">✅ Approve Artist</a>
             
             <div style="height: 1px; background-color: rgba(255,255,255,0.05); margin: 24px 0;"></div>
@@ -339,6 +345,10 @@ export async function POST(req) {
         `;
       } else {
         buttonsHtml = `
+            <a href="${whatsappLink}" target="_blank" rel="noopener noreferrer" style="${premiumBtnBase} background-color: #25D366; box-shadow: 0 4px 6px -1px rgba(37, 211, 102, 0.2);">💬 Direct Connect on WhatsApp</a>
+            
+            <div style="height: 1px; background-color: rgba(255,255,255,0.05); margin: 24px 0;"></div>
+
             <a href="${confirmLink}" target="_blank" rel="noopener noreferrer" style="${premiumBtnBase} background-color: #10b981; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);">✅ Confirm Booking</a>
             <a href="${approveLink}" target="_blank" rel="noopener noreferrer" style="${premiumBtnBase} background-color: #059669; box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.2);">👍 Approve Booking</a>
             
