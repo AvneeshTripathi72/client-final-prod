@@ -19,6 +19,9 @@ export default function RegisterModal() {
   const portfolioRef = useRef(null)
   const priceRef = useRef(null)
   const bioRef = useRef(null)
+  const customCityRef = useRef(null)
+  
+  const [selectedCity, setSelectedCity] = useState('')
 
   const eventNameRef = useRef(null)
   const eventPhoneRef = useRef(null)
@@ -44,6 +47,7 @@ export default function RegisterModal() {
       setSubmitted(false)
       setView(e?.detail?.view || 'selection')
       setSelectedArtistTypes([])
+      setSelectedCity('')
     }
     window.addEventListener('open-register-modal', handleOpen)
     return () => window.removeEventListener('open-register-modal', handleOpen)
@@ -65,6 +69,7 @@ export default function RegisterModal() {
 
   const handleArtistSubmit = async (e) => {
     e.preventDefault()
+    const finalCity = selectedCity === 'Other' ? customCityRef.current?.value : selectedCity;
     const submissionData = {
       name: nameRef.current?.value || '',
       phone: phoneRef.current?.value || '',
@@ -72,7 +77,8 @@ export default function RegisterModal() {
       category: categoryRef.current?.value || '',
       portfolio: portfolioRef.current?.value || '',
       price: priceRef.current?.value || '',
-      bio: bioRef.current?.value || ''
+      bio: bioRef.current?.value || '',
+      city: finalCity || ''
     }
 
     const nameErr = validateName(submissionData.name);
@@ -81,6 +87,7 @@ export default function RegisterModal() {
     if (emailErr) return alert(emailErr);
     const phoneErr = validatePhone(submissionData.phone);
     if (phoneErr) return alert(phoneErr);
+    if (!submissionData.city) return alert("Please select or enter your city.");
 
     setIsSubmitting(true)
     try {
@@ -306,6 +313,39 @@ export default function RegisterModal() {
                       </select>
                     </div>
                     <div className="lux-form-group">
+                      <label>CITY</label>
+                      <select
+                        value={selectedCity}
+                        onChange={(e) => setSelectedCity(e.target.value)}
+                        required
+                      >
+                        <option value="">Select City</option>
+                        <option value="Mumbai">Mumbai</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Bangalore">Bangalore</option>
+                        <option value="Hyderabad">Hyderabad</option>
+                        <option value="Pune">Pune</option>
+                        <option value="Chennai">Chennai</option>
+                        <option value="Kolkata">Kolkata</option>
+                        <option value="Ahmedabad">Ahmedabad</option>
+                        <option value="Chandigarh">Chandigarh</option>
+                        <option value="Other">Other (Add Custom)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {selectedCity === 'Other' && (
+                    <div className="lux-form-group">
+                      <label>ENTER CUSTOM CITY</label>
+                      <input
+                        ref={customCityRef}
+                        type="text" required placeholder="e.g. Jaipur"
+                      />
+                    </div>
+                  )}
+
+                  <div className="lux-form-row">
+                    <div className="lux-form-group">
                       <label>PORTFOLIO / SOCIAL LINK</label>
                       <input
                         ref={portfolioRef}
@@ -313,15 +353,14 @@ export default function RegisterModal() {
                         defaultValue=""
                       />
                     </div>
-                  </div>
-
-                  <div className="lux-form-group">
-                    <label>PERFORMANCE PRICE (INR)</label>
-                    <input
-                      ref={priceRef}
-                      type="text" required placeholder="e.g. 10000 - 20000"
-                      defaultValue=""
-                    />
+                    <div className="lux-form-group">
+                      <label>PERFORMANCE PRICE (INR)</label>
+                      <input
+                        ref={priceRef}
+                        type="text" required placeholder="e.g. 10000 - 20000"
+                        defaultValue=""
+                      />
+                    </div>
                   </div>
 
                   <div className="lux-form-group">
