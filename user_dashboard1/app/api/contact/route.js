@@ -102,7 +102,7 @@ export async function POST(req) {
 
       if (isRegister) {
         evType = 'Artist Registration';
-        extraNotes = `Category: ${data.category || 'N/A'}\nPortfolio: ${data.portfolio || 'N/A'}\nPerformance Price: ${data.price ? '₹' + data.price : 'N/A'}\nBio: ${data.bio || 'N/A'}`;
+        extraNotes = `Category: ${data.category || 'N/A'}\nCity: ${data.city || 'N/A'}\nPortfolio: ${data.portfolio || 'N/A'}\nPerformance Price: ${data.price ? '₹' + data.price : 'N/A'}\nBio: ${data.bio || 'N/A'}`;
       } else if (isCallRequest) {
         evType = 'Call Request';
       }
@@ -198,6 +198,7 @@ export async function POST(req) {
         row('Email', data.email, true, `mailto:${data.email}`) +
         row('Phone', data.phone, true, `tel:${data.phone}`) +
         row('Category', data.category) +
+        row('City', data.city) +
         row('Price', data.price ? '₹' + data.price : 'N/A')
       );
       contentSections += buildSection('🎵 Portfolio & Socials', row('Portfolio', data.portfolio, true, data.portfolio));

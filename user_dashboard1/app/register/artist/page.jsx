@@ -27,9 +27,13 @@ export default function ArtistRegistrationPage() {
   const portfolioRef = useRef(null)
   const priceRef = useRef(null)
   const bioRef = useRef(null)
+  const customCityRef = useRef(null)
+  
+  const [selectedCity, setSelectedCity] = useState('')
 
   const handleArtistSubmit = async (e) => {
     e.preventDefault()
+    const finalCity = selectedCity === 'Other' ? customCityRef.current?.value : selectedCity;
     const submissionData = {
       name: nameRef.current?.value || '',
       phone: phoneRef.current?.value || '',
@@ -37,7 +41,8 @@ export default function ArtistRegistrationPage() {
       category: categoryRef.current?.value || '',
       price: priceRef.current?.value || '',
       portfolio: portfolioRef.current?.value || '',
-      bio: bioRef.current?.value || ''
+      bio: bioRef.current?.value || '',
+      city: finalCity || ''
     }
 
     const nameErr = validateName(submissionData.name);
@@ -46,6 +51,7 @@ export default function ArtistRegistrationPage() {
     if (emailErr) return alert(emailErr);
     const phoneErr = validatePhone(submissionData.phone);
     if (phoneErr) return alert(phoneErr);
+    if (!submissionData.city) return alert("Please select or enter your city.");
 
     setIsSubmitting(true)
     try {
@@ -161,14 +167,47 @@ export default function ArtistRegistrationPage() {
                     </select>
                   </div>
                   <div className="lux-form-group">
-                    <label style={{ display: 'block', fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px' }}>PORTFOLIO / SOCIAL LINK</label>
+                    <label style={{ display: 'block', fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px' }}>CITY</label>
+                    <select
+                      value={selectedCity}
+                      onChange={(e) => setSelectedCity(e.target.value)}
+                      required
+                      style={{ width: '100%', padding: '12px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff' }}
+                    >
+                      <option value="">Select City</option>
+                      <option value="Mumbai">Mumbai</option>
+                      <option value="Delhi">Delhi</option>
+                      <option value="Bangalore">Bangalore</option>
+                      <option value="Hyderabad">Hyderabad</option>
+                      <option value="Pune">Pune</option>
+                      <option value="Chennai">Chennai</option>
+                      <option value="Kolkata">Kolkata</option>
+                      <option value="Ahmedabad">Ahmedabad</option>
+                      <option value="Chandigarh">Chandigarh</option>
+                      <option value="Other">Other (Add Custom)</option>
+                    </select>
+                  </div>
+                </div>
+
+                {selectedCity === 'Other' && (
+                  <div className="lux-form-group" style={{ marginBottom: '16px' }}>
+                    <label style={{ display: 'block', fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px' }}>ENTER CUSTOM CITY</label>
                     <input
-                      ref={portfolioRef}
-                      type="url" required placeholder="Instagram, YouTube or Website"
-                      defaultValue=""
+                      ref={customCityRef}
+                      type="text" required placeholder="e.g. Jaipur"
                       style={{ width: '100%', padding: '12px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff' }}
                     />
                   </div>
+                )}
+
+                <div className="lux-form-group" style={{ marginBottom: '16px' }}>
+                  <label style={{ display: 'block', fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px' }}>PORTFOLIO / SOCIAL LINK</label>
+                  <input
+                    ref={portfolioRef}
+                    type="url" required placeholder="Instagram, YouTube or Website"
+                    defaultValue=""
+                    style={{ width: '100%', padding: '12px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff' }}
+                  />
                 </div>
 
                 <div className="lux-form-group" style={{ marginBottom: '24px' }}>
